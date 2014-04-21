@@ -1,0 +1,207 @@
+/*
+ * Page parts
+ */
+body {
+	background-color: #fff;
+}
+
+#footer {
+	background-color: #000000;
+	color:#ffffff;
+	border:0 none;
+}
+
+/*
+ * Links
+ *
+ * The order of link states are based on Eric Meyer's article:
+ * http://meyerweb.com/eric/thoughts/2007/06/11/who-ordered-the-link-states
+ */
+a:link {
+  color: #005596;
+}
+
+a:visited {
+  color: #005596;
+}
+
+a:hover,
+a:focus {
+  color: #000; 
+}
+
+a:active {
+  color: #000; 
+}
+
+#footer a:link {
+	color:#fff;
+	border-bottom:1px dotted #ffffff;
+}
+#footer a:visited {
+	color:#fff;
+	border-bottom:1px dotted #ffffff;
+}
+#footer a:hover {
+	border-bottom:1px solid #ffffff;
+}
+
+
+/*
+ * Taxonomy 
+ */
+.field-name-field-taxonomytopics a {
+  color: #666666;
+}
+
+.field-name-field-taxonomytopics a:hover,
+.field-name-field-taxonomytopics a:active {
+  color: #005596;
+}
+
+/*
+ * Page title
+ */
+.front h1.page-title,
+.node-type-microsite-landing-page h1.title {
+	color: #005596;
+}
+
+/*
+ *H3 for right rail
+ */
+ 
+.field-name-field-rightcolumncopy h3 {
+	color: #005596;
+}
+
+/*
+ *Menu block rules
+ */
+ .region-sidebar-first .block-menu-block {
+	  border-top:1px solid #005596;
+}
+
+.block-menu-block .content ul ul ul {
+  border-top: 1px dotted #005596;
+}
+
+.block-menu-block .content ul li {
+ border-bottom: 1px solid #005596;
+}
+
+block-menu-block .content ul li li {
+	border-top: 1px dotted #005596;
+}
+
+
+/*
+ * Menu blocks
+ */
+.block-menu-block .content ul li a:hover,
+.block-menu-block .content ul li.active-trail a {
+  color: #005596;
+}
+
+.block-menu-block .content ul li.active-trail li a {
+  color: #005596;
+}
+
+/*
+ * Custom block menus
+ */
+.block-custom .content ul.menu li a:hover,
+.block-custom .content ul.menu li.active-trail a,
+.block-block .content ul.menu li a:hover,
+.block-block .content ul.menu li.active-trail a {
+  color: #005596;
+}
+
+.block-custom .content ul.menu li.active-trail li a,
+.block-block .content ul.menu li.active-trail li a {
+  color: #005596;
+}
+
+/*
+ * Pager links
+ */
+.item-list ul.pager li a {
+  color: #005596;
+}
+
+.pager a,
+.pager .pager-current /* Each page number in the pager list */ {
+  color: #005596;
+}
+
+.pager li.pager-first a,
+.pager li.pager-previous a,
+.pager li.pager-next a,
+.pager li.pager-last a {
+  border-bottom-color: #005596;
+}
+
+.pager li.pager-first a:hover,
+.pager li.pager-previous a:hover,
+.pager li.pager-next a:hover,
+.pager li.pager-last a:hover {
+  color: #000;
+  border-bottom-color: #000;
+}
+
+/*
+ * More link
+ */
+.more-link a:link,
+.more-link a:visited {
+  border-bottom: #005596 1px dotted;
+}
+
+.more-link a:hover,
+.more-link a:focus,
+.more-link a:active {
+  border-bottom: #000 1px solid;
+}
+
+/*
+ * View links
+ */
+.view .views-field-title a {
+	color: #717f81;
+}
+
+.view .views-field-title a:hover {
+	color: #005596;
+}
+
+.view .item-list ul .views-field-title a {
+	color: #005596;  
+}
+
+.section-users #content .view .views-field-title a {
+  border-bottom-color: #717f81;
+  text-decoration: none;
+}
+
+.section-users #content .view .views-field-title a:hover {
+  border-bottom-color: #717f81;
+}
+
+
+/*
+ * Fieldset legend
+ */
+fieldset legend a:hover,
+fieldset legend a:active,
+fieldset legend a:focus {
+  color: #005596;
+}
+
+/*
+ * Submit buttons
+ */
+.form-submit /* The submit button */ {
+  background: url('../images/barnard-background-form-submit.png');
+  color: #005596;
+  border-color: #005596;
+}

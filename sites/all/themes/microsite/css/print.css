@@ -1,0 +1,122 @@
+/* $Id: print.css,v 1.8 2009/11/04 20:16:50 johnalbin Exp $ */
+
+/**
+ * @file
+ * Print styling
+ *
+ * We provide some sane print styling for Drupal using Zen's layout method.
+ */
+
+/* Remove the toolbar */
+body.toolbar {
+  padding-top: 0px !important;
+}
+
+#toolbar {
+  visibility: hidden;
+  display: none;
+} 
+
+/* Hide messages */
+.messages {
+  visibility: hidden;
+  display: none;
+}
+
+/* underline all links */
+a:link,
+a:visited {
+  text-decoration: underline !important;
+}
+
+.view .views-field-title a {
+  color: #000;
+}
+
+/* Don't underline header */
+#site-name a:link,
+#site-name a:visited {
+  text-decoration: none !important;
+}
+
+/* Un-float the content */
+.sidebar-first #content,
+.two-sidebars #content,
+#content,
+#content .section {
+  float: none;
+  width: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.sidebar-first #content-wrapper,
+.two-sidebars #content-wrapper,
+#content-wrapper {
+	float: none;
+  width: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.region-microsite-bottom-left {
+	margin-left: 0;
+	margin-right: -48%;
+	width: 48%;
+}
+
+.region-microsite-bottom-right {
+  margin-left: 50%;
+  margin-right: -98%;
+  width: 48%;
+}
+
+/* Remove the addthis image */
+.addthis-link {
+  visibility: hidden;
+  display: none;
+}
+
+/* Turn off any background colors or images */
+body,
+#page-wrapper,
+#page,
+#main-wrapper,
+#main,
+#content,
+#content .section {
+  color: #000;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Hide sidebars and nav elements */
+#skip-to-nav,
+#navigation,
+.region-sidebar-first,
+.region-sidebar-second,
+#footer,
+.breadcrumb,
+div.tabs,
+.links,
+.taxonomy,
+.book-navigation,
+.forum-topic-navigation,
+.pager,
+.feed-icons {
+  visibility: hidden;
+  display: none;
+}
+
+/* Hide header elements */
+.region-header .block-menu-block,
+.region-header .block-search {
+  visibility: hidden;
+  display: none;
+}
+
+/* If you un-comment the "page { overflow-y: hidden; }" ruleset, Firefox clips
+   the content after the first page. */
+#page-wrapper {
+  overflow-y: visible;
+}

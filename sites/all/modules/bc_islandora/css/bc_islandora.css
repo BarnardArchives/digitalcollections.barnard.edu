@@ -1,0 +1,13 @@
+.bulletin-calendar .inactive {
+    display: none;
+}
+.bulletin-calendar .active {
+    display: block;
+}
+.bulletin-calendar ul {
+    list-style-type: none;
+}
+.bulletin-calendar li {
+    display: inline;
+    margin: 0 0 10px 10px;
+}

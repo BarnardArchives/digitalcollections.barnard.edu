@@ -1,0 +1,52 @@
+/* $Id: forms.css,v 1.5 2010/04/01 11:12:09 johnalbin Exp $ */
+
+/**
+ * @file
+ * Search Styling
+ */
+.search-form .form-item-keys label {
+  margin-right: 10px;
+}
+
+.search-results {
+}
+
+.search-results h2.title {
+  margin-bottom: 12px;
+}
+
+.search-results dt.title {
+  font-size: 1.385em; /* 13px x 1.385 = 18px */
+  line-height: 1.167em; /* 18px x 1.167em = 21px */
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.search-results dt.title a {
+  color: #717f81;
+  border-bottom: 0px none;
+}
+
+.search-results dt.title a:hover {
+  color: #005596;
+}
+
+.search-results dd {
+	margin: 0 0 23px 0;
+}
+
+.search-results .search-info {
+	color:#666666;
+	font-size: 0.846em;
+	line-height: 1.454em;
+	font-weight:bold;
+}
+
+.search-results .search-snippet {
+	margin: 0 0 6px 0;
+}
+
+.search-results .search-info {
+  margin: 0 0 6px 0;
+}

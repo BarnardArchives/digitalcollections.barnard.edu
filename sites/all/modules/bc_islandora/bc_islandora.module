@@ -1,0 +1,175 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function bc_islandora_menu() {
+  return array(
+    'test_solr' => array(
+      'page callback' => 'bc_islandora_test_solr',
+      'access arguments' => array('access content'),
+    ),
+    'view/%' => array(
+      'page callback' => 'bc_islandora_page_view',
+      'page arguments' => array(1),
+      'access arguments' => array('access content'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function bc_islandora_theme($existing, $type, $theme, $path) {
+  return array(
+    'bc_islandora_object' => array(
+      'variables' => array('solr_obj' => NULL),
+      'file' => 'includes/bc_islandora.theme.inc',
+    ),
+  );
+}
+
+function bc_islandora_test_solr() {
+  $output = '';
+  $qp = new IslandoraSolrQueryProcessor();
+  $fq = array(
+    'RELS_EXT_isMemberOf_uri_ms:"info:fedora/islandora:1"',
+  );
+  $solr_result = _bc_islandora_solr_query($fq);
+  //dpm($qp->solrParams);
+  dpm($qp->islandoraSolrResult);
+  foreach ($solr_result['response']['objects'] as $result) {
+    $obj_url = $result['object_url'];
+    $tn_url = $result['thumbnail_url'];
+    $output .= '<div class="bc-islandora-solr-result">';
+    $output .= l('<img src="' . $tn_url . '">', $obj_url, array('html' => TRUE));
+    $output .= l($result['object_label'], $obj_url);
+    $output .= '</div>';
+  }
+  return $output;
+}
+
+function bc_islandora_page_view($pid) {
+  $output = '';
+  if ($results = _bc_islandora_solr_query(array('PID:"' . $pid . '"'))) {
+    $solr_obj = array_shift($results['response']['objects']);
+    $output .= theme('bc_islandora_object', $solr_obj);
+  }
+  else {
+    drupal_not_found();
+  }
+  return $output;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function bc_islandora_block_info() {
+  $blocks = array(
+    'bci_collection_newspaper' => array(
+      'info' => t('Newspaper Collection'),
+      'status' => BLOCK_VISIBILITY_LISTED,
+      'pages' => array('bulletin'),
+      'region' => 'content',
+    ),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_edit().
+ */
+function bc_islandora_block_configure($delta = '') {
+  $form = array();
+  // If this is a collection block, provide a form field for the pid of the
+  // parent collection item.
+  if (preg_match('/^bci_collection_/', $delta) !== FALSE) {
+    $form['islandora_collection_pid'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Collection pid'),
+      '#required' => TRUE,
+      '#default_value' => variable_get($delta . '_block_pid', 'islandora:1'),
+    );
+  }
+  return $form;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function bc_islandora_block_save($delta = '') {
+  if (preg_match('/^bci_collection_/', $delta) !== FALSE) {
+    $variable = $delta . '_block_pid';
+    variable_set($variable, $edit['islandora_collection_pid']);
+  }
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function bc_islandora_block_view($delta = '') {
+  if (preg_match('/^bci_collection_/', $delta) !== FALSE) {
+    $variable = $delta . '_block_pid';
+    if ($collection_pid = variable_get($variable, 'islandora:1')) {
+      module_load_include('inc', 'islandora_newspaper', 'includes/utilities');
+      $years_output = '<div class="years">';
+      $months_output = '<div class="months">';
+      $issues_output = '<div class="issues">';
+      $months_sort = array();
+      $issues_sort = array();
+
+      $paper = islandora_object_load($collection_pid);
+      $issues = islandora_newspaper_get_issues($paper);
+      $grouped_issues = islandora_newspaper_group_issues($issues);
+      $years_output .= '<ul class="years">';
+      foreach ($grouped_issues as $year => $months) {
+        $years_output .= '<li class="year" id="' . $year . '"><a href="#">' . $year . '</a></li>';
+        //$months_output .= '<ul class="months-' . $year . '">';
+
+        foreach ($months as $month => $issues) {
+          $month_display = date('F', strtotime($year . '-' . $month));
+          $months_sort[$year][$month] = '<li class="month" id="' . $month . '"><a href="#">' . $month_display . '</a></li>';
+          //$months_output .= '<li class="month" id="' . $month . '"><a href="#">' . $month_display . '</a></li>';
+          //$issues_output .= '<ul class="issues-' . $year . '-'. $month . '">'; 
+          foreach ($issues as $day => $issue) {
+            $issue_url = 'view/' . $issue[0]['pid'];
+            $issues_sort[$month][$day] = '<li class="issue">' . l(preg_replace('/^0/', '', $day), $issue_url) . '</li>';
+            //$issues_output .= '<li class="issue">' . l(preg_replace('/^0/', '', $day), $issue_url) . '</li>';
+          }
+          //$issues_output .= '</ul>';
+        }
+        //$months_output .= '</ul>';
+      }
+      
+      $years_output .= '</ul></div>';
+      foreach ($months_sort as $year => $month) {
+        ksort($month);
+        $months_output .= '<ul class="months-' . $year . '">';
+        $months_output .= implode("\n", $month);
+        $months_output .= '</ul>';
+        foreach ($issues_sort as $issue_month => $day) {
+          ksort($day);
+          $issues_output .= '<ul class="issues-' . $year . '-' . $issue_month . '">';
+          $issues_output .= implode("\n", $day);
+          $issues_output .= '</ul>';
+        }
+      }
+
+      $months_output .= '</div>';
+      $issues_output .= '</div>';
+      
+      $output = '<div class="bulletin-nav">
+          <span class="browse">Browse</span><span class="month"></span><span class="day"></span><span class="year"><a id="nav" href="#"></a></span>
+        </div>';
+      $output .= '<div class="bulletin-calendar">' . $years_output . $months_output . $issues_output . '</div>';
+      $block['content'] = $output;
+    }
+    return $block;
+  }
+}
+
+function _bc_islandora_solr_query($fq) {
+  $qp = new IslandoraSolrQueryProcessor();
+  $qp->buildAndExecuteQuery('', array('f' => $fq));
+  return $qp->islandoraSolrResult;
+}

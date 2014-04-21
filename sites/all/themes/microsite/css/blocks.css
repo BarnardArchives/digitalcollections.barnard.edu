@@ -1,0 +1,223 @@
+/* $Id: blocks.css,v 1.4 2009/11/05 11:05:39 johnalbin Exp $ */
+
+/**
+ * @file
+ * Block Styling
+ */
+
+
+.block /* Block wrapper */ {
+  margin-bottom: 28px;
+}
+
+.region-faculty-lower-top .block {
+  float: left;
+  width: 320px;
+}
+
+.region-faculty-lower-top .block.region-odd {
+  margin-right: 40px;
+}
+
+.region-faculty-lower-bottom .block {
+  float: left;
+  width: 320px;
+}
+
+.region-faculty-lower-bottom .block.region-even {
+  margin-right: 40px;
+}
+
+.region-faculty-lower-bottom .block-block {
+  width: 680px;
+  margin: 0 0 0 0;
+}
+
+.region-faculty-lower-bottom .block-block h2 {
+  font-size: 0.923em; /* 13px x 0.923 = 12px */
+  line-height: 1.333em; /* 12px x 1.333 = 16px */
+  color: #005596;
+  letter-spacing: 0px;
+  text-transform: uppercase;
+}
+
+#block-cck_blocks-field_featuredcopy {
+  margin-bottom: 15px;
+}
+
+#navigation .block {
+	margin-bottom: 0px;
+}
+
+#footer .block {
+  margin-bottom: 0px;
+}
+
+.front .region-sidebar-first .block,
+.node-type-microsite-landing-page .region-sidebar-first .block {
+	margin-bottom: 56px;
+}
+
+.block.region-odd /* Zebra striping for each block in the region */ {
+}
+
+.block.region-even /* Zebra striping for each block in the region */ {
+}
+
+.block.odd /* Zebra striping independent of each region */ {
+}
+
+.block.even /* Zebra striping independent of each region */ {
+}
+
+.region-count-1 /* Incremental count for each block in the region */ {
+}
+
+.count-1 /* Incremental count independent of each region */ {
+}
+
+.block h2.title /* Block title */ {
+}
+
+.block .content /* Block's content wrapper */ {
+}
+
+#block-aggregator-category-1 /* Block for the latest news items in the first category */ {
+}
+
+#block-aggregator-feed-1 /* Block for the latest news items in the first feed */ {
+}
+
+#block-block-1 /* First administrator-defined block */ {
+}
+
+#block-blog-0 /* "Recent blog posts" block */ {
+}
+
+#block-book-0 /* "Book navigation" block for the current book's table of contents */ {
+}
+
+#block-comment-0 /* "Recent comments" block */ {
+}
+
+#block-forum-0 /* "Active forum topics" block */ {
+}
+
+#block-forum-1 /* "New forum topics" block */ {
+}
+
+#block-menu-primary-links /* "Primary links" block */ {
+}
+
+#block-menu-secondary-links /* "Secondary links" block */ {
+}
+
+#block-node-0 /* "Syndicate" block for primary RSS feed */ {
+}
+
+#block-poll-0 /* "Most recent poll" block */ {
+}
+
+#block-profile-0 /* "Author information" block for the profile of the page's author */ {
+}
+
+#block-search-0 /* "Search form" block */ {
+}
+
+#block-statistics-0 /* "Popular content" block */ {
+}
+
+#block-user-0 /* "User login form" block */ {
+}
+
+#block-user-1 /* "Navigation" block for Drupal navigation menu */ {
+}
+
+#block-user-2 /* "Who's new" block for a list of the newest users */ {
+}
+
+#block-user-3 /* "Who's online" block for a list of the online users */ {
+}
+
+/*
+ * Microsite landing page content block
+ */
+
+/* 
+ * The main content block does not always display with content, remove the margin bottom to
+ * remove the "gap" that the empty block's margin bottom was leaving behind.
+ */
+.node-type-microsite-landing-page #content #block-system-main.region-count-1 {
+  margin-bottom: 0px;
+}
+
+/*
+ * Since the system block no longer has a margin bottom, add a margin top to the next block in #content.
+ */
+.node-type-microsite-landing-page #content .region-count-2 {
+  margin-top: 28px;
+}
+
+
+/*
+ * User content blocks
+ */
+.section-profiles #content .block {
+  width: 480px;
+}
+
+.section-profiles #content #block-system-main {
+  width: inherit;
+}
+
+.section-profiles #content .block-title {
+  font-size: 1.077em;
+  letter-spacing: 2px;
+  line-height: 1.357em;
+  margin-bottom: 7px;
+  margin-top: 0;
+}
+
+/* Search in header */
+
+#block-views-search_site-block_1 .view-id-search_site.view-display-id-block_1 {
+  float:right;
+  margin:0 0 0 0px;
+  width:145px;
+  height:20px;
+  background-color:#ffffff;
+  border: 1px solid #ddd;
+}
+#block-views-search_site-block_1 .view-id-search_site .view-filters {
+  padding:0;
+}
+
+#block-views-search_site-block_1 .views-exposed-widget {
+  padding:0;
+  position:relative;
+}
+
+#block-views-search_site-block_1 input.form-text {
+    background: none repeat scroll 0 0 transparent;
+    border: medium none;
+    color: #333333;
+    font-size: 12px;
+    line-height: 12px;
+    margin: 0;
+    padding: 2px;
+    width: 143px;
+}
+#block-views-search_site-block_1 .form-submit {
+    background: url("/sites/default/themes/microsite/images/microsite-search-icon.png") no-repeat scroll left top transparent;
+    border: 0 none;
+    box-shadow: 0 0 0;
+    overflow: hidden;
+    padding: 0;
+    text-indent: -9000px;
+    width: 25px;
+    margin:0;
+}
+#block-views-search_site-block_1 .views-exposed-submit-buttons {
+  float:right;
+  margin:-19px 0 0 0;
+}

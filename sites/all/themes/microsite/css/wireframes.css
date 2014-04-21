@@ -1,0 +1,19 @@
+/* $Id: wireframes.css,v 1.11 2010/04/01 11:16:51 johnalbin Exp $ */
+
+/**
+ * @file
+ * Wireframes Styling
+ *
+ * Add wireframes to the basic layout elements.
+ */
+
+
+.with-wireframes #header .section,
+.with-wireframes #content .section,
+.with-wireframes #navigation .section,
+.with-wireframes .region-sidebar-first .section,
+.with-wireframes .region-sidebar-second .section,
+.with-wireframes #footer .section,
+.with-wireframes .region-page-closure {
+  outline: 1px solid #ccc;
+}

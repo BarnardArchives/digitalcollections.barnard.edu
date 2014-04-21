@@ -1,0 +1,575 @@
+/* $Id: views-styles.css,v 1.1 2009/08/12 04:25:15 johnalbin Exp $ */
+
+/**
+ * @file
+ * Views Styling
+ */
+
+
+.attachment-before {
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: #000 1px dotted;
+}
+
+.views-row {
+  margin: 0 0 23px 0;
+}
+
+
+/*
+ * General listing
+ */
+.view .views-row.has-image {
+  margin-right: 200px;  
+}
+
+.view .field {
+  margin: 0 0 0 0;
+}
+
+.view .views-field-title {
+  font-size: 1.385em; /* 13px x 1.385 = 18px */
+  line-height: 1.167em; /* 18px x 1.167em = 21px */
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.view .views-field-title a {
+  color: #717f81;
+  border-bottom: 0px none;
+}
+
+.view .views-field-title a:hover {
+  color: #005596;
+}
+
+.view .views-field-view-node {
+  font-size: 0.769em; /* 13px x 0.769 = 10px */
+  line-height: 1.3em; /* 10px x 1.3 = 13px */
+  text-transform: uppercase;
+}
+
+.view .views-field-view-node, 
+.view .views-field-view-node * {
+  display: inline;
+}
+
+.view .views-field-field-ledeimage {
+  position: relative;
+  float: right;
+  margin-top: 3px;
+  margin-right: -200px;
+}
+
+.view .views-field-field-ledeimage a,
+.view .views-field-field-ledeimage a:hover,
+.view .views-field-field-ledeimage a:active {
+  border-bottom: 0px none;
+}
+
+.view .views-field-field-field-userpicture {
+  position: relative;
+  float: right;
+  margin-top: 3px;
+  margin-right: -200px;
+}
+
+.view .views-field-field-field-userpicture a,
+.view .views-field-field-field-userpicture a:hover,
+.view .views-field-field-field-userpicture a:active {
+  border-bottom: 0px none;
+}
+
+.view .views-field-field-field-lede,
+.view .views-field-field-field-lede * {
+  display: inline;
+}
+
+.view .views-field-field-field-lede p {
+  margin: 0 0 0 0;
+}
+
+.view .views-field-field-field-eventdatedisplay,
+.view .views-field-field-field-eventtimedisplay {
+  font-size: 0.846em; /* 13px x 0.846 = 11px */
+  line-height: 1.454em; /* 11px x 1.454 = 16px */
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.view .views-field-field-field-subtitle {
+  color: #666666;
+}
+
+.view .views-field-field-field-eventlocation {
+  font-size: 0.846em; /* 13px x 0.846 = 11px */
+  line-height: 1.454em; /* 11px x 1.454 = 16px */
+  text-transform: uppercase;
+  margin-top: 7px;
+}
+
+/*
+ * profiles "in the news" section
+ */
+.view.view-users-publications .views-row.has-image {
+  margin-right: 100px;  
+}
+
+.view.view-users-publications .views-field-field-ledeimage {
+  margin-right: -100px;
+}
+
+/*
+ * Html list views -- unordered lists 
+ */
+
+.view .item-list ul {
+  padding: 0 0 0 0;
+}
+
+.view .item-list ul li {
+  background: none;
+  list-style: none;
+  list-style-image: none;
+  margin: 0 0 0 0;
+  padding: 6px 0 5px;
+  border-bottom: 1px dotted;
+}
+
+.view .item-list ul li.views-row-first {
+  margin-bottom: 0px;
+  padding: 0 0 5px 0;
+}
+
+.view .item-list ul .views-field-title {
+  font-family: "Times New Roman", Times, Georgia, "DejaVu Serif", serif;
+  font-size: 1.077em; /* 13px x 1.077 = 14px */ 
+  line-height: 1.357em; /* 14px x 1.357 = 19px */
+  font-weight: normal;
+  letter-spacing: 0px;
+  margin: 0 0 0 0;
+}
+
+.view .item-list ul .views-field-title a {
+  text-decoration: none;
+  border-bottom: 0px none;
+}
+
+.view .item-list ul .views-field-title a:hover,
+.view .item-list ul .views-field-title a:active {
+  text-decoration: underline;
+  border-bottom: 0px none;
+}
+
+/*
+ * Course views
+ */
+.view .views-field-course-text .c1 {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.view .views-field-course-text table {
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.view .views-field-course-text td.unifyTH,
+.view .views-field-course-text td.unifyTHLeft,
+.view .views-field-course-text td.unifyTHRight {
+  background: #efefef;
+  color: #464646;
+  vertical-align: bottom;
+  border-top: 1px solid #464646;
+  border-bottom: 1px solid #464646;
+  text-transform:uppercase;
+}
+
+.view .views-field-course-text td {
+  padding: 8px 9px;
+  border-bottom: 1px solid #CCCCCC;
+}
+
+.view .views-field-course-text td.unifyTerm,
+.view .views-field-course-text td.unifyMoreInfo {
+  color: #464646;
+  border-bottom: 1px solid #CCCCCC;
+}
+
+.view .views-field-course-text td.unifyDivider {
+  border-bottom: 0px none;
+}
+
+.view .views-field-course-text td.unifyRow1 {
+  vertical-align: top;
+}
+
+.view .views-field-course-text .course-description {
+  margin: 0 0 16px 0;
+}
+
+.view .views-field-course-text .course-description strong {
+  font-size: 1.077em; /* 13px x 1.077 = 14px */ 
+  line-height: 1.357em; /* 14px x 1.357 = 19px */
+  letter-spacing: 2px;
+  margin-top: 0; /* Equivalent to 1em in the page's base font: 1 / 1.1 = 0.909 */
+  margin-bottom: 7px;
+}
+
+.view .views-field-course-text h3.unify {
+  font-size: 1.385em; /* 13px x 1.385 = 18px; */
+  line-height: 1.167em; /* 18px x 1.167 = 21px */
+  color: #000000;
+  letter-spacing: 2px;
+  text-transform: none;
+  margin-top: 0;
+  margin-bottom: 7px;
+}
+
+/*
+ * Exposed filters
+ */
+.block-views.views-filter {
+  background: #efefef;
+  padding: 10px 20px;
+  border-top: 1px solid #999999;
+  border-bottom: 1px solid #999999;
+}
+
+.block-views.views-filter h2.block-title {
+  position: relative;
+  background: url('../images/microsite-background-block-icons.png') no-repeat;
+  background-position: 0 0;
+  font-size: 0.923em; /* 13px x 0.923 = 12px */
+  line-height: 1.583em; /* 12px x 1.583 = 19px */
+  color: #005596;
+  letter-spacing: 0px;
+  cursor: pointer;
+  padding-left: 16px;
+  margin: 0 0 0 -16px;
+}
+
+.block-views.views-filter h2.block-title.collapsible {
+  background-position: 0 -33px;
+}
+
+.block-views.views-filter .content {
+  display: none;
+  margin: 0 0 10px 0;
+}
+
+.region-header .block-views.views-filter .content {
+  display: block;
+}
+
+.region-content .block-views .views-exposed-form .views-exposed-widgets,
+.view .view-filters .views-exposed-widgets {
+  margin-bottom: 0;
+}
+
+.region-content .block-views .views-exposed-elements, 
+.view .view-filters .views-exposed-elements {
+  float: left;
+  width: 150px;
+}
+
+.region-content .block-views .views-exposed-submit-buttons,
+.view .view-filters .views-exposed-submit-buttons {
+  float: left;
+  margin-left: 40px;
+}
+
+.region-content .block-views .views-exposed-form .views-exposed-widget,
+.view .view-filters .block-views .views-exposed-form .views-exposed-widget {
+  padding-right: 0px;
+}
+
+.views-exposed-submit-buttons .views-exposed-widget {
+  float: none;
+}
+
+.views-exposed-submit-buttons .views-exposed-widget .form-submit {
+  width: 88px;
+}
+
+/*
+ * Exposed course form elements
+ */
+
+#views-exposed-form-department-courses-department-courses .views-exposed-elements {
+    float: left;
+    width: 500px;
+    padding-bottom:10px;
+    border-bottom:1px solid #efefef;
+    margin-bottom:20px;
+}
+.form-item-courseLevelVar .form-select {
+  width:300px;
+}
+.form-item-department .form-select, 
+.form-item-dayVar .form-select,
+.form-item-termVar .form-select,
+.form-item-beginHourVar .form-select,
+.form-item-endHourVar .form-select {
+  width: 220px;
+}
+
+.views-widget-filter-courseLevelVar,
+.views-widget-filter-termVar {
+  margin-right:12px;
+}
+
+.form-item-keywordsVar .form-text {
+  width: 300px;
+}
+
+/*
+ * Right sidebar views
+ */
+.region-sidebar-second .view .views-row.has-image {
+  margin-right: 0px;  
+}
+
+.region-sidebar-second .view .views-field-field-ledeimage {
+  float: none;
+  margin: 0 0 8px 0;
+}
+
+.region-sidebar-second .view .views-field-field-ledeimage img {
+  margin-bottom: 0px;
+}
+
+.region-sidebar-second .views-field-lede {
+  font-size: 0.846em; /* 13px x 0.846 = 11px */
+  line-height: 1.182em; /* 11px x 1.182 = 13px */
+  color: #4c4c4c;
+}
+
+.region-sidebar-second .views-field-lede h2,
+.region-sidebar-second .views-field-lede h3 {
+  font-size: 1.091em; /* 11px x 1.091 = 12px */ 
+  line-height: 1.3em;
+  color: #000;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-top: 0; /* Equivalent to 1em in the page's base font: 1 / 1.3 = 0.769 */
+  margin-bottom: 0.769em;
+}
+
+
+
+/*
+ * Profile views
+ */
+.section-profiles #content .view .views-field-title {
+  color:#717F81;
+  font-size: 1em;
+  line-height: 1.462em;
+  font-weight: bold;
+  margin: 0 0 0 0;
+}
+
+.section-profiles #content .view .views-field-title a {
+  border-bottom: 1px dotted #717F81;
+  color:#717F81;
+}
+
+.section-profiles #content .view .views-field-title a:hover {
+  border-bottom: 1px solid #000;
+  color: #000;
+}
+
+.section-profiles #content .view .views-row.has-image {
+  margin-right: 100px;	
+}
+
+.section-profiles #content .view .views-field-field-ledeimage {
+  position: relative;
+  float: right;
+  margin-top: 3px;
+  margin-right: -100px;
+}
+
+/*
+ * Event Calendar Views
+ */
+.view-events-by-department.view-display-id-page_1 .views-row,
+.view-events.view-display-id-page_1 .views-row {
+  margin-bottom: 10px;
+}
+
+.view-events-by-department.view-display-id-page_1 .views-row.has-image,
+.view-events.view-display-id-page_1 .views-row.has-image {
+  margin-right: 175px;
+}
+
+.view-events-by-department.view-display-id-page_1 .views-field-field-field-ledeimage,
+.view-events.view-display-id-page_1 .views-field-field-field-ledeimage {
+  margin-right: -175px;
+}
+
+.view-events-by-department.view-display-id-page_1 .views-field-title,
+.view-events.view-display-id-page_1 .views-field-title {
+  font-size: 1.231em; /* 13px x 1.231 = 16px */
+  line-height: 1.188em; /* 13px x 1.188 = 19px */
+  margin-bottom: 0px;
+}
+
+.view-events-by-department.view-display-id-page_1 .views-field-field-field-subtitle,
+.view-events.view-display-id-page_1 .views-field-field-field-subtitle {
+  font-size: 1.077em; /* 13px x 1.077 = 14px */
+  line-height: 1.357em; /* 14px x 1.357 = 19px */
+}
+
+.view-events-by-department.view-display-id-page_1 .attachment .views-row,
+.view-events.view-display-id-page_1 .attachment .views-row {
+  margin-bottom: 13px;
+}
+
+.view-events-by-department.view-display-id-page_1 .attachment .views-row-last,
+.view-events.view-display-id-page_1 .attachment .views-row-last {
+  margin-bottom: 0px;
+}
+
+.view-events-by-department.view-display-id-page_1 .attachment .views-row.has-image,
+.view-events.view-display-id-page_1 .attachment .views-row.has-image {
+  margin-right: 315px;
+}
+
+.view-events-by-department.view-display-id-page_1 .attachment .views-field-field-field-ledeimage,
+.view-events.view-display-id-page_1 .attachment .views-field-field-field-ledeimage {
+  margin-right: -315px;
+}
+
+.view-events-by-department.view-display-id-page_1 .attachment .views-field-title,
+.view-events.view-display-id-page_1 .attachment .views-field-title {
+  font-size: 1.692em; /* 13px x 1.692em = 22px */
+  line-height: 1.318em; /* 22px x 1.692 = 29px */
+}
+
+.view-events-by-department.view-display-id-page_1 .attachment .views-field-field-field-eventdatedisplay,
+.view-events.view-display-id-page_1 .attachment .views-field-field-field-eventdatedisplay {
+  font-size: 1.077em; /* 13px x 1.077 = 14px */
+  line-height: 1.357em; /* 14px x 1.357 = 19px */
+  margin-bottom: 9px;
+}
+
+.view-events-by-department.view-display-id-page_1 .attachment .views-field-field-field-subtitle,
+.view-events.view-display-id-page_1 .attachment .views-field-field-field-subtitle {
+  font-size: 1.385em; /* 13px x 1.385 = 18px */
+  line-height: 1.167em; /* 13px 1.167 = 21px */
+}
+
+.view-events-by-department.view-display-id-page_1 .attachment .views-field-field-field-eventlocation,
+.view-events.view-display-id-page_1 .attachment .views-field-field-field-eventlocation {
+  font-size: 0.923em; /* 13px x 0.923 = 12px */
+  line-height: 1.333em; /* 12px x 1.333 = 16px */
+  margin-bottom: 8px;
+}
+
+/*
+ * Search in header views
+ */
+
+.region.region-header {
+position: absolute;
+top: 76px;
+left: 765px;
+}
+
+.region-header .block-views.views-filter {
+  padding:0;
+  border:0 none;
+  background:none;
+  margin:0;
+}
+
+.view-display-id-block_1 .views-reset-button {
+  display:none;
+}
+
+/*
+ * Search pages
+ */
+body.page-search h1 {
+  margin-bottom:35px;
+}
+
+
+.view-id-search_site {
+  margin-left: 30px;
+  width:500px;
+}
+
+.view-id-search_site .view-filters {
+  padding: 0 20px 20px;
+  margin-bottom:30px;
+  border-bottom: 1px dotted #999999;
+}
+
+.region.region-content .view-id-search_site .views-exposed-elements {
+  width:300px;
+}
+
+.view-id-search_site input {
+  width:220px;
+  border:1px solid #666666;
+  padding:3px;
+}
+
+.view-id-search_site h3 a:link {
+  text-transform:none;
+  font-size: 1.2em;
+}
+
+
+.view-id-search_site fieldset legend {
+  background: none;
+}
+
+.view-id-search_site fieldset.collapsible {
+  clear:both;
+}
+
+.view-id-search_site fieldset {
+  border: 0 none;
+}
+
+.view-id-search_site .views-exposed-submit-buttons {
+  margin:0;
+}
+
+html.js .view-id-search_site fieldset.collapsed,
+html.js .view-id-search_site fieldset.collapsible {
+  padding: 20px 0 0 12px;
+  margin:0;
+  clear:both;
+}
+
+.view-id-search_site input.sitetheme-exposed-filter-datepicker {
+  width:100px;
+}
+
+.view-id-search_site .views-widget-1 label,
+.view-id-search_site .views-widget-0 label {
+  font-weight:normal;
+  font-size:11px;
+  text-transform: uppercase;
+}
+.view-id-search_site.view-display-id-page_events .form-type-select {
+  margin-bottom:16px;
+}
+
+.view-id-search_site.view-display-id-page_events .form-select {
+  width:180px;
+}
+.page-search-site .ui-widget {
+  font-family: Arial,Helvetica,sans-serif;
+  font-size:0.8em;
+}
+
+.ui-datepicker table {
+  border:0 none;
+}

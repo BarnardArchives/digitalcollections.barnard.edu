@@ -1,0 +1,363 @@
+/* $Id: layout-fixed.css,v 1.21 2010/04/01 11:48:29 johnalbin Exp $ */
+
+/**
+ * @file
+ * Layout Styling (DIV Positioning)
+ *
+ * Define CSS classes to create a table-free, 3-column, 2-column, or single
+ * column layout depending on whether blocks are enabled in the left or right
+ * columns.
+ *
+ * This layout is based on the Zen Columns layout method.
+ *   http://drupal.org/node/201428
+ *
+ * Only CSS that affects the layout (positioning) of major elements should be
+ * listed here.  Such as:
+ *   display, position, float, clear, width, height, min-width, min-height
+ *   margin, border, padding, overflow
+ */
+
+
+/*
+ * Body
+ */
+body {
+}
+
+#page-wrapper,
+#identity-bar .section,
+.region-bottom {
+  /*
+   * If you want to make the page a fixed width and centered in the viewport,
+   * this is the standards-compliant way to do that. See also the ie6.css file
+   * for the necessary IE5/IE6quirks hack to center a div.
+   */
+  margin-left: auto;
+  margin-right: auto;
+  width: 960px;
+}
+
+#page {
+}
+
+/*
+ * Identity bar
+ */
+#identity-bar {
+	background: #000;
+}
+
+#identity-bar .section {
+	height: 50px;
+	overflow: hidden;
+}
+
+
+/*
+ * Header
+ */
+#header {
+	margin: 0 0 25px 0;
+}
+
+#header .section {
+}
+
+#search-box {
+}
+
+.region-header {
+}
+
+/*
+ * Main (container for everything else)
+ */
+#main-wrapper {
+  position: relative;
+}
+
+#main {
+}
+
+/*
+ * Content
+ */
+#content,
+.no-sidebars #content {
+  float: left; /* LTR */
+  width: 960px;
+  margin-left: 0; /* LTR */
+  margin-right: -960px; /* LTR */ /* Negative value of #content's width + left margin. */
+  padding: 0; /* DO NOT CHANGE. Add padding or margin to #content .section. */
+}
+
+.sidebar-first #content {
+  width: 680px;
+  margin-left: 0px; /* LTR */ /* The width of .region-sidebar-first. */
+  margin-right: -680px; /* LTR */ /* Negative value of #content's width + left margin. */
+}
+
+/*
+ * Articles, Blogs, Events, Feed Items, 
+ * News, and Webform, should always look like they have a second sidebar.
+ */
+.sidebar-first.node-type-article #content,
+.sidebar-first.node-type-blog #content,
+.sidebar-first.node-type-news #content,
+.sidebar-first.node-type-event #content,
+.sidebar-first.node-type-feed-item #content,
+.sidebar-first.node-type-webform #content {
+  width: 480px;
+  margin-left: 0px; /* LTR */ /* The width of .region-sidebar-first */
+  margin-right: -480px; /* LTR */ /* Negative value of #content's width + left margin. */
+}
+
+.sidebar-second #content {
+  width: 740px;
+  margin-left: 0px; /* LTR */
+  margin-right: -740px; /* LTR */ /* Negative value of #content's width + left margin. */
+}
+
+.two-sidebars #content {
+  width: 480px;
+  margin-left: 0px; /* LTR */ /* The width of .region-sidebar-first */
+  margin-right: -480px; /* LTR */ /* Negative value of #content's width + left margin. */
+}
+
+#content .section {
+  margin: 0;
+}
+
+/*
+ * Navigation
+ */
+#navigation {
+  float: left; /* LTR */
+  width: 760px;
+	margin-top: 17px;
+  margin-left: 190px; /* LTR */
+  margin-right: -950px; /* LTR */ /* Negative value of #navigation's width + left margin. */
+  padding: 0; /* DO NOT CHANGE. Add padding or margin to #navigation .section. */
+}
+
+/*
+ * Homepage layouts
+ */
+.sidebar-first #content-wrapper,
+.two-sidebars #content-wrapper {
+	float: left;
+	width: 680px;
+  margin-left: 270px; /* LTR */ /* The width of .region-sidebar-first. */
+  margin-right: -950px; /* LTR */ /* Negative value of #content's width + left margin. */
+}
+
+/*
+ * Articles, Blogs, Events, Feed Items, 
+ * News, and Webform, should always look like they have a second sidebar.
+ */
+.sidebar-first.node-type-article #content-wrapper,
+.sidebar-first.node-type-blog #content-wrapper,
+.sidebar-first.node-type-news #content-wrapper,
+.sidebar-first.node-type-event #content-wrapper,
+.sidebar-first.node-type-feed-item #content-wrapper,
+.sidebar-first.node-type-webform #content-wrapper {
+  width: 480px;
+  margin-left: 270px; /* LTR */ /* The width of .region-sidebar-first */
+  margin-right: -750px; /* LTR */ /* Negative value of #content's width + left margin. */
+}
+
+
+.two-sidebars #content-wrapper {
+  width: 480px;
+  margin-left: 270px; /* LTR */ /* The width of .region-sidebar-first. */
+  margin-right: -750px; /* LTR */ /* Negative value of #content's width + left margin. */
+}
+
+.node-type-microsite-landing-page #content-wrapper {
+  width: 680px;
+  margin-left: 270px; /* LTR */
+  margin-right: -960px; /* LTR */ /* Negative value of #content's width + left margin. */
+}
+
+.sidebar-second #content-wrapper {
+  float: left;
+  width: 940px;
+  margin-left: 10px; /* LTR */ /* The width of .region-sidebar-first. */
+  margin-right: -940px; /* LTR */ /* Negative value of #content's width + left margin. */
+}
+
+
+/*
+ * First sidebar
+ */
+.region-sidebar-first {
+  float: left; /* LTR */
+  width: 220px;
+  margin-left: 10px; /* LTR */
+  margin-right: -230px; /* LTR */ /* Negative value of .region-sidebar-first's width + left margin. */
+  padding: 0; /* DO NOT CHANGE. Add padding or margin to .region-sidebar-first .section. */
+}
+
+.region-sidebar-first .section {
+  margin: 0 0 0 0; /* LTR */
+  padding: 0;
+}
+
+/*
+ * Second sidebar
+ */
+.region-sidebar-second {
+  float: left; /* LTR */
+  width: 160px;
+  margin-left: 780px; /* LTR */ /* Width of content + sidebar-first. */
+  margin-right: -940px; /* LTR */ /* Negative value of .region-sidebar-second's width + left margin. */
+  padding: 0; /* DO NOT CHANGE. Add padding or margin to .region-sidebar-second .section. */
+}
+
+#content-wrapper .region-sidebar-second {
+	width: 160px;
+	margin-left: 520px;
+	margin-right: -680px;
+}
+
+.region-sidebar-second .section {
+  margin: 0 0 0 0; /* LTR */
+  padding: 0;
+}
+
+/*
+ * User Profile
+ */
+.page-user #content .profile {
+  float: left;
+  width: 760px;
+  margin-left: 0; /* LTR */
+  margin-right: -760px; /* LTR */ /* Negative value of #content's width + left margin. */
+}
+
+.sidebar-first #content .profile {
+  width: 480px;
+  margin-left: 0px; /* LTR */ /* The width of .region-sidebar-first */
+  margin-right: -480px; /* LTR */ /* Negative value of #content's width + left margin. */
+}
+
+.page-user #content .profile-sidebar {
+  float: left; /* LTR */
+  width: 200px;
+  margin-left: 760px; /* LTR */ /* Width of content + sidebar-first. */
+  margin-right: -960px; /* LTR */ /* Negative value of .region-sidebar-second's width + left margin. */
+  padding: 0; /* DO NOT CHANGE. Add padding or margin to .region-sidebar-second .section. */
+}
+
+.one-sidebar #content .profile-sidebar {
+  float: left; /* LTR */
+  width: 200px;
+  margin-left: 480px; /* LTR */ /* Width of content + sidebar-first. */
+  margin-right: -680px; /* LTR */ /* Negative value of .region-sidebar-second's width + left margin. */
+  padding: 0; /* DO NOT CHANGE. Add padding or margin to .region-sidebar-second .section. */
+}
+
+.page-user #content .profile-sidebar .section {
+  margin: 0 0 0 40px; /* LTR */
+  padding: 0;
+}
+
+
+/*
+ * Faculty Experts Regions
+ */
+.region-faculty-bottom-left {
+  float: left;
+  width: 680px;
+}
+
+.region-faculty-bottom-right {
+  float: left;
+  width: 680px;
+}
+
+/*
+ * News & Events Regions
+ */
+.news-events {
+  position: relative;
+}
+
+.region-news-bottom-left {
+  float: left; /* LTR */
+  width: 480px;
+  margin-left: 0px; /* LTR */ /* Width of content + sidebar-first. */
+  margin-right: -480px; /* LTR */ /* Negative value of .region-sidebar-second's width + left margin. */
+  padding: 0; /* DO NOT CHANGE. Add padding or margin to .region-sidebar-second .section. */
+}
+
+.region-news-bottom-right {
+  float: left; /* LTR */
+  width: 480px;
+  margin-left: 480px; /* LTR */ /* Width of content + sidebar-first. */
+  margin-right: -960px; /* LTR */ /* Negative value of .region-sidebar-second's width + left margin. */
+  padding: 0; /* DO NOT CHANGE. Add padding or margin to .region-sidebar-second .section. */
+}
+
+.region-microsite-bottom-left {
+  float: left; /* LTR */
+  width: 220px;
+  margin-left: 0px; /* LTR */ /* Width of content + sidebar-first. */
+  margin-right: -220px; /* LTR */ /* Negative value of .region-sidebar-second's width + left margin. */
+  padding: 0; /* DO NOT CHANGE. Add padding or margin to .region-sidebar-second .section. */
+}
+
+.region-microsite-bottom-right {
+  float: left; /* LTR */
+  width: 220px;
+  margin-left: 260px; /* LTR */ /* Width of content + sidebar-first. */
+  margin-right: -480px; /* LTR */ /* Negative value of .region-sidebar-second's width + left margin. */
+  padding: 0; /* DO NOT CHANGE. Add padding or margin to .region-sidebar-second .section. */
+}
+
+/*
+*
+ * Footer
+ */
+#footer {
+	margin: 20px 0 10px 0;
+	padding: 8px 10px 8px 10px;
+	border-top: 2px solid #333;
+}
+
+#footer .section {
+}
+
+/*
+ * Page bottom
+ */
+.region-bottom /* See also the #page-wrapper declaration above that this div shares. */ {
+}
+
+/*
+ * Prevent overflowing content
+ */
+#header,
+#content,
+#navigation,
+.region-sidebar-first,
+.region-sidebar-second,
+#footer,
+.region-bottom {
+  overflow: visible;
+  word-wrap: break-word; /* A very nice CSS3 property */
+}
+
+/*
+ * If a div.clearfix doesn't have any content after it and its bottom edge
+ * touches the bottom of the viewport, Firefox and Safari will mistakenly
+ * place several pixels worth of space between the bottom of the div and the
+ * bottom of the viewport. Uncomment this CSS property to fix this.
+ * Note: with some over-large content, this property might cause scrollbars
+ * to appear on the #page-wrapper div.
+ */
+/*
+#page-wrapper {
+  overflow-y: hidden;
+}
+*/

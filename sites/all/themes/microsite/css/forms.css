@@ -1,0 +1,212 @@
+/* $Id: forms.css,v 1.5 2010/04/01 11:12:09 johnalbin Exp $ */
+
+/**
+ * @file
+ * Form Styling
+ */
+
+
+.form-item,
+.form-checkboxes,
+.form-radios /* Wrapper for a form element (or group of form elements) and its label */ {
+  margin: 1em 0;
+}
+
+.form-item input.error,
+.form-item textarea.error,
+.form-item select.error /* Highlight the form elements that caused a form submission error */ {
+  border: 1px solid #c00;
+}
+
+.form-item label /* The label for a form element */ {
+  display: block;
+  font-weight: bold;
+}
+
+.form-item label.option /* The label for a radio button or checkbox */ {
+  display: inline;
+  font-weight: normal;
+}
+
+.form-required /* The part of the label that indicates a required field */ {
+  color: #c00;
+}
+
+.form-item .description /* The descriptive help text (separate from the label) */ {
+  font-size: 0.85em;
+}
+
+.form-checkboxes .form-item,
+.form-radios .form-item /* Pack groups of checkboxes and radio buttons closer together */ {
+  margin: 0.4em 0;
+}
+
+.form-submit /* The submit button */ {
+  font-size: 10px;
+  height: 21px;
+  line-height: 10px !important;
+  border: none 0px;
+  padding: 1px 10px;
+  border: 1px solid;
+}
+
+.form-submit:hover {
+  background-position: left bottom;
+}
+
+.container-inline div,
+.container-inline label /* Inline labels and form divs */ {
+  display: inline;
+}
+
+.tips /* Tips for Drupal's input formats */ {
+}
+
+fieldset {
+	padding: 5px 15px;
+	border-top: 1px #999999 solid;
+	border-bottom: 1px #999999 solid;
+	border-right: 0px none;
+  border-left: 0px none;
+}
+
+html.js fieldset.collapsible {
+  padding-bottom: 15px;
+}
+
+html.js fieldset.collapsed {
+  height: 20px;
+	padding: 5px 15px 5px 16px;
+	border-bottom-width: 1px;
+}
+
+html.js fieldset.collapsible .fieldset-legend {
+  background-image: url('../images/barnard-background-fieldset-icons.png');
+  background-position: 0 -33px;
+}
+
+html.js fieldset.collapsed .fieldset-legend {
+  background-image: url('../images/barnard-background-fieldset-icons.png');
+  background-position: 0 0;
+}
+
+fieldset legend {
+	background: #fff;
+  position: absolute;
+}
+
+fieldset legend a:link,
+fieldset legend a:visited {
+	border-bottom: 0px none;
+}
+
+fieldset legend a:hover,
+fieldset legend a:active {
+  border-bottom: 0px none;
+}
+
+html.js fieldset .fieldset-wrapper {
+	margin-top: 22px;
+}
+
+/*
+ * Search (search-block-form.tpl.php)
+ */
+#block-search-form {
+	position: absolute;
+	bottom: 15px;
+	right: 10px;
+	margin: 0 0 0 0;
+}
+
+#search-box /* Wrapper for the search form */ {
+  padding: 7px 0 0 0;
+}
+
+#block-search-form .container-inline {
+  display: inline-block;
+  background: #fff;
+  border: 1px solid #000000;
+}
+
+#block-search-form input.form-text {
+  background: none;
+  font-size: 12px;
+  line-height: 12px;
+  width: 123px;
+  border: none;
+  padding: 0 0 0 5px;
+  margin: 0;
+}
+
+#block-search-form .form-submit {
+  background: url('../images/microsite-search-icon.png') left top no-repeat;
+  background-color: none;
+  height: 22px;
+  width: 29px;
+  border: none 0px;
+  padding: 0 0 0 0;
+  text-indent: -9000px;
+  overflow: hidden;
+}
+
+
+/*
+ * Drupal's default login form block
+ */
+#user-login-form {
+  text-align: left; /* LTR */
+}
+
+
+/*
+ * OpenID
+ *
+ * The default styling for the OpenID login link seems to assume Garland's
+ * styling of list items.
+ */
+
+#user-login-form ul /* OpenID creates a new ul above the login form's links. */ {
+  margin-bottom: 0; /* Position OpenID's ul next to the rest of the links. */
+}
+
+#user-login-form li.openid-link /* The "Log in using OpenID" link. */ {
+  margin-top: 1em;
+  margin-left: -20px; /* LTR */ /* Un-do some of the padding on the ul list. */
+}
+
+#user-login-form li.user-link /* The "Cancel OpenID login" link. */ {
+  margin-top: 1em;
+}
+
+#user-login ul {
+  margin: 1em 0;
+}
+
+#user-login li.openid-link,
+#user-login li.user-link /* The OpenID links on the /user form. */ {
+  margin-left: -2em; /* LTR */ /* Un-do all of the padding on the ul list. */
+}
+
+
+/*
+ * Drupal admin tables
+ *
+ * We overrode these styles in html-elements.css, but restore them for the admin
+ * section of the site.
+ */
+
+form tbody {
+  border-top: 1px solid #ccc;
+}
+
+form th,
+form thead th {
+  text-align: left; /* LTR */
+  padding-right: 1em; /* LTR */
+  border-bottom: 3px solid #ccc;
+}
+
+form tbody th {
+  border-bottom: 1px solid #ccc;
+}
