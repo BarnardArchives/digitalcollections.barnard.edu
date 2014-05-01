@@ -70,6 +70,7 @@ function drush_bc_islandora_ingest_newspapers($query_file) {
 
   $path_name = dirname($query_file);
   $fh = fopen($query_file, 'r');
+  var_export($fh);
   $line_number = 0;
   $issues = array();
 
@@ -78,7 +79,7 @@ function drush_bc_islandora_ingest_newspapers($query_file) {
     if ($line_number > 1) {
       $type = $data[4];
       if ($type == 'issue') {
-        $issue_pid = 'bulletin:' . date('Ymd', strtotime($data[1]));
+        $issue_pid = 'bc:bulletin-' . date('Ymd', strtotime($data[1]));
   
         if (!islandora_object_load($issue_pid)) {
           try {
@@ -94,7 +95,7 @@ function drush_bc_islandora_ingest_newspapers($query_file) {
         $issues[] = $issue_pid;
       }
       elseif ($type == 'page') {
-        $page_pid = 'bulletin:' . date('Ymd', strtotime($data[1])) . '-' . $data[3];
+        $page_pid = 'bc:bulletin-' . date('Ymd', strtotime($data[1])) . '-' . $data[3];
         if (!islandora_object_load($page_pid)) {
           try {
             create_page_object($path_name, $data, $issue_pid, $page_pid);
@@ -140,7 +141,8 @@ function drush_bc_islandora_purge_object($pids) {
 }
 
 function drush_bc_islandora_generate_newspaper_csv() {
-  $directory = '/vagrant/bulletin';
+  //$directory = '/vagrant/bulletin';
+  $directory = '/var/www/html/drupal7/sites/default/files/bulletin';
 
   $year = drush_get_option('year');
   $month = drush_get_option('month');

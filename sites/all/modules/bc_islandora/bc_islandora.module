@@ -1,18 +1,35 @@
 <?php
 
+define('BASE_NAMESPACE', 'bc');
+
+/**
+ * Implements hook_permission().
+ */
+function bc_islandora_permission() {
+  return array(
+    'administer bc_islandora' => array(
+      'title' => t('Administer Barnard Islandora'),
+      'description' => t('Perform administrative tasks for Barnard Islandora.'),
+    ),
+  );
+}
+
 /**
  * Implements hook_menu().
  */
 function bc_islandora_menu() {
   return array(
-    'test_solr' => array(
-      'page callback' => 'bc_islandora_test_solr',
-      'access arguments' => array('access content'),
-    ),
     'view/%' => array(
       'page callback' => 'bc_islandora_page_view',
       'page arguments' => array(1),
       'access arguments' => array('access content'),
+    ),
+    'admin/islandora/bc_config' => array(
+      'page callback' => 'drupal_get_form',
+      'title' => 'Configure Barnard Islandora',
+      'type' => MENU_NORMAL_ITEM,
+      'page arguments' => array('bc_islandora_config'),
+      'access arguments' => array('administer bc_islandora'),
     ),
   );
 }
@@ -23,42 +40,47 @@ function bc_islandora_menu() {
 function bc_islandora_theme($existing, $type, $theme, $path) {
   return array(
     'bc_islandora_object' => array(
-      'variables' => array('solr_obj' => NULL),
+      'variables' => array(
+        'solr_obj' => NULL,
+        'title' => NULL,
+        'paged' => TRUE,
+        'start_page' => NULL,
+      ),
       'file' => 'includes/bc_islandora.theme.inc',
     ),
   );
 }
 
-function bc_islandora_test_solr() {
-  $output = '';
-  $qp = new IslandoraSolrQueryProcessor();
-  $fq = array(
-    'RELS_EXT_isMemberOf_uri_ms:"info:fedora/islandora:1"',
-  );
-  $solr_result = _bc_islandora_solr_query($fq);
-  //dpm($qp->solrParams);
-  dpm($qp->islandoraSolrResult);
-  foreach ($solr_result['response']['objects'] as $result) {
-    $obj_url = $result['object_url'];
-    $tn_url = $result['thumbnail_url'];
-    $output .= '<div class="bc-islandora-solr-result">';
-    $output .= l('<img src="' . $tn_url . '">', $obj_url, array('html' => TRUE));
-    $output .= l($result['object_label'], $obj_url);
-    $output .= '</div>';
-  }
-  return $output;
-}
-
 function bc_islandora_page_view($pid) {
   $output = '';
-  if ($results = _bc_islandora_solr_query(array('PID:"' . $pid . '"'))) {
+  if ($results = _bc_islandora_solr_query(array('PID:"' . BASE_NAMESPACE . ':' . $pid . '"'))) {
     $solr_obj = array_shift($results['response']['objects']);
-    $output .= theme('bc_islandora_object', $solr_obj);
+    $output .= theme('bc_islandora_object', array('solr_obj' => $solr_obj));
   }
   else {
     drupal_not_found();
   }
   return $output;
+}
+
+function bc_islandora_config($form, &$form_state) {
+  $form['bc_islandora_namespace'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Base namespace'),
+    '#required' => TRUE,
+    '#default_value' => variable_get('bc_islandora_namespace', BASE_NAMESPACE),
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+  );
+  return $form;
+}
+
+function bc_islandora_config_submit($form, &$form_state) {
+  variable_set('bc_islandora_namespace', $form_state['values']['bc_islandora_namespace']);
+  $form_state['redirect'] = 'admin/islandora/bc_config';
+  drupal_set_message(t('Saved changes.'));
 }
 
 /**
@@ -124,21 +146,15 @@ function bc_islandora_block_view($delta = '') {
       $years_output .= '<ul class="years">';
       foreach ($grouped_issues as $year => $months) {
         $years_output .= '<li class="year" id="' . $year . '"><a href="#">' . $year . '</a></li>';
-        //$months_output .= '<ul class="months-' . $year . '">';
 
         foreach ($months as $month => $issues) {
           $month_display = date('F', strtotime($year . '-' . $month));
           $months_sort[$year][$month] = '<li class="month" id="' . $month . '"><a href="#">' . $month_display . '</a></li>';
-          //$months_output .= '<li class="month" id="' . $month . '"><a href="#">' . $month_display . '</a></li>';
-          //$issues_output .= '<ul class="issues-' . $year . '-'. $month . '">'; 
           foreach ($issues as $day => $issue) {
-            $issue_url = 'view/' . $issue[0]['pid'];
+            $issue_url = 'view/' . str_replace(BASE_NAMESPACE . ':', '', $issue[0]['pid']);
             $issues_sort[$month][$day] = '<li class="issue">' . l(preg_replace('/^0/', '', $day), $issue_url) . '</li>';
-            //$issues_output .= '<li class="issue">' . l(preg_replace('/^0/', '', $day), $issue_url) . '</li>';
           }
-          //$issues_output .= '</ul>';
         }
-        //$months_output .= '</ul>';
       }
       
       $years_output .= '</ul></div>';
@@ -165,6 +181,12 @@ function bc_islandora_block_view($delta = '') {
       $block['content'] = $output;
     }
     return $block;
+  }
+}
+
+function bc_islandora_preprocess_islandora_solr(&$variables) {
+  foreach ($variables['results'] as $i => $r) {
+    $variables['results'][$i]['object_url'] = str_replace('islandora/object/', 'view/', str_replace('bc:', '', $r['object_url']));
   }
 }
 

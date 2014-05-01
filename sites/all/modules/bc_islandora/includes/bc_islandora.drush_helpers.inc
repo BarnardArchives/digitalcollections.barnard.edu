@@ -144,7 +144,7 @@ function create_page_object($file_path, $data, $collection_pid, $page_pid) {
       unlink($tmp_file);
     }  
   }
-  $label = $title . ' - page ' . $page_number;
+  $label = 'Barnard Bulletin, ' . $title . ', page ' . $page_number;
 
   $dsid = 'MODS';
 
