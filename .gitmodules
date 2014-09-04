@@ -1,3 +1,42 @@
 [submodule "sites/all/modules/block_class"]
 	path = sites/all/modules/block_class
 	url = http://git.drupal.org/project/block_class.git
+[submodule "sites/all/modules/features"]
+	path = sites/all/modules/features
+	url = http://git.drupal.org/project/features.git
+[submodule "sites/all/modules/features_extra"]
+	path = sites/all/modules/features_extra
+	url = http://git.drupal.org/project/features_extra.git
+[submodule "sites/all/modules/jquery_update"]
+	path = sites/all/modules/jquery_update
+	url = http://git.drupal.org/project/jquery_update.git
+[submodule "sites/all/modules/lightbox2"]
+	path = sites/all/modules/lightbox2
+	url = http://git.drupal.org/project/lightbox2.git
+[submodule "sites/all/modules/menu_attributes"]
+	path = sites/all/modules/menu_attributes
+	url = http://git.drupal.org/project/menu_attributes.git
+[submodule "sites/all/modules/menu_import"]
+	path = sites/all/modules/menu_import
+	url = http://git.drupal.org/project/menu_import.git
+[submodule "sites/all/modules/node_export"]
+	path = sites/all/modules/node_export
+	url = http://git.drupal.org/project/node_export.git
+[submodule "sites/all/modules/nodequeue"]
+	path = sites/all/modules/nodequeue
+	url = http://git.drupal.org/project/nodequeue.git
+[submodule "sites/all/modules/pathauto"]
+	path = sites/all/modules/pathauto
+	url = http://git.drupal.org/project/pathauto.git
+[submodule "sites/all/modules/references"]
+	path = sites/all/modules/references
+	url = http://git.drupal.org/project/references.git
+[submodule "sites/all/modules/strongarm"]
+	path = sites/all/modules/strongarm
+	url = http://git.drupal.org/project/strongarm.git
+[submodule "sites/all/modules/token"]
+	path = sites/all/modules/token
+	url = http://git.drupal.org/project/token.git
+[submodule "sites/all/modules/uuid"]
+	path = sites/all/modules/uuid
+	url = http://git.drupal.org/project/uuid.git
