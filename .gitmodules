@@ -40,3 +40,117 @@
 [submodule "sites/all/modules/uuid"]
 	path = sites/all/modules/uuid
 	url = http://git.drupal.org/project/uuid.git
+[submodule "sites/all/modules/bc_islandora"]
+	path = sites/all/modules/bc_islandora
+	url = git@github.com:BarnardArchives/bc_islandora.git
+[submodule "sites/all/libraries/bookreader"]
+	path = sites/all/libraries/bookreader
+	url = git://github.com/openlibrary/bookreader.git
+[submodule "sites/all/libraries/tuque"]
+	path = sites/all/libraries/tuque
+	url = git://github.com/Islandora/tuque.git
+[submodule "sites/all/modules/islandora"]
+	path = sites/all/modules/islandora
+	url = git://github.com/Islandora/islandora.git
+[submodule "sites/all/modules/islandora_batch"]
+	path = sites/all/modules/islandora_batch
+	url = git://github.com/Islandora/islandora_batch.git
+[submodule "sites/all/modules/islandora_book_batch"]
+	path = sites/all/modules/islandora_book_batch
+	url = git://github.com/Islandora/islandora_book_batch.git
+[submodule "sites/all/modules/islandora_bookmark"]
+	path = sites/all/modules/islandora_bookmark
+	url = git://github.com/Islandora/islandora_bookmark.git
+[submodule "sites/all/modules/islandora_fits"]
+	path = sites/all/modules/islandora_fits
+	url = git://github.com/Islandora/islandora_fits.git
+[submodule "sites/all/modules/islandora_ga_reports"]
+	path = sites/all/modules/islandora_ga_reports
+	url = https://github.com/discoverygarden/islandora_ga_reports
+[submodule "sites/all/modules/islandora_importer"]
+	path = sites/all/modules/islandora_importer
+	url = git://github.com/Islandora/islandora_importer.git
+[submodule "sites/all/modules/islandora_internet_archive_bookreader"]
+	path = sites/all/modules/islandora_internet_archive_bookreader
+	url = git://github.com/Islandora/islandora_internet_archive_bookreader.git
+[submodule "sites/all/modules/islandora_ip_embargo"]
+	path = sites/all/modules/islandora_ip_embargo
+	url = https://github.com/Islandora/islandora_ip_embargo.git
+[submodule "sites/all/modules/islandora_jodconverter"]
+	path = sites/all/modules/islandora_jodconverter
+	url = https://github.com/discoverygarden/islandora_jodconverter.git
+[submodule "sites/all/modules/islandora_jwplayer"]
+	path = sites/all/modules/islandora_jwplayer
+	url = git://github.com/Islandora/islandora_jwplayer.git
+[submodule "sites/all/modules/islandora_marcxml"]
+	path = sites/all/modules/islandora_marcxml
+	url = https://github.com/Islandora/islandora_marcxml.git
+[submodule "sites/all/modules/islandora_oai"]
+	path = sites/all/modules/islandora_oai
+	url = git://github.com/Islandora/islandora_oai.git
+[submodule "sites/all/modules/islandora_ocr"]
+	path = sites/all/modules/islandora_ocr
+	url = git://github.com/Islandora/islandora_ocr.git
+[submodule "sites/all/modules/islandora_openseadragon"]
+	path = sites/all/modules/islandora_openseadragon
+	url = git://github.com/Islandora/islandora_openseadragon.git
+[submodule "sites/all/modules/islandora_paged_content"]
+	path = sites/all/modules/islandora_paged_content
+	url = git://github.com/Islandora/islandora_paged_content.git
+[submodule "sites/all/modules/islandora_plupload"]
+	path = sites/all/modules/islandora_plupload
+	url = https://github.com/discoverygarden/islandora_plupload.git
+[submodule "sites/all/modules/islandora_scholar"]
+	path = sites/all/modules/islandora_scholar
+	url = https://github.com/discoverygarden/islandora_scholar
+[submodule "sites/all/modules/islandora_simple_workflow"]
+	path = sites/all/modules/islandora_simple_workflow
+	url = git://github.com/Islandora/islandora_simple_workflow.git
+[submodule "sites/all/modules/islandora_solr_metadata"]
+	path = sites/all/modules/islandora_solr_metadata
+	url = https://github.com/discoverygarden/islandora_solr_metadata.git
+[submodule "sites/all/modules/islandora_solr_search"]
+	path = sites/all/modules/islandora_solr_search
+	url = git://github.com/Islandora/islandora_solr_search.git
+[submodule "sites/all/modules/islandora_solr_views"]
+	path = sites/all/modules/islandora_solr_views
+	url = git://github.com/Islandora/islandora_solr_views.git
+[submodule "sites/all/modules/islandora_solution_pack_audio"]
+	path = sites/all/modules/islandora_solution_pack_audio
+	url = git://github.com/Islandora/islandora_solution_pack_audio.git
+[submodule "sites/all/modules/islandora_solution_pack_book"]
+	path = sites/all/modules/islandora_solution_pack_book
+	url = git://github.com/Islandora/islandora_solution_pack_book.git
+[submodule "sites/all/modules/islandora_solution_pack_collection"]
+	path = sites/all/modules/islandora_solution_pack_collection
+	url = git://github.com/Islandora/islandora_solution_pack_collection.git
+[submodule "sites/all/modules/islandora_solution_pack_compound"]
+	path = sites/all/modules/islandora_solution_pack_compound
+	url = https://github.com/Islandora/islandora_solution_pack_compound.git
+[submodule "sites/all/modules/islandora_solution_pack_document"]
+	path = sites/all/modules/islandora_solution_pack_document
+	url = https://github.com/discoverygarden/islandora_solution_pack_document.git
+[submodule "sites/all/modules/islandora_solution_pack_image"]
+	path = sites/all/modules/islandora_solution_pack_image
+	url = git://github.com/Islandora/islandora_solution_pack_image.git
+[submodule "sites/all/modules/islandora_solution_pack_large_image"]
+	path = sites/all/modules/islandora_solution_pack_large_image
+	url = git://github.com/Islandora/islandora_solution_pack_large_image.git
+[submodule "sites/all/modules/islandora_solution_pack_pdf"]
+	path = sites/all/modules/islandora_solution_pack_pdf
+	url = git://github.com/Islandora/islandora_solution_pack_pdf.git
+[submodule "sites/all/modules/islandora_solution_pack_video"]
+	path = sites/all/modules/islandora_solution_pack_video
+	url = git://github.com/Islandora/islandora_solution_pack_video.git
+[submodule "sites/all/modules/islandora_xacml_editor"]
+	path = sites/all/modules/islandora_xacml_editor
+	url = https://github.com/Islandora/islandora_xacml_editor.git
+[submodule "sites/all/modules/islandora_xml_forms"]
+	path = sites/all/modules/islandora_xml_forms
+	url = git://github.com/Islandora/islandora_xml_forms.git
+[submodule "sites/all/modules/objective_forms"]
+	path = sites/all/modules/objective_forms
+	url = git@github.com:Islandora/objective_forms.git
+[submodule "sites/all/modules/php_lib"]
+	path = sites/all/modules/php_lib
+	url = git://github.com/Islandora/php_lib.git

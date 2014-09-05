@@ -23,7 +23,7 @@
 ?>
 <div class="search-results">
   <?php if ($search_results) : ?>
-    <h2 class="title"><?php print t('Search results');?></h2>
+    <!--<h2 class="title"><?php print t('Search results');?></h2>-->
     <dl class="search-results <?php print $type; ?>-results">
       <?php print $search_results; ?>
     </dl>
