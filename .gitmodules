@@ -154,3 +154,12 @@
 [submodule "sites/all/modules/php_lib"]
 	path = sites/all/modules/php_lib
 	url = git://github.com/Islandora/php_lib.git
+[submodule "sites/all/modules/islandora_solution_pack_newspaper"]
+	path = sites/all/modules/islandora_solution_pack_newspaper
+	url = https://github.com/Islandora/islandora_solution_pack_newspaper.git
+[submodule "sites/all/modules/islandora_solution_pack_manuscript"]
+	path = sites/all/modules/islandora_solution_pack_manuscript
+	url = https://github.com/discoverygarden/islandora_solution_pack_manuscript.git
+[submodule "sites/all/modules/islandora_pathauto"]
+	path = sites/all/modules/islandora_pathauto
+	url = https://github.com/rosiel/islandora_pathauto.git
