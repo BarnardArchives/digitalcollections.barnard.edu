@@ -108,7 +108,7 @@
 	url = git://github.com/Islandora/islandora_simple_workflow.git
 [submodule "sites/all/modules/islandora_solr_metadata"]
 	path = sites/all/modules/islandora_solr_metadata
-	url = https://github.com/discoverygarden/islandora_solr_metadata.git
+	url = git@github.com:Islandora/islandora_solr_metadata.git
 [submodule "sites/all/modules/islandora_solr_search"]
 	path = sites/all/modules/islandora_solr_search
 	url = git://github.com/Islandora/islandora_solr_search.git
