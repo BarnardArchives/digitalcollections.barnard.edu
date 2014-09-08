@@ -163,3 +163,15 @@
 [submodule "sites/all/modules/islandora_pathauto"]
 	path = sites/all/modules/islandora_pathauto
 	url = https://github.com/rosiel/islandora_pathauto.git
+[submodule "sites/all/themes/barnard_theme"]
+	path = sites/all/themes/barnard_theme
+	url = git@github.com:discoverygarden/barnard_theme.git
+[submodule "sites/all/modules/barnard_content_feature"]
+	path = sites/all/modules/barnard_content_feature
+	url = git@github.com:discoverygarden/barnard_content_feature.git
+[submodule "sites/all/modules/barnard_theme_feature"]
+	path = sites/all/modules/barnard_theme_feature
+	url = git@github.com:discoverygarden/barnard_theme_feature.git
+[submodule "sites/all/modules/subpathauto"]
+	path = sites/all/modules/subpathauto
+	url = http://git.drupal.org/project/subpathauto.git
