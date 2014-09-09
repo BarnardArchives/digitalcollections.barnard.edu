@@ -178,3 +178,6 @@
 [submodule "sites/all/modules/chart"]
 	path = sites/all/modules/chart
 	url = http://git.drupal.org/project/chart.git
+[submodule "sites/all/modules/coder"]
+	path = sites/all/modules/coder
+	url = http://git.drupal.org/project/coder.git
