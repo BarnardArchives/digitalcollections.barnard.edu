@@ -175,3 +175,6 @@
 [submodule "sites/all/modules/subpathauto"]
 	path = sites/all/modules/subpathauto
 	url = http://git.drupal.org/project/subpathauto.git
+[submodule "sites/all/modules/chart"]
+	path = sites/all/modules/chart
+	url = http://git.drupal.org/project/chart.git
