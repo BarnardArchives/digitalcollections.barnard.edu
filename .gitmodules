@@ -220,3 +220,6 @@
 [submodule "sites/all/modules/masquerade"]
 	path = sites/all/modules/masquerade
 	url = http://git.drupal.org/project/masquerade.git
+[submodule "sites/all/themes/zen"]
+	path = sites/all/themes/zen
+	url = http://git.drupal.org/project/zen.git
