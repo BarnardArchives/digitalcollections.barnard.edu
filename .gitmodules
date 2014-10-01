@@ -223,3 +223,9 @@
 [submodule "sites/all/themes/zen"]
 	path = sites/all/themes/zen
 	url = http://git.drupal.org/project/zen.git
+[submodule "sites/all/modules/service_links"]
+	path = sites/all/modules/service_links
+	url = http://git.drupal.org/project/service_links.git
+[submodule "sites/all/modules/entity"]
+	path = sites/all/modules/entity
+	url = http://git.drupal.org/project/entity.git
