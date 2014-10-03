@@ -229,3 +229,9 @@
 [submodule "sites/all/modules/entity"]
 	path = sites/all/modules/entity
 	url = http://git.drupal.org/project/entity.git
+[submodule "sites/all/modules/wysiwyg"]
+	path = sites/all/modules/wysiwyg
+	url = http://git.drupal.org/project/wysiwyg.git
+[submodule "sites/all/modules/media"]
+	path = sites/all/modules/media
+	url = http://git.drupal.org/project/media.git
