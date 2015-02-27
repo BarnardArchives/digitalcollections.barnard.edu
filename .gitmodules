@@ -235,3 +235,6 @@
 [submodule "sites/all/modules/media"]
 	path = sites/all/modules/media
 	url = http://git.drupal.org/project/media.git
+[submodule "sites/all/modules/field_collection"]
+	path = sites/all/modules/field_collection
+	url = http://git.drupal.org/project/field_collection.git
