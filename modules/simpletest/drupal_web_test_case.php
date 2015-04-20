@@ -143,15 +143,7 @@ abstract class DrupalTestCase {
     );
 
     // Store assertion for display after the test has completed.
-    try {
-      $connection = Database::getConnection('default', 'simpletest_original_default');
-    }
-    catch (DatabaseConnectionNotDefinedException $e) {
-      // If the test was not set up, the simpletest_original_default
-      // connection does not exist.
-      $connection = Database::getConnection('default', 'default');
-    }
-    $connection
+    self::getDatabaseConnection()
       ->insert('simpletest')
       ->fields($assertion)
       ->execute();
@@ -164,6 +156,25 @@ abstract class DrupalTestCase {
     else {
       return FALSE;
     }
+  }
+
+  /**
+   * Returns the database connection to the site running Simpletest.
+   *
+   * @return DatabaseConnection
+   *   The database connection to use for inserting assertions.
+   */
+  public static function getDatabaseConnection() {
+    try {
+      $connection = Database::getConnection('default', 'simpletest_original_default');
+    }
+    catch (DatabaseConnectionNotDefinedException $e) {
+      // If the test was not set up, the simpletest_original_default
+      // connection does not exist.
+      $connection = Database::getConnection('default', 'default');
+    }
+
+    return $connection;
   }
 
   /**
@@ -205,7 +216,8 @@ abstract class DrupalTestCase {
       'file' => $caller['file'],
     );
 
-    return db_insert('simpletest')
+    return self::getDatabaseConnection()
+      ->insert('simpletest')
       ->fields($assertion)
       ->execute();
   }
@@ -221,7 +233,8 @@ abstract class DrupalTestCase {
    * @see DrupalTestCase::insertAssert()
    */
   public static function deleteAssert($message_id) {
-    return (bool) db_delete('simpletest')
+    return (bool) self::getDatabaseConnection()
+      ->delete('simpletest')
       ->condition('message_id', $message_id)
       ->execute();
   }
@@ -1756,14 +1769,24 @@ class DrupalWebTestCase extends DrupalTestCase {
   protected function curlExec($curl_options, $redirect = FALSE) {
     $this->curlInitialize();
 
-    // cURL incorrectly handles URLs with a fragment by including the
-    // fragment in the request to the server, causing some web servers
-    // to reject the request citing "400 - Bad Request". To prevent
-    // this, we strip the fragment from the request.
-    // TODO: Remove this for Drupal 8, since fixed in curl 7.20.0.
-    if (!empty($curl_options[CURLOPT_URL]) && strpos($curl_options[CURLOPT_URL], '#')) {
-      $original_url = $curl_options[CURLOPT_URL];
-      $curl_options[CURLOPT_URL] = strtok($curl_options[CURLOPT_URL], '#');
+    if (!empty($curl_options[CURLOPT_URL])) {
+      // Forward XDebug activation if present.
+      if (isset($_COOKIE['XDEBUG_SESSION'])) {
+        $options = drupal_parse_url($curl_options[CURLOPT_URL]);
+        $options += array('query' => array());
+        $options['query'] += array('XDEBUG_SESSION_START' => $_COOKIE['XDEBUG_SESSION']);
+        $curl_options[CURLOPT_URL] = url($options['path'], $options);
+      }
+
+      // cURL incorrectly handles URLs with a fragment by including the
+      // fragment in the request to the server, causing some web servers
+      // to reject the request citing "400 - Bad Request". To prevent
+      // this, we strip the fragment from the request.
+      // TODO: Remove this for Drupal 8, since fixed in curl 7.20.0.
+      if (strpos($curl_options[CURLOPT_URL], '#')) {
+        $original_url = $curl_options[CURLOPT_URL];
+        $curl_options[CURLOPT_URL] = strtok($curl_options[CURLOPT_URL], '#');
+      }
     }
 
     $url = empty($curl_options[CURLOPT_URL]) ? curl_getinfo($this->curlHandle, CURLINFO_EFFECTIVE_URL) : $curl_options[CURLOPT_URL];
@@ -2288,6 +2311,8 @@ class DrupalWebTestCase extends DrupalTestCase {
             break;
           case 'restripe':
             break;
+          case 'add_css':
+            break;
         }
       }
       $content = $dom->saveHTML();
@@ -2682,28 +2707,26 @@ class DrupalWebTestCase extends DrupalTestCase {
    *
    * Will click the first link found with this link text by default, or a later
    * one if an index is given. Match is case sensitive with normalized space.
-   * The label is translated label. There is an assert for successful click.
+   * The label is translated label.
+   *
+   * If the link is discovered and clicked, the test passes. Fail otherwise.
    *
    * @param $label
    *   Text between the anchor tags.
    * @param $index
    *   Link position counting from zero.
    * @return
-   *   Page on success, or FALSE on failure.
+   *   Page contents on success, or FALSE on failure.
    */
   protected function clickLink($label, $index = 0) {
     $url_before = $this->getUrl();
     $urls = $this->xpath('//a[normalize-space(text())=:label]', array(':label' => $label));
-
     if (isset($urls[$index])) {
       $url_target = $this->getAbsoluteUrl($urls[$index]['href']);
-    }
-
-    $this->assertTrue(isset($urls[$index]), t('Clicked link %label (@url_target) from @url_before', array('%label' => $label, '@url_target' => $url_target, '@url_before' => $url_before)), t('Browser'));
-
-    if (isset($url_target)) {
+      $this->pass(t('Clicked link %label (@url_target) from @url_before', array('%label' => $label, '@url_target' => $url_target, '@url_before' => $url_before)), 'Browser');
       return $this->drupalGet($url_target);
     }
+    $this->fail(t('Link %label does not exist on @url_before', array('%label' => $label, '@url_before' => $url_before)), 'Browser');
     return FALSE;
   }
 

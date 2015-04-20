@@ -985,9 +985,10 @@ function drupal_http_request($url, array $options = array()) {
   $response = preg_split("/\r\n|\n|\r/", $response);
 
   // Parse the response status line.
-  list($protocol, $code, $status_message) = explode(' ', trim(array_shift($response)), 3);
-  $result->protocol = $protocol;
-  $result->status_message = $status_message;
+  $response_status_array = _drupal_parse_response_status(trim(array_shift($response)));
+  $result->protocol = $response_status_array['http_version'];
+  $result->status_message = $response_status_array['reason_phrase'];
+  $code = $response_status_array['response_code'];
 
   $result->headers = array();
 
@@ -1078,9 +1079,40 @@ function drupal_http_request($url, array $options = array()) {
       }
       break;
     default:
-      $result->error = $status_message;
+      $result->error = $result->status_message;
   }
 
+  return $result;
+}
+
+/**
+ * Splits an HTTP response status line into components.
+ *
+ * See the @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html status line definition @endlink
+ * in RFC 2616.
+ *
+ * @param string $respone
+ *   The response status line, for example 'HTTP/1.1 500 Internal Server Error'.
+ *
+ * @return array
+ *   Keyed array containing the component parts. If the response is malformed,
+ *   all possible parts will be extracted. 'reason_phrase' could be empty.
+ *   Possible keys:
+ *   - 'http_version'
+ *   - 'response_code'
+ *   - 'reason_phrase'
+ */
+function _drupal_parse_response_status($response) {
+  $response_array = explode(' ', trim($response), 3);
+  // Set up empty values.
+  $result = array(
+    'reason_phrase' => '',
+  );
+  $result['http_version'] = $response_array[0];
+  $result['response_code'] = $response_array[1];
+  if (isset($response_array[2])) {
+    $result['reason_phrase'] = $response_array[2];
+  }
   return $result;
 }
 
@@ -2182,14 +2214,20 @@ function url($path = NULL, array $options = array()) {
     'prefix' => ''
   );
 
+  // A duplicate of the code from url_is_external() to avoid needing another
+  // function call, since performance inside url() is critical.
   if (!isset($options['external'])) {
-    // Return an external link if $path contains an allowed absolute URL. Only
-    // call the slow drupal_strip_dangerous_protocols() if $path contains a ':'
-    // before any / ? or #. Note: we could use url_is_external($path) here, but
-    // that would require another function call, and performance inside url() is
-    // critical.
+    // Return an external link if $path contains an allowed absolute URL. Avoid
+    // calling drupal_strip_dangerous_protocols() if there is any slash (/),
+    // hash (#) or question_mark (?) before the colon (:) occurrence - if any -
+    // as this would clearly mean it is not a URL. If the path starts with 2
+    // slashes then it is always considered an external URL without an explicit
+    // protocol part.
     $colonpos = strpos($path, ':');
-    $options['external'] = ($colonpos !== FALSE && !preg_match('![/?#]!', substr($path, 0, $colonpos)) && drupal_strip_dangerous_protocols($path) == $path);
+    $options['external'] = (strpos($path, '//') === 0)
+      || ($colonpos !== FALSE
+        && !preg_match('![/?#]!', substr($path, 0, $colonpos))
+        && drupal_strip_dangerous_protocols($path) == $path);
   }
 
   // Preserve the original path before altering or aliasing.
@@ -2226,6 +2264,11 @@ function url($path = NULL, array $options = array()) {
     // Reassemble.
     return $path . $options['fragment'];
   }
+
+  // Strip leading slashes from internal paths to prevent them becoming external
+  // URLs without protocol. /example.com should not be turned into
+  // //example.com.
+  $path = ltrim($path, '/');
 
   global $base_url, $base_secure_url, $base_insecure_url;
 
@@ -2304,10 +2347,15 @@ function url($path = NULL, array $options = array()) {
  */
 function url_is_external($path) {
   $colonpos = strpos($path, ':');
-  // Avoid calling drupal_strip_dangerous_protocols() if there is any
-  // slash (/), hash (#) or question_mark (?) before the colon (:)
-  // occurrence - if any - as this would clearly mean it is not a URL.
-  return $colonpos !== FALSE && !preg_match('![/?#]!', substr($path, 0, $colonpos)) && drupal_strip_dangerous_protocols($path) == $path;
+  // Avoid calling drupal_strip_dangerous_protocols() if there is any slash (/),
+  // hash (#) or question_mark (?) before the colon (:) occurrence - if any - as
+  // this would clearly mean it is not a URL. If the path starts with 2 slashes
+  // then it is always considered an external URL without an explicit protocol
+  // part.
+  return (strpos($path, '//') === 0)
+    || ($colonpos !== FALSE
+      && !preg_match('![/?#]!', substr($path, 0, $colonpos))
+      && drupal_strip_dangerous_protocols($path) == $path);
 }
 
 /**
@@ -2604,7 +2652,10 @@ function drupal_deliver_html_page($page_callback_result) {
 
         // Keep old path for reference, and to allow forms to redirect to it.
         if (!isset($_GET['destination'])) {
-          $_GET['destination'] = $_GET['q'];
+          // Make sure that the current path is not interpreted as external URL.
+          if (!url_is_external($_GET['q'])) {
+            $_GET['destination'] = $_GET['q'];
+          }
         }
 
         $path = drupal_get_normal_path(variable_get('site_404', ''));
@@ -2633,7 +2684,10 @@ function drupal_deliver_html_page($page_callback_result) {
 
         // Keep old path for reference, and to allow forms to redirect to it.
         if (!isset($_GET['destination'])) {
-          $_GET['destination'] = $_GET['q'];
+          // Make sure that the current path is not interpreted as external URL.
+          if (!url_is_external($_GET['q'])) {
+            $_GET['destination'] = $_GET['q'];
+          }
         }
 
         $path = drupal_get_normal_path(variable_get('site_403', ''));
@@ -3442,7 +3496,11 @@ function drupal_pre_render_styles($elements) {
             $import_batch = array_slice($import, 0, 31);
             $import = array_slice($import, 31);
             $element = $style_element_defaults;
-            $element['#value'] = implode("\n", $import_batch);
+            // This simplifies the JavaScript regex, allowing each line
+            // (separated by \n) to be treated as a completely different string.
+            // This means that we can use ^ and $ on one line at a time, and not
+            // worry about style tags since they'll never match the regex.
+            $element['#value'] = "\n" . implode("\n", $import_batch) . "\n";
             $element['#attributes']['media'] = $group['media'];
             $element['#browsers'] = $group['browsers'];
             $elements[] = $element;
@@ -3768,7 +3826,7 @@ function _drupal_load_stylesheet($matches) {
   // Alter all internal url() paths. Leave external paths alone. We don't need
   // to normalize absolute paths here (i.e. remove folder/... segments) because
   // that will be done later.
-  return preg_replace('/url\(\s*([\'"]?)(?![a-z]+:|\/+)/i', 'url(\1'. $directory, $file);
+  return preg_replace('/url\(\s*([\'"]?)(?![a-z]+:|\/+)([^\'")]+)([\'"]?)\s*\)/i', 'url(\1' . $directory . '\2\3)', $file);
 }
 
 /**
@@ -4104,6 +4162,13 @@ function drupal_region_class($region) {
  *       else being the same, JavaScript added by a call to drupal_add_js() that
  *       happened later in the page request gets added to the page after one for
  *       which drupal_add_js() happened earlier in the page request.
+ *   - requires_jquery: Set this to FALSE if the JavaScript you are adding does
+ *     not have a dependency on jQuery. Defaults to TRUE, except for JavaScript
+ *     settings where it defaults to FALSE. This is used on sites that have the
+ *     'javascript_always_use_jquery' variable set to FALSE; on those sites, if
+ *     all the JavaScript added to the page by drupal_add_js() does not have a
+ *     dependency on jQuery, then for improved front-end performance Drupal
+ *     will not add jQuery and related libraries and settings to the page.
  *   - defer: If set to TRUE, the defer attribute is set on the <script>
  *     tag. Defaults to FALSE.
  *   - cache: If set to FALSE, the JavaScript file is loaded anew on every page
@@ -4121,6 +4186,14 @@ function drupal_region_class($region) {
  */
 function drupal_add_js($data = NULL, $options = NULL) {
   $javascript = &drupal_static(__FUNCTION__, array());
+  $jquery_added = &drupal_static(__FUNCTION__ . ':jquery_added', FALSE);
+
+  // If the $javascript variable has been reset with drupal_static_reset(),
+  // jQuery and related files will have been removed from the list, so set the
+  // variable back to FALSE to indicate they have not yet been added.
+  if (empty($javascript)) {
+    $jquery_added = FALSE;
+  }
 
   // Construct the options, taking the defaults into consideration.
   if (isset($options)) {
@@ -4130,6 +4203,9 @@ function drupal_add_js($data = NULL, $options = NULL) {
   }
   else {
     $options = array();
+  }
+  if (isset($options['type']) && $options['type'] == 'setting') {
+    $options += array('requires_jquery' => FALSE);
   }
   $options += drupal_js_defaults($data);
 
@@ -4141,14 +4217,18 @@ function drupal_add_js($data = NULL, $options = NULL) {
   $options['weight'] += count($javascript) / 1000;
 
   if (isset($data)) {
-    // Add jquery.js and drupal.js, as well as the basePath setting, the
-    // first time a JavaScript file is added.
-    if (empty($javascript)) {
+    // Add jquery.js, drupal.js, and related files and settings if they have
+    // not been added yet. However, if the 'javascript_always_use_jquery'
+    // variable is set to FALSE (indicating that the site does not want jQuery
+    // automatically added on all pages) then only add it if a file or setting
+    // that requires jQuery is being added also.
+    if (!$jquery_added && (variable_get('javascript_always_use_jquery', TRUE) || $options['requires_jquery'])) {
+      $jquery_added = TRUE;
       // url() generates the prefix using hook_url_outbound_alter(). Instead of
       // running the hook_url_outbound_alter() again here, extract the prefix
       // from url().
       url('', array('prefix' => &$prefix));
-      $javascript = array(
+      $default_javascript = array(
         'settings' => array(
           'data' => array(
             array('basePath' => base_path()),
@@ -4167,11 +4247,13 @@ function drupal_add_js($data = NULL, $options = NULL) {
           'group' => JS_LIBRARY,
           'every_page' => TRUE,
           'weight' => -1,
+          'requires_jquery' => TRUE,
           'preprocess' => TRUE,
           'cache' => TRUE,
           'defer' => FALSE,
         ),
       );
+      $javascript = drupal_array_merge_deep($javascript, $default_javascript);
       // Register all required libraries.
       drupal_add_library('system', 'jquery', TRUE);
       drupal_add_library('system', 'jquery.once', TRUE);
@@ -4212,6 +4294,7 @@ function drupal_js_defaults($data = NULL) {
     'group' => JS_DEFAULT,
     'every_page' => FALSE,
     'weight' => 0,
+    'requires_jquery' => TRUE,
     'scope' => 'header',
     'cache' => TRUE,
     'defer' => FALSE,
@@ -4258,7 +4341,12 @@ function drupal_get_js($scope = 'header', $javascript = NULL, $skip_alter = FALS
   if (!isset($javascript)) {
     $javascript = drupal_add_js();
   }
-  if (empty($javascript)) {
+
+  // If no JavaScript items have been added, or if the only JavaScript items
+  // that have been added are JavaScript settings (which don't do anything
+  // without any JavaScript code to use them), then no JavaScript code should
+  // be added to the page.
+  if (empty($javascript) || (isset($javascript['settings']) && count($javascript) == 1)) {
     return '';
   }
 
@@ -4412,8 +4500,8 @@ function drupal_get_js($scope = 'header', $javascript = NULL, $skip_alter = FALS
  *
  * Libraries, JavaScript, CSS and other types of custom structures are attached
  * to elements using the #attached property. The #attached property is an
- * associative array, where the keys are the the attachment types and the values
- * are the attached data. For example:
+ * associative array, where the keys are the attachment types and the values are
+ * the attached data. For example:
  * @code
  * $build['#attached'] = array(
  *   'js' => array(drupal_get_path('module', 'taxonomy') . '/taxonomy.js'),
@@ -5255,8 +5343,6 @@ function drupal_cron_run() {
     foreach ($queues as $queue_name => $info) {
       DrupalQueue::get($queue_name)->createQueue();
     }
-    // Register shutdown callback.
-    drupal_register_shutdown_function('drupal_cron_cleanup');
 
     // Iterate through the modules calling their cron handlers (if any):
     foreach (module_implements('cron') as $module) {
@@ -5308,10 +5394,13 @@ function drupal_cron_run() {
 }
 
 /**
- * Shutdown function: Performs cron cleanup.
+ * DEPRECATED: Shutdown function: Performs cron cleanup.
  *
- * @see drupal_cron_run()
- * @see drupal_register_shutdown_function()
+ * This function is deprecated because the 'cron_semaphore' variable it
+ * references no longer exists. It is therefore no longer used as a shutdown
+ * function by Drupal core.
+ *
+ * @deprecated
  */
 function drupal_cron_cleanup() {
   // See if the semaphore is still locked.
@@ -7896,6 +7985,56 @@ function entity_prepare_view($entity_type, $entities, $langcode = NULL) {
   if (!empty($prepare)) {
     module_invoke_all('entity_prepare_view', $prepare, $entity_type, $langcode);
   }
+}
+
+/**
+ * Invoke hook_entity_view_mode_alter().
+ *
+ * If adding a new entity similar to nodes, comments or users, you should invoke
+ * this function during the ENTITY_build_content() or ENTITY_view_multiple()
+ * phases of rendering to allow other modules to alter the view mode during this
+ * phase. This function needs to be called before field_attach_prepare_view() to
+ * ensure that the correct content is loaded by field API.
+ *
+ * @param $entity_type
+ *   The type of entity, i.e. 'node', 'user'.
+ * @param $entities
+ *   The entity objects which are being prepared for view, keyed by object ID.
+ * @param $view_mode
+ *   The original view mode e.g. 'full', 'teaser'...
+ * @param $langcode
+ *   (optional) A language code to be used for rendering. Defaults to the global
+ *   content language of the current request.
+ * @return
+ *   An associative array with arrays of entities keyed by view mode.
+ *
+ * @see hook_entity_view_mode_alter()
+ */
+function entity_view_mode_prepare($entity_type, $entities, $view_mode, $langcode = NULL) {
+  if (!isset($langcode)) {
+    $langcode = $GLOBALS['language_content']->language;
+  }
+
+  // To ensure hooks are never run after field_attach_prepare_view() only
+  // process items without the entity_view_prepared flag.
+  $entities_by_view_mode = array();
+  foreach ($entities as $id => $entity) {
+    $entity_view_mode = $view_mode;
+    if (empty($entity->entity_view_prepared)) {
+
+      // Allow modules to change the view mode.
+      $context = array(
+        'entity_type' => $entity_type,
+        'entity' => $entity,
+        'langcode' => $langcode,
+      );
+      drupal_alter('entity_view_mode', $entity_view_mode, $context);
+    }
+
+    $entities_by_view_mode[$entity_view_mode][$id] = $entity;
+  }
+
+  return $entities_by_view_mode;
 }
 
 /**
