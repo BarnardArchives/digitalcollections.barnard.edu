@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the DC content types feature.
+ */
+
+include_once 'dc_content_types.features.inc';
