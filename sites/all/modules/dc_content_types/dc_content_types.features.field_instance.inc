@@ -10,6 +10,49 @@
 function dc_content_types_field_default_field_instances() {
   $field_instances = array();
 
+  // Exported field_instance: 'node-exhibition-field_object'
+  $field_instances['node-exhibition-field_object'] = array(
+    'bundle' => 'exhibition',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'module' => 'node_reference',
+        'settings' => array(
+          'node_reference_view_mode' => 'full',
+        ),
+        'type' => 'node_reference_node',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_object',
+    'label' => 'Object',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'node_reference',
+      'settings' => array(
+        'autocomplete_match' => 'contains',
+        'autocomplete_path' => 'node_reference/autocomplete',
+        'size' => 60,
+      ),
+      'type' => 'node_reference_autocomplete',
+      'weight' => -4,
+    ),
+  );
+
   // Exported field_instance: 'node-exhibition_object-field_caption'
   $field_instances['node-exhibition_object-field_caption'] = array(
     'bundle' => 'exhibition_object',
@@ -360,6 +403,7 @@ function dc_content_types_field_default_field_instances() {
   t('Caption');
   t('Description');
   t('Image');
+  t('Object');
   t('PID');
 
   return $field_instances;
