@@ -238,3 +238,9 @@
 [submodule "sites/all/modules/field_collection"]
 	path = sites/all/modules/field_collection
 	url = http://git.drupal.org/project/field_collection.git
+[submodule "sites/all/modules/pdf"]
+	path = sites/all/modules/pdf
+	url = http://git.drupal.org/project/pdf.git
+[submodule "sites/all/modules/islandora_pdfjs"]
+	path = sites/all/modules/islandora_pdfjs
+	url = https://github.com/Islandora/islandora_pdfjs.git
