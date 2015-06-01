@@ -241,3 +241,9 @@
 [submodule "sites/all/modules/islandora_pdfjs"]
 	path = sites/all/modules/islandora_pdfjs
 	url = https://github.com/Islandora/islandora_pdfjs.git
+[submodule "sites/all/modules/sass"]
+	path = sites/all/modules/sass
+	url = http://git.drupal.org/project/sass.git
+[submodule "sites/all/modules/colorbox"]
+	path = sites/all/modules/colorbox
+	url = http://git.drupal.org/project/colorbox.git
