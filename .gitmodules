@@ -247,6 +247,3 @@
 [submodule "sites/all/modules/colorbox"]
 	path = sites/all/modules/colorbox
 	url = http://git.drupal.org/project/colorbox.git
-[submodule "coder"]
-	path = coder
-	url = http://git.drupal.org/project/coder.git
