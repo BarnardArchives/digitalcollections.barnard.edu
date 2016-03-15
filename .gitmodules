@@ -256,3 +256,6 @@
 [submodule "sites/all/modules/securepages"]
 	path = sites/all/modules/securepages
 	url = https://git.drupal.org/project/securepages.git
+[submodule "sites/all/modules/islandora_solr_content_type"]
+	path = sites/all/modules/islandora_solr_content_type
+	url = git@github.com:BarnardArchives/islandora_solr_content_type.git
