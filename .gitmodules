@@ -195,7 +195,7 @@
 	url = http://git.drupal.org/project/google_analytics.git
 [submodule "sites/all/modules/google_analytics_reports"]
 	path = sites/all/modules/google_analytics_reports
-	url = http://git.drupal.org/project/google_analytics_reports.git
+	url = http://github.com/discoverygarden/google_analytics_reports.git
 [submodule "sites/all/modules/imagemagick"]
 	path = sites/all/modules/imagemagick
 	url = http://git.drupal.org/project/imagemagick.git
