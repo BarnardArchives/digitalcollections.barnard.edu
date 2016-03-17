@@ -1,7 +1,0 @@
-Write an update function that does field and instance checks rather than hitting hook uninstall and install. 
-
-Field collections, collection_items, etc. in install to group everything. I feel like we're a bit messy...
-
-Verify how to get facets from solr and implement that in the field and instance declaration.
-
-Write tests
