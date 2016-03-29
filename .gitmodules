@@ -258,7 +258,4 @@
 	url = https://git.drupal.org/project/securepages.git
 [submodule "sites/all/modules/islandora_solr_content_type"]
 	path = sites/all/modules/islandora_solr_content_type
-	url = https://github.com/BarnardArchives/islandora_solr_content_type.git
-[submodule "islandora_solr_content_type"]
-	path = islandora_solr_content_type
-	url = https://github.com/BarnardArchives/islandora_solr_content_type.git
+	url = git@github.com:BarnardArchives/islandora_solr_content_type.git
