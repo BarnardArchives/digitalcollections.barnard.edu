@@ -250,9 +250,6 @@
 [submodule "sites/all/modules/islandora_openseadragon_paged"]
 	path = sites/all/modules/islandora_openseadragon_paged
 	url = git@github.com:BarnardArchives/islandora_openseadragon_paged.git
-[submodule "sites/all/modules/bc_views"]
-	path = sites/all/modules/bc_views
-	url = git@github.com:BarnardArchives/bc_views.git
 [submodule "sites/all/modules/securepages"]
 	path = sites/all/modules/securepages
 	url = https://git.drupal.org/project/securepages.git
