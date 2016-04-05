@@ -259,3 +259,6 @@
 [submodule "sites/all/libraries/citeproc-php"]
 	path = sites/all/libraries/citeproc-php
 	url = git@github.com:Islandora/citeproc-php.git
+[submodule "sites/all/modules/bc_citation"]
+	path = sites/all/modules/bc_citation
+	url = git@github.com:br2490/bc_citation.git
