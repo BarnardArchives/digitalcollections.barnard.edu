@@ -256,3 +256,6 @@
 [submodule "sites/all/modules/islandora_solr_content_type"]
 	path = sites/all/modules/islandora_solr_content_type
 	url = git@github.com:BarnardArchives/islandora_solr_content_type.git
+[submodule "sites/all/libraries/citeproc-php"]
+	path = sites/all/libraries/citeproc-php
+	url = git@github.com:Islandora/citeproc-php.git
