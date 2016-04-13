@@ -262,3 +262,9 @@
 [submodule "sites/all/modules/bc_citation"]
 	path = sites/all/modules/bc_citation
 	url = git@github.com:br2490/bc_citation.git
+[submodule "sites/all/modules/islandora_find_replace"]
+	path = sites/all/modules/islandora_find_replace
+	url = https://github.com/contentmath/islandora_find_replace.git
+[submodule "sites/all/modules/islandora_datastream_crud"]
+	path = sites/all/modules/islandora_datastream_crud
+	url = https://github.com/mjordan/islandora_datastream_crud.git
