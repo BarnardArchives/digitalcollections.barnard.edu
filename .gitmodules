@@ -250,15 +250,21 @@
 [submodule "sites/all/modules/islandora_openseadragon_paged"]
 	path = sites/all/modules/islandora_openseadragon_paged
 	url = git@github.com:BarnardArchives/islandora_openseadragon_paged.git
-[submodule "sites/all/modules/bc_views"]
-	path = sites/all/modules/bc_views
-	url = git@github.com:BarnardArchives/bc_views.git
 [submodule "sites/all/modules/securepages"]
 	path = sites/all/modules/securepages
 	url = https://git.drupal.org/project/securepages.git
 [submodule "sites/all/modules/islandora_solr_content_type"]
 	path = sites/all/modules/islandora_solr_content_type
-	url = https://github.com/BarnardArchives/islandora_solr_content_type.git
-[submodule "islandora_solr_content_type"]
-	path = islandora_solr_content_type
-	url = https://github.com/BarnardArchives/islandora_solr_content_type.git
+	url = git@github.com:BarnardArchives/islandora_solr_content_type.git
+[submodule "sites/all/libraries/citeproc-php"]
+	path = sites/all/libraries/citeproc-php
+	url = git@github.com:Islandora/citeproc-php.git
+[submodule "sites/all/modules/bc_citation"]
+	path = sites/all/modules/bc_citation
+	url = git@github.com:br2490/bc_citation.git
+[submodule "sites/all/modules/islandora_find_replace"]
+	path = sites/all/modules/islandora_find_replace
+	url = https://github.com/contentmath/islandora_find_replace.git
+[submodule "sites/all/modules/islandora_datastream_crud"]
+	path = sites/all/modules/islandora_datastream_crud
+	url = https://github.com/mjordan/islandora_datastream_crud.git
