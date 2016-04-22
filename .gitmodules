@@ -268,3 +268,6 @@
 [submodule "sites/all/modules/islandora_datastream_crud"]
 	path = sites/all/modules/islandora_datastream_crud
 	url = https://github.com/mjordan/islandora_datastream_crud.git
+[submodule "sites/all/modules/islandora_patches"]
+	path = sites/all/modules/islandora_patches
+	url = https://github.com/Islandora-Labs/islandora_patches
