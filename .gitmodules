@@ -271,3 +271,6 @@
 [submodule "sites/all/modules/islandora_patches"]
 	path = sites/all/modules/islandora_patches
 	url = https://github.com/Islandora-Labs/islandora_patches
+[submodule "sites/all/modules/bc_islandora_drush"]
+	path = sites/all/modules/bc_islandora_drush
+	url = git@github.com:BarnardArchives/bc_islandora_drush.git
