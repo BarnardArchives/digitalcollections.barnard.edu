@@ -277,3 +277,6 @@
 [submodule "sites/all/drush"]
 	path = sites/all/drush
 	url = git@github.com:BarnardArchives/barnard_dc_drush.git
+[submodule "sites/all/modules/bc_islandora_exhibit"]
+	path = sites/all/modules/bc_islandora_exhibit
+	url = https://github.com/BarnardArchives/barnard_islandora_exhibit.git
