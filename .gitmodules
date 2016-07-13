@@ -280,3 +280,9 @@
 [submodule "sites/all/modules/bc_islandora_exhibit"]
 	path = sites/all/modules/bc_islandora_exhibit
 	url = git@github.com:BarnardArchives/barnard_islandora_exhibit.git
+[submodule "sites/all/modules/date"]
+	path = sites/all/modules/date
+	url = https://git.drupal.org/project/date.git
+[submodule "sites/all/modules/domain"]
+	path = sites/all/modules/domain
+	url = https://git.drupal.org/project/domain.git
