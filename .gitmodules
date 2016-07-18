@@ -286,3 +286,6 @@
 [submodule "sites/all/modules/domain"]
 	path = sites/all/modules/domain
 	url = https://git.drupal.org/project/domain.git
+[submodule "sites/all/modules/filemime"]
+	path = sites/all/modules/filemime
+	url = https://git.drupal.org/project/filemime.git
