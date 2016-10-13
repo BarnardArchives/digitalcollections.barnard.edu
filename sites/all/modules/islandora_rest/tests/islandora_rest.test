@@ -1,0 +1,802 @@
+<?php
+
+/**
+ * @file
+ * Test all of the REST end-points.
+ */
+
+// This require is necessary to prevent the test page from erroring when the
+// module is disabled.
+require_once __DIR__ . '/islandora_http_rest_test_case.inc';
+
+class IslandoraRestTestCase extends IslandoraHttpRestTestCase {
+  /**
+   * Gets info to display to describe this test.
+   *
+   * @see IslandoraWebTestCase::getInfo()
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Islandora Rest',
+      'description' => 'Ensure that the REST end-points function as expected.',
+      'group' => 'Islandora Rest',
+    );
+  }
+
+  /**
+   * Creates an admin user and a connection to a fedora repository.
+   *
+   * @see IslandoraWebTestCase::setUp()
+   */
+  public function setUp() {
+    parent::setUp('islandora_rest');
+    $this->repository = $this->admin->repository;
+    $this->purgeTestObjects();
+    $this->createTestObjects();
+  }
+
+  /**
+   * Free any objects/resources created for this test.
+   *
+   * @see IslandoraWebTestCase::tearDown()
+   */
+  public function tearDown() {
+    $this->purgeTestObjects();
+    unset($this->repository);
+    parent::tearDown();
+  }
+
+  /**
+   * Purge any objects created by the test's in this class.
+   */
+  public function purgeTestObjects() {
+    $objects = array(
+      'test:access',
+      'test:post',
+    );
+    foreach ($objects as $object) {
+      try {
+        $object = $this->repository->getObject($object);
+        $this->repository->purgeObject($object->id);
+      }
+      catch (Exception $e) {
+        // Meh... Either it didn't exist or the purge failed.
+        // Not much we can do.
+      }
+    }
+  }
+
+  /**
+   * Purge any objects created by the test's in this class.
+   */
+  public function createTestObjects() {
+    // The Access Object is used to test the GET end-points.
+    $path = drupal_get_path('module', 'islandora_rest') . '/tests/fixtures';
+    $access_object = file_get_contents("{$path}/test_access.xml");
+    $id = $this->repository->api->m->ingest(array(
+            'string' => $access_object,
+            'logMessage' => 'Testing')
+    );
+  }
+
+  /**
+   * Gets the expected response for the GET Object request.
+   *
+   * There are several tests that require we mock an expected response depending
+   * on the active XACML policies.
+   *
+   * @param string $pid
+   *   The object to mock a response for.
+   * @param array $ignore_datastreams
+   *   The datastreams to not include in the response, datastreams can be
+   *   limited by XACML policies.
+   *
+   * @return array
+   *   The expected response, decoded.
+   */
+  protected function mockObjectGetResponse($pid, $ignore_datastreams = array()) {
+    $object = islandora_object_load($pid);
+    $datastreams = array();
+    foreach ($object as $dsid => $datastream) {
+      if (in_array($dsid, $ignore_datastreams)) {
+        continue;
+      }
+      $versions = array();
+      foreach ($datastream as $index => $version) {
+        if ($index === 0) {
+          continue;
+        }
+        $versions[] = array(
+          'label' => $version->label,
+          'state' => $version->state,
+          'size' => (int) $version->size,
+          'mimeType' => $version->mimetype,
+          'controlGroup' => $version->controlGroup,
+          'created' => (string) $version->createdDate,
+        );
+      }
+      $datastreams[] = array(
+        'dsid' => $datastream->id,
+        'label' => $datastream->label,
+        'state' => $datastream->state,
+        'size' => (int) $datastream->size,
+        'mimeType' => $datastream->mimetype,
+        'controlGroup' => $datastream->controlGroup,
+        'created' => (string) $datastream->createdDate,
+        'versionable' => $datastream->versionable,
+        'versions' => $versions,
+      );
+    }
+    $expected_response = array(
+      'pid' => $object->id,
+      'label' => $object->label,
+      'owner' => $object->owner,
+      'models' => $object->models,
+      'state' => $object->state,
+      'created' => (string) $object->createdDate,
+      'modified' => (string) $object->lastModifiedDate,
+      'datastreams' => $datastreams,
+    );
+    return $expected_response;
+  }
+
+  /**
+   * Gets the expected response for the GET Datastream request.
+   *
+   * There are several tests that require we mock an expected response depending
+   * on the GET parameters and XACML settings.
+   *
+   * @param string $pid
+   *   The object to mock a response for.
+   * @param string $dsid
+   *   The datastream to mock a response for.
+   * @param bool $content
+   *   Return the content or the properties.
+   * @param int $version_index
+   *   The datastream versions to return.
+   *
+   * @return array
+   *   The expected response, decoded.
+   */
+  protected function mockDatastreamGetResponse($pid, $dsid, $content = FALSE, $version_index = NULL) {
+    $object = islandora_object_load($pid);
+    $datastream = $object[$dsid];
+    if (!$content && $version_index === NULL) {
+      $versions = array();
+      foreach ($datastream as $index => $version) {
+        if ($index === 0) {
+          continue;
+        }
+        $versions[] = array(
+          'label' => $version->label,
+          'state' => $version->state,
+          'size' => (int) $version->size,
+          'mimeType' => $version->mimetype,
+          'controlGroup' => $version->controlGroup,
+          'created' => (string) $version->createdDate,
+        );
+      }
+      return array(
+        'dsid' => $datastream->id,
+        'label' => $datastream->label,
+        'state' => $datastream->state,
+        'size' => (int) $datastream->size,
+        'mimeType' => $datastream->mimetype,
+        'controlGroup' => $datastream->controlGroup,
+        'created' => (string) $datastream->createdDate,
+        'versionable' => $datastream->versionable,
+        'versions' => $versions,
+      );
+    }
+    elseif (!$content) {
+      foreach ($datastream as $index => $version) {
+        // The version is offset by 1 in the datastream description.
+        if ($index === ($version_index + 1)) {
+          return array(
+            'label' => $version->label,
+            'state' => $version->state,
+            'size' => (int) $version->size,
+            'mimeType' => $version->mimetype,
+            'controlGroup' => $version->controlGroup,
+            'created' => (string) $version->createdDate,
+          );
+        }
+      }
+    }
+    else {
+      foreach ($datastream as $index => $version) {
+        // The version is offset by 1 in the datastream description.
+        if ($index === ($version_index + 1)) {
+          return $version->content;
+        }
+      }
+      return $datastream->content;
+    }
+  }
+
+  /**
+   * Simplify the Validation of Responses.
+   */
+  protected function validateResponse($response, array $expected) {
+    if (isset($expected['code'])) {
+      $this->assertResponse($expected['code'], 'Returned expected response code');
+    }
+    if (isset($expected['content-type'])) {
+      $content_type = $this->drupalGetHeader('Content-Type');
+      $this->assertEqual($expected['content-type'], $content_type, 'Correct Content-Type');
+    }
+    if (isset($expected['response'])) {
+      $this->assertEqual($response, $expected['response'], 'Returned expected response');
+    }
+  }
+
+  /**
+   * Test all the rest End Points.
+   *
+   * Some of the access logic here needs clarification. Maybe it should only be
+   * checking with XACML.
+   */
+  public function testRestEndpoints() {
+    // -------------------------------------------------------------------------
+    // Test all the rest end-points as an anonymous user.
+    // -------------------------------------------------------------------------
+    // Test GET Object as anonymous.
+    $response = $this->httpGet(ISLANDORA_REST_OBJECT_MENU . '/test:access');
+    $expected = array(
+      'code' => 401,
+      'content-type' => 'application/json; utf-8',
+      'expected' => array('message' => 'Unauthorized'),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test PUT Object as anonymous.
+    $data = array('label' => 'New Label');
+    $response = $this->httpPut(ISLANDORA_REST_OBJECT_MENU . '/test:access', $data);
+    $expected = array(
+      'code' => 401,
+      'content-type' => 'application/json; utf-8',
+      'expected' => array('message' => 'Unauthorized'),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test POST Object as anonymous.
+    $data = array('pid' => 'test:post', 'label' => 'Test REST POST Object');
+    $response = $this->httpPost(ISLANDORA_REST_OBJECT_MENU, $data);
+    $expected = array(
+      'code' => 401,
+      'content-type' => 'application/json; utf-8',
+      'expected' => array('message' => 'Unauthorized'),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:post');
+    $this->assertFalse($object, 'Object was not created');
+
+    // Test DELETE Object as anonymous.
+    $response = $this->httpDelete(ISLANDORA_REST_OBJECT_MENU . '/test:access');
+    $expected = array(
+      'code' => 401,
+      'content-type' => 'application/json; utf-8',
+      'expected' => array('message' => 'Unauthorized'),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $this->assertTrue(is_object($object), 'Object was not deleted');
+
+    // Test GET Datastream as anonymous.
+    $path = str_replace('%', 'test:access', ISLANDORA_REST_DATASTREAM_MENU);
+    $response = $this->httpGet($path . '/DC');
+    $expected = array(
+      'code' => 401,
+      'content-type' => 'application/json; utf-8',
+      'expected' => array('message' => 'Unauthorized'),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test PUT Datastream as anonymous.
+    $data = array('label' => 'New Label');
+    $response = $this->httpPut($path . '/DC', $data);
+    $expected = array(
+      'code' => 401,
+      'content-type' => 'application/json; utf-8',
+      'expected' => array('message' => 'Unauthorized'),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test POST Datastream as anonymous.
+    $data = array('pid' => 'test:post', 'label' => 'Test REST POST Datastream');
+    $response = $this->httpPost($path, $data);
+    $expected = array(
+      'code' => 401,
+      'content-type' => 'application/json; utf-8',
+      'expected' => array('message' => 'Unauthorized'),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $this->assertFalse(isset($object['NEW']), 'Datastream was not created');
+
+    // Test DELETE Datastream as anonymous.
+    $response = $this->httpDelete($path . '/RELS-EXT');
+    $expected = array(
+      'code' => 401,
+      'content-type' => 'application/json; utf-8',
+      'expected' => array('message' => 'Unauthorized'),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $this->assertFalse(empty($object['RELS-EXT']), 'Datastream was not deleted');
+
+    // Test GET Relationship as anonymous.
+    $path = str_replace('%', 'test:access', ISLANDORA_REST_RELATIONSHIP_MENU);
+    $response = $this->httpGet($path);
+    $expected = array(
+      'code' => 401,
+      'content-type' => 'application/json; utf-8',
+      'expected' => array('message' => 'Unauthorized'),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test POST Relationship as anonymous.
+    $data = array(
+      'uri' => FEDORA_RELS_EXT_URI,
+      'predicate' => 'isMemberOf',
+      'object' => 'islandora:root',
+      'type' => 'uri',
+    );
+    $response = $this->httpPost($path . '/NEW', $data);
+    $expected = array(
+      'code' => 401,
+      'content-type' => 'application/json; utf-8',
+      'expected' => array('message' => 'Unauthorized'),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $results = $object->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOf', 'islandora:root');
+    $this->assertEqual(count($results), 0, 'Relationship was not created');
+
+    // Test DELETE Relationship as anonymous.
+    $response = $this->httpDelete($path . '/RELS-EXT');
+    $expected = array(
+      'code' => 401,
+      'content-type' => 'application/json; utf-8',
+      'expected' => array('message' => 'Unauthorized'),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $results = $object->relationships->get();
+    $this->assertNotEqual(count($results), 0, 'Relationships were not deleted');
+
+    // -------------------------------------------------------------------------
+    // GET Object is a special case in that the data-streams that get returned
+    // can be limited by XACML policies. The 'test:access' object, has a POLICY
+    // that limits access to the 'UNACCESSIBLE' datastream for users without the
+    // 'administrator' role. So this test is to make sure that datastream is
+    // listed for an 'administrator' user.
+    // -------------------------------------------------------------------------
+    $this->drupalLogin($this->admin);
+    $response = $this->httpGet(ISLANDORA_REST_OBJECT_MENU . '/test:access');
+    $expected = array(
+      'code' => 200,
+      'content-type' => 'application/json; utf-8',
+      'response' => $this->mockObjectGetResponse('test:access'),
+    );
+    $this->validateResponse($response, $expected);
+
+    // -------------------------------------------------------------------------
+    // Test all the rest end-points with a user who has full access.
+    // -------------------------------------------------------------------------
+    $account = $this->drupalCreateUser(array(
+                 ISLANDORA_REST_OBJECT_GET_PERM,
+                 ISLANDORA_REST_OBJECT_POST_PERM,
+                 ISLANDORA_REST_OBJECT_PUT_PERM,
+                 ISLANDORA_REST_OBJECT_DELETE_PERM,
+                 ISLANDORA_REST_DATASTREAM_GET_PERM,
+                 ISLANDORA_REST_DATASTREAM_POST_PERM,
+                 ISLANDORA_REST_DATASTREAM_PUT_PERM,
+                 ISLANDORA_REST_DATASTREAM_DELETE_PERM,
+                 ISLANDORA_REST_RELATIONSHIP_GET_PERM,
+                 ISLANDORA_REST_RELATIONSHIP_POST_PERM,
+                 ISLANDORA_REST_RELATIONSHIP_DELETE_PERM,
+               ));
+    $this->drupalLogin($account);
+
+    // Test GET Object as a non-administrator user.
+    $response = $this->httpGet(ISLANDORA_REST_OBJECT_MENU . '/test:access');
+    $expected = array(
+      'code' => 200,
+      'content-type' => 'application/json; utf-8',
+      // The POLICY of test:access restricts access to 'UNACCESSIBLE' to users
+      // with the 'adminstrator' role. Ensure that XACML is being applied to
+      // the request.
+      'response' => $this->mockObjectGetResponse('test:access', array('UNACCESSIBLE')),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test PUT Object with the proper permissions.
+    $data = array('label' => 'New Label');
+    $response = $this->httpPut(ISLANDORA_REST_OBJECT_MENU . '/test:access', $data);
+    $object = islandora_object_load('test:access');
+    $expected = array(
+      'code' => 200,
+      'content-type' => 'application/json; utf-8',
+      'response' => array(
+        'pid' => $object->id,
+        'label' => 'New Label',
+        'owner' => $object->owner,
+        'state' => $object->state,
+        'modified' => (string) $object->lastModifiedDate,
+      ),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test POST Object with the proper permissions.
+    $data = array('pid' => 'test:post', 'label' => 'Test REST POST Object');
+    $response = $this->httpPost(ISLANDORA_REST_OBJECT_MENU, $data);
+    $expected = array(
+      'code' => 201,
+      'content-type' => 'application/json; utf-8',
+      'response' => $this->mockObjectGetResponse('test:post'),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:post');
+    $this->assertTrue(is_object($object), 'Object was successfully created');
+
+    // Test DELETE Object with the proper permissions.
+    $response = $this->httpDelete(ISLANDORA_REST_OBJECT_MENU . '/test:post');
+    $expected = array(
+      'code' => 200,
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:post');
+    $this->assertFalse($object, 'Object was successfully purged');
+
+    // Test GET Datastream Properties with the proper permissions.
+    $path = str_replace('%', 'test:access', ISLANDORA_REST_DATASTREAM_MENU);
+    $options = array(
+      'query' => array(
+        'content' => 'false',
+      ),
+    );
+    $response = $this->httpGet($path . '/DC', $options);
+    $expected = array(
+      'code' => 200,
+      'content-type' => 'application/json; utf-8',
+      'response' => $this->mockDatastreamGetResponse('test:access', 'DC', FALSE),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test GET Datastream Version Properties with the proper permissions.
+    $path = str_replace('%', 'test:access', ISLANDORA_REST_DATASTREAM_MENU);
+    $expected = $this->mockDatastreamGetResponse('test:access', 'RELS-EXT', FALSE);
+    $options = array(
+      'query' => array(
+        'content' => 'false',
+        'version' => (string) $expected['versions'][0]['created'],
+      ),
+    );
+    $response = $this->httpGet($path . '/RELS-EXT', $options);
+    $expected = array(
+      'code' => 200,
+      'content-type' => 'application/json; utf-8',
+      'response' => $this->mockDatastreamGetResponse('test:access', 'RELS-EXT', FALSE, 0),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test GET Datastream Content with the proper permissions.
+    $path = str_replace('%', 'test:access', ISLANDORA_REST_DATASTREAM_MENU);
+    $response = $this->httpGet($path . '/DC');
+    $expected = array(
+      'code' => 200,
+      'content-type' => 'text/xml',
+      'response' => $this->mockDatastreamGetResponse('test:access', 'DC', TRUE),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test GET Datastream Versioned Content with the proper permissions.
+    $path = str_replace('%', 'test:access', ISLANDORA_REST_DATASTREAM_MENU);
+    $expected = $this->mockDatastreamGetResponse('test:access', 'RELS-EXT', FALSE);
+    $options = array(
+      'query' => array(
+        'content' => 'true',
+        'version' => (string) $expected['versions'][0]['created'],
+      ),
+    );
+    $response = $this->httpGet($path . '/RELS-EXT', $options);
+    $expected = array(
+      'code' => 200,
+      'content-type' => 'text/xml',
+      'response' => $this->mockDatastreamGetResponse('test:access', 'RELS-EXT', TRUE, 0),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test PUT Datastream toggle versioning off.
+    $data = array(
+      'versionable' => FALSE,
+    );
+    $response = $this->httpPut($path . '/MODS', $data);
+    $expected = array(
+      'code' => 200,
+      'content-type' => 'application/json; utf-8',
+      'response' => $this->mockDatastreamGetResponse('test:access', 'MODS'),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $this->assertFalse($object['MODS']->versionable, 'Datastream versioning was turned off.');
+
+    // Test PUT Datastream toggle versioning on.
+    $data = array(
+      'versionable' => TRUE,
+    );
+    $response = $this->httpPut($path . '/MODS', $data);
+    $expected = array(
+      'code' => 200,
+      'content-type' => 'application/json; utf-8',
+      'response' => $this->mockDatastreamGetResponse('test:access', 'MODS'),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $this->assertTrue($object['MODS']->versionable, 'Datastream versioning was turned off.');
+
+    // Test PUT Datastream Content & Properties with the proper permissions.
+    // Mock the request via POST.
+    $data = array(
+      'method' => 'PUT',
+      'label' => 'New MODS Label',
+      'file' => '@' . dirname(__FILE__) . '/fixtures/put_mods.xml',
+    );
+    $response = $this->httpPost($path . '/MODS', $data);
+    $expected = array(
+      'code' => 200,
+      'content-type' => 'application/json; utf-8',
+      'response' => $this->mockDatastreamGetResponse('test:access', 'MODS'),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $xml = new SimpleXMLElement($object['MODS']->content);
+    $title = (string) current($xml->xpath('//mods:title'));
+    $xml = new SimpleXMLElement(file_get_contents(dirname(__FILE__) . '/fixtures/put_mods.xml'));
+    $expected_title = (string) current($xml->xpath('//mods:title'));
+    $this->assertEqual($title, $expected_title, 'Datastream content was updated.');
+    $this->assertEqual($object['MODS']->label, 'New MODS Label', 'Datastream properties were updated.');
+
+    // Test POST Datastream with the proper permissions, but missing field.
+    $data = array(
+      // No DSID specified.
+      'label' => 'Test REST POST Datastream',
+    );
+    $response = $this->httpPost($path, $data);
+    $expected = array(
+      'code' => 400,
+      'content-type' => 'application/json; utf-8',
+      'response' => array('message' => 'Bad Request: Missing required fields dsid'),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $this->assertFalse(isset($object['NEW']), 'Datastream was not created');
+
+    // Test POST Datastream with the proper permissions, but missing field.
+    $data = array(
+      'dsid' => 'NEW',
+      'label' => 'Test REST POST Datastream',
+      // No file uploaded.
+    );
+    $response = $this->httpPost($path, $data);
+    $expected = array(
+      'code' => 400,
+      'content-type' => 'application/json; utf-8',
+      'response' => array('message' => 'Bad Request: File failed to upload'),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $this->assertFalse(isset($object['NEW']), 'Datastream was not created');
+
+    // Test POST Datastream with the proper permissions and parameters.
+    $data = array(
+      'dsid' => 'NEW',
+      'label' => 'Test REST POST Datastream',
+      'versionable' => FALSE,
+      'file' => '@' . dirname(__FILE__) . '/fixtures/new_datastream.xml',
+    );
+    $response = $this->httpPost($path, $data);
+    $expected = array(
+      'code' => 201,
+      'content-type' => 'application/json; utf-8',
+      'response' => $this->mockDatastreamGetResponse('test:access', 'NEW', FALSE),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $this->assertTrue(isset($object['NEW']), 'Datastream was created');
+    $this->assertFalse($object['NEW']->versionable, 'Datastream was created without versioning.');
+
+    // Test DELETE Datastream with the proper permissions.
+    $response = $this->httpDelete($path . '/NEW');
+    $expected = array(
+      'code' => 200,
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $this->assertFalse(isset($object['NEW']), 'Datastream was deleted');
+
+    // Test GET Relationship with the proper permissions.
+    $path = str_replace('%', 'test:access', ISLANDORA_REST_RELATIONSHIP_MENU);
+    $response = $this->httpGet($path);
+    $expected = array(
+      'code' => 200,
+      'content-type' => 'application/json; utf-8',
+      'response' => array(
+        array(
+          'predicate' => array(
+            'value' => 'hasModel',
+            'namespace' => FEDORA_MODEL_URI,
+            'alias' => 'fedora-model',
+          ),
+          'object' => array(
+            'literal' => FALSE,
+            'value' => 'islandora:collectionCModel',
+          ),
+        ),
+        array(
+          'predicate' => array(
+            'value' => 'arbitrary',
+            'alias' => 'fedora',
+            'namespace' => FEDORA_RELS_EXT_URI,
+          ),
+          'object' => array(
+            'literal' => TRUE,
+            'value' => 'arbitrary value',
+          ),
+        ),
+      ),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test POST Relationship with the proper permissions.
+    $data = array(
+      'uri' => FEDORA_RELS_EXT_URI,
+      'predicate' => 'isMemberOf',
+      'object' => 'islandora:root',
+      'type' => 'uri',
+    );
+    $response = $this->httpPost($path, $data);
+    $expected = array(
+      'code' => 201,
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $results = $object->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOf', 'islandora:root');
+    $this->assertEqual(count($results), 1, 'Relationship was created');
+
+    // Test DELETE Relationship with the proper permissions.
+    $data = array(
+      'uri' => FEDORA_RELS_EXT_URI,
+      'predicate' => 'isMemberOf',
+      'object' => 'islandora:root',
+      'literal' => FALSE,
+    );
+    $response = $this->httpDelete($path, $data);
+    $expected = array(
+      'code' => 200,
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $results = $object->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOf', 'islandora:root');
+    $this->assertEqual(count($results), 0, 'Relationship was deleted');
+
+    // -------------------------------------------------------------------------
+    // Test all the rest end-points with a user who has no permissions.
+    // -------------------------------------------------------------------------
+    $account = $this->drupalCreateUser();
+    $this->drupalLogin($account);
+
+    // Test GET Object without proper permission.
+    $response = $this->httpGet(ISLANDORA_REST_OBJECT_MENU . '/test:access');
+    $expected = array(
+      'code' => 403,
+      'content-type' => 'application/json; utf-8',
+      'response' => array('message' => 'Forbidden'),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test PUT Object without the proper permissions.
+    $data = array('label' => 'New Label');
+    $response = $this->httpPut(ISLANDORA_REST_OBJECT_MENU . '/test:access', $data);
+    $expected = array(
+      'code' => 403,
+      'content-type' => 'application/json; utf-8',
+      'response' => array('message' => 'Forbidden'),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test POST Object without the proper permissions.
+    $data = array('pid' => 'test:post', 'label' => 'Test REST POST Object');
+    $response = $this->httpPost(ISLANDORA_REST_OBJECT_MENU, $data);
+    $expected = array(
+      'code' => 403,
+      'content-type' => 'application/json; utf-8',
+      'response' => array('message' => 'Forbidden'),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:post');
+    $this->assertFalse($object, 'Object was not created');
+
+    // Test DELETE Object without the proper permissions.
+    $response = $this->httpDelete(ISLANDORA_REST_OBJECT_MENU . '/test:access');
+    $expected = array(
+      'code' => 403,
+      'content-type' => 'application/json; utf-8',
+      'response' => array('message' => 'Forbidden'),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test GET Datastream without the proper permissions.
+    $path = str_replace('%', 'test:access', ISLANDORA_REST_DATASTREAM_MENU);
+    $response = $this->httpGet($path . '/DC');
+    $expected = array(
+      'code' => 403,
+      'content-type' => 'application/json; utf-8',
+      'response' => array('message' => 'Forbidden'),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test PUT Datastream without the proper permissions.
+    $data = array('label' => 'New Label');
+    $response = $this->httpPut($path . '/DC', $data);
+    $expected = array(
+      'code' => 403,
+      'content-type' => 'application/json; utf-8',
+      'response' => array('message' => 'Forbidden'),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test POST Datastream without the proper permissions.
+    $data = array('pid' => 'test:post', 'label' => 'Test REST POST Datastream');
+    $response = $this->httpPost($path, $data);
+    $expected = array(
+      'code' => 403,
+      'content-type' => 'application/json; utf-8',
+      'response' => array('message' => 'Forbidden'),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $this->assertFalse(isset($object['NEW']), 'Datastream was not created');
+
+    // Test DELETE Datastream without the proper permissions.
+    $response = $this->httpDelete($path . '/RELS-EXT');
+    $expected = array(
+      'code' => 403,
+      'content-type' => 'application/json; utf-8',
+      'response' => array('message' => 'Forbidden'),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $this->assertFalse(empty($object['RELS-EXT']), 'Datastream was not deleted');
+
+    // Test GET Relationship without the proper permissions.
+    $path = str_replace('%', 'test:access', ISLANDORA_REST_RELATIONSHIP_MENU);
+    $response = $this->httpGet($path);
+    $expected = array(
+      'code' => 403,
+      'content-type' => 'application/json; utf-8',
+      'response' => array('message' => 'Forbidden'),
+    );
+    $this->validateResponse($response, $expected);
+
+    // Test POST Relationship without the proper permissions.
+    $data = array(
+      'uri' => FEDORA_RELS_EXT_URI,
+      'predicate' => 'isMemberOf',
+      'object' => 'islandora:root',
+      'type' => 'uri',
+    );
+    $response = $this->httpPost($path . '/NEW', $data);
+    $expected = array(
+      'code' => 403,
+      'content-type' => 'application/json; utf-8',
+      'response' => array('message' => 'Forbidden'),
+    );
+    $this->validateResponse($response, $expected);
+    $object = islandora_object_load('test:access');
+    $results = $object->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOf', 'islandora:root');
+    $this->assertEqual(count($results), 0, 'Relationship was not created');
+  }
+
+}

@@ -1,0 +1,179 @@
+<?php
+
+/**
+ * @file
+ * Defines all the hooks this module implements.
+ */
+
+
+// Menu items.
+define('ISLANDORA_REST_VERSION', 'v1');
+define('ISLANDORA_REST_URL_PREFIX', 'islandora/rest/' . ISLANDORA_REST_VERSION);
+define('ISLANDORA_REST_OBJECT_MENU', ISLANDORA_REST_URL_PREFIX . '/object');
+define('ISLANDORA_REST_DATASTREAM_MENU', ISLANDORA_REST_OBJECT_MENU . '/%/datastream');
+define('ISLANDORA_REST_DATASTREAM_TOKEN_MENU', ISLANDORA_REST_DATASTREAM_MENU . '/%/token');
+define('ISLANDORA_REST_RELATIONSHIP_MENU', ISLANDORA_REST_OBJECT_MENU . '/%/relationship');
+define('ISLANDORA_REST_SOLR_MENU', ISLANDORA_REST_URL_PREFIX . '/solr');
+
+// Permissions.
+define('ISLANDORA_REST_OBJECT_GET_PERM', 'view objects');
+define('ISLANDORA_REST_OBJECT_POST_PERM', 'create objects');
+define('ISLANDORA_REST_OBJECT_PUT_PERM', 'modify object properties');
+define('ISLANDORA_REST_OBJECT_DELETE_PERM', 'delete objects');
+define('ISLANDORA_REST_DATASTREAM_GET_PERM', 'view datastreams');
+define('ISLANDORA_REST_DATASTREAM_TOKEN_GET_PERM', 'generate datastream token');
+define('ISLANDORA_REST_DATASTREAM_POST_PERM', 'create datastreams');
+define('ISLANDORA_REST_DATASTREAM_PUT_PERM', 'modify datastreams');
+define('ISLANDORA_REST_DATASTREAM_DELETE_PERM', 'delete datastreams');
+define('ISLANDORA_REST_RELATIONSHIP_GET_PERM', 'list relationships');
+define('ISLANDORA_REST_RELATIONSHIP_POST_PERM', 'create relationships');
+define('ISLANDORA_REST_RELATIONSHIP_DELETE_PERM', 'delete relationships');
+
+/**
+ * Implements hook_menu().
+ */
+function islandora_rest_menu() {
+  // We don't use the access callback for any of the REST end-points as we can't
+  // reliably return JSON from that point.
+  return array(
+    ISLANDORA_REST_OBJECT_MENU => array(
+      'page callback' => 'islandora_rest_object',
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+    ),
+    ISLANDORA_REST_DATASTREAM_MENU => array(
+      'page callback' => 'islandora_rest_datastream',
+      'page arguments' => array(4, 6),
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+    ),
+    ISLANDORA_REST_DATASTREAM_TOKEN_MENU => array(
+      'page callback' => 'islandora_rest_datastream_token',
+      'page arguments' => array(4, 6),
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+    ),
+    ISLANDORA_REST_RELATIONSHIP_MENU => array(
+      'page callback' => 'islandora_rest_relationship',
+      'page arguments' => array(4),
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+    ),
+    ISLANDORA_REST_SOLR_MENU => array(
+      'page callback' => 'islandora_rest_solr',
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+    ),
+  );
+}
+
+/**
+ * Implements hook_permission().
+ */
+function islandora_rest_permission() {
+  return array(
+    ISLANDORA_REST_OBJECT_GET_PERM => array(
+      'title' => t('View objects'),
+      'description' => t('Allows users to fetch an objects properties and list its datastreams.'),
+    ),
+    ISLANDORA_REST_OBJECT_POST_PERM => array(
+      'title' => t('Create objects'),
+      'description' => t('Allows users to create objects.'),
+    ),
+    ISLANDORA_REST_OBJECT_PUT_PERM => array(
+      'title' => t('Modify object properties'),
+      'description' => t('Allows users to modify an objects properites.'),
+    ),
+    ISLANDORA_REST_OBJECT_DELETE_PERM => array(
+      'title' => t('Delete objects'),
+      'description' => t('Allows users to delete objects.'),
+    ),
+    ISLANDORA_REST_DATASTREAM_TOKEN_GET_PERM => array(
+      'title' => t('Generate Datastream Tokens'),
+      'description' => t('Allows users to get an authorization token for a datastream.'),
+    ),
+    ISLANDORA_REST_DATASTREAM_GET_PERM => array(
+      'title' => t('View datastreams'),
+      'description' => t('Allows users to get a given datastream content and properties.'),
+    ),
+    ISLANDORA_REST_DATASTREAM_POST_PERM => array(
+      'title' => t('Create datastreams'),
+      'description' => t('Allows users to create datastreams.'),
+    ),
+    ISLANDORA_REST_DATASTREAM_PUT_PERM => array(
+      'title' => t('Modify datastreams'),
+      'description' => t('Allows users to modify existing datastreams and their properties.'),
+    ),
+    ISLANDORA_REST_DATASTREAM_DELETE_PERM => array(
+      'title' => t('Delete datastreams'),
+      'description' => t('Allows users to delete datastreams.'),
+    ),
+    ISLANDORA_REST_RELATIONSHIP_GET_PERM => array(
+      'title' => t('List relationships'),
+      'description' => t('Allows users to list an objects relationships.'),
+    ),
+    ISLANDORA_REST_RELATIONSHIP_POST_PERM => array(
+      'title' => t('Create relationships'),
+      'description' => t('Allows users to create new relationships.'),
+    ),
+    ISLANDORA_REST_RELATIONSHIP_DELETE_PERM => array(
+      'title' => t('Delete relationships'),
+      'description' => t('Allows users to delete existing relationships'),
+    ),
+  );
+}
+
+/**
+ * Rest end-point for objects.
+ *
+ * @note This function exits.
+ */
+function islandora_rest_object($pid = NULL) {
+  module_load_include('inc', 'islandora_rest', 'includes/utilities');
+  print islandora_rest_get_response('object', array('pid' => $pid));
+  exit();
+}
+
+/**
+ * Rest end-point for datastreams.
+ *
+ * @note This function exits.
+ */
+function islandora_rest_datastream($pid, $dsid) {
+  module_load_include('inc', 'islandora_rest', 'includes/utilities');
+  print islandora_rest_get_response('datastream', array('pid' => $pid, 'dsid' => $dsid));
+  exit();
+}
+
+/**
+ * Rest end-point for datastream tokens.
+ *
+ * @note This function exits.
+ */
+function islandora_rest_datastream_token($pid, $dsid) {
+  module_load_include('inc', 'islandora_rest', 'includes/utilities');
+  print islandora_rest_get_response('datastream_token', array('pid' => $pid, 'dsid' => $dsid));
+  exit();
+}
+
+/**
+ * Rest end-point for relationships.
+ *
+ * @note This function exits.
+ */
+function islandora_rest_relationship($pid) {
+  module_load_include('inc', 'islandora_rest', 'includes/utilities');
+  print islandora_rest_get_response('relationship', array('pid' => $pid));
+  exit();
+}
+
+/**
+ * Rest end-point for making SOLR queries.
+ *
+ * @note This function exits.
+ */
+function islandora_rest_solr($query = NULL) {
+  module_load_include('inc', 'islandora_rest', 'includes/utilities');
+  print islandora_rest_get_solr_response(array('query' => $query));
+  exit();
+}
