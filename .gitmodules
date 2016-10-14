@@ -19,9 +19,6 @@
 [submodule "sites/all/modules/menu_import"]
 	path = sites/all/modules/menu_import
 	url = http://git.drupal.org/project/menu_import.git
-[submodule "sites/all/modules/node_export"]
-	path = sites/all/modules/node_export
-	url = http://git.drupal.org/project/node_export.git
 [submodule "sites/all/modules/nodequeue"]
 	path = sites/all/modules/nodequeue
 	url = http://git.drupal.org/project/nodequeue.git
@@ -43,9 +40,6 @@
 [submodule "sites/all/modules/bc_islandora"]
 	path = sites/all/modules/bc_islandora
 	url = git@github.com:BarnardArchives/bc_islandora.git
-[submodule "sites/all/libraries/bookreader"]
-	path = sites/all/libraries/bookreader
-	url = git://github.com/openlibrary/bookreader.git
 [submodule "sites/all/libraries/tuque"]
 	path = sites/all/libraries/tuque
 	url = git://github.com/Islandora/tuque.git
@@ -292,3 +286,10 @@
 [submodule "sites/all/modules/file_entity"]
 	path = sites/all/modules/file_entity
 	url = https://git.drupal.org/project/file_entity.git
+[submodule "sites/all/modules/node_export"]
+	path = sites/all/modules/node_export
+	url = https://git.drupal.org/project/node_export.git
+	branch = 7.x-3.x
+[submodule "sites/all/libraries/bookreader"]
+	path = sites/all/libraries/bookreader
+	url = https://github.com/Islandora/internet_archive_bookreader.git
