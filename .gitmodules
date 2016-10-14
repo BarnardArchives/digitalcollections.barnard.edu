@@ -289,3 +289,6 @@
 [submodule "sites/all/modules/filemime"]
 	path = sites/all/modules/filemime
 	url = https://git.drupal.org/project/filemime.git
+[submodule "sites/all/modules/file_entity"]
+	path = sites/all/modules/file_entity
+	url = https://git.drupal.org/project/file_entity.git
