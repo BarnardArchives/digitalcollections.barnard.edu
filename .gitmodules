@@ -297,3 +297,6 @@
 	path = sites/all/modules/module_missing_message_fixer
 	url = https://git.drupal.org/project/module_missing_message_fixer.git
 	branch = 7.x-1.x
+[submodule "sites/all/modules/islandora_paged_tei_seadragon"]
+	path = sites/all/modules/islandora_paged_tei_seadragon
+	url = https://github.com/discoverygarden/islandora_paged_tei_seadragon.git
