@@ -297,3 +297,6 @@
 [submodule "sites/all/modules/islandora_paged_tei_seadragon"]
 	path = sites/all/modules/islandora_paged_tei_seadragon
 	url = https://github.com/discoverygarden/islandora_paged_tei_seadragon.git
+[submodule "sites/all/libraries/bookreader"]
+	path = sites/all/libraries/bookreader
+	url = https://github.com/openlibrary/bookreader.git
