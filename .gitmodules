@@ -290,9 +290,6 @@
 	path = sites/all/modules/node_export
 	url = https://git.drupal.org/project/node_export.git
 	branch = 7.x-3.x
-[submodule "sites/all/libraries/bookreader"]
-	path = sites/all/libraries/bookreader
-	url = https://github.com/Islandora/internet_archive_bookreader.git
 [submodule "sites/all/modules/module_missing_message_fixer"]
 	path = sites/all/modules/module_missing_message_fixer
 	url = https://git.drupal.org/project/module_missing_message_fixer.git
