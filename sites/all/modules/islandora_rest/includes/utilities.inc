@@ -115,6 +115,30 @@ function islandora_rest_accessible($endpoint, $request_method, $resource = FALSE
 }
 
 /**
+ * Retrieve REST permissions mapped to core.
+ *
+ * @return array
+ *   A key value pair of this modules permissions,
+ *   mapped to core islandora permissions.
+ */
+function _islandora_rest_permission_map() {
+  return array(
+    ISLANDORA_REST_OBJECT_GET_PERM           => ISLANDORA_VIEW_OBJECTS,
+    ISLANDORA_REST_OBJECT_PUT_PERM           => ISLANDORA_MANAGE_PROPERTIES,
+    ISLANDORA_REST_OBJECT_POST_PERM          => ISLANDORA_INGEST,
+    ISLANDORA_REST_OBJECT_DELETE_PERM        => ISLANDORA_PURGE,
+    ISLANDORA_REST_DATASTREAM_GET_PERM       => ISLANDORA_VIEW_OBJECTS,
+    ISLANDORA_REST_DATASTREAM_PUT_PERM       => ISLANDORA_METADATA_EDIT,
+    ISLANDORA_REST_DATASTREAM_POST_PERM      => ISLANDORA_ADD_DS,
+    ISLANDORA_REST_DATASTREAM_DELETE_PERM    => ISLANDORA_PURGE,
+    ISLANDORA_REST_DATASTREAM_TOKEN_GET_PERM => ISLANDORA_VIEW_OBJECTS,
+    ISLANDORA_REST_RELATIONSHIP_GET_PERM     => ISLANDORA_VIEW_OBJECTS,
+    ISLANDORA_REST_RELATIONSHIP_POST_PERM    => ISLANDORA_METADATA_EDIT,
+    ISLANDORA_REST_RELATIONSHIP_DELETE_PERM  => ISLANDORA_PURGE,
+  );
+}
+
+/**
  * Gets the PID and DSID from the path parameters.
  *
  * The resource paths can optionally include a PID and DSID, so this will
@@ -255,14 +279,19 @@ function islandora_rest_get_requested_resource($pid = FALSE, $dsid = FALSE) {
   }
   catch (Exception $e) {
     if ($dsid) {
-      $message = t('Failed to retrieve the requested datastream: "@dsid" from "@pid"', array(
-                   '@pid' => $pid,
-                   '@dsid' => $dsid,
-                 ));
+      $message = t(
+        'Failed to retrieve the requested datastream: "@dsid" from "@pid"',
+        array(
+          '@pid' => $pid,
+          '@dsid' => $dsid,
+        )
+      );
     }
     else {
-      $message = t('Failed to retrieve the requested object: "@pid"', array(
-                   '@pid' => $pid));
+      $message = t(
+        'Failed to retrieve the requested object: "@pid"',
+        array('@pid' => $pid)
+      );
     }
     throw new Exception($message, $e->getCode(), $e);
   }

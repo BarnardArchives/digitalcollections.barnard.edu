@@ -146,6 +146,28 @@ function islandora_rest_datastream($pid, $dsid) {
 }
 
 /**
+ * Implements hook islandora_object_access().
+ */
+function islandora_rest_islandora_object_access($op, $object, $user) {
+  module_load_include('inc', 'islandora_rest', 'includes/utilities');
+  $map = _islandora_rest_permission_map();
+  if (isset($map[$op])) {
+    return islandora_object_access($map[$op], $object, $user);
+  }
+}
+
+/**
+ * Implements hook islandora_datastream_access().
+ */
+function islandora_rest_islandora_datastream_access($op, $datastream, $user) {
+  module_load_include('inc', 'islandora_rest', 'includes/utilities');
+  $map = _islandora_rest_permission_map();
+  if (isset($map[$op])) {
+    return islandora_datastream_access($map[$op], $datastream, $user);
+  }
+}
+
+/**
  * Rest end-point for datastream tokens.
  *
  * @note This function exits.

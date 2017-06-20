@@ -300,3 +300,9 @@
 [submodule "sites/all/themes/barnard_bootstrap/bootstrap"]
 	path = sites/all/themes/barnard_bootstrap/bootstrap
 	url = https://github.com/twbs/bootstrap-sass.git
+[submodule "sites/all/modules/islandora_solution_pack_streaming_media"]
+	path = sites/all/modules/islandora_solution_pack_streaming_media
+	url = https://github.com/rosiel/islandora_solution_pack_streaming_media.git
+[submodule "sites/all/modules/islandora_videojs"]
+	path = sites/all/modules/islandora_videojs
+	url = https://github.com/Islandora/islandora_videojs.git
