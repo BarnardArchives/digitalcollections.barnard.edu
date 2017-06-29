@@ -19,9 +19,6 @@
 [submodule "sites/all/modules/menu_import"]
 	path = sites/all/modules/menu_import
 	url = http://git.drupal.org/project/menu_import.git
-[submodule "sites/all/modules/node_export"]
-	path = sites/all/modules/node_export
-	url = http://git.drupal.org/project/node_export.git
 [submodule "sites/all/modules/nodequeue"]
 	path = sites/all/modules/nodequeue
 	url = http://git.drupal.org/project/nodequeue.git
@@ -43,9 +40,6 @@
 [submodule "sites/all/modules/bc_islandora"]
 	path = sites/all/modules/bc_islandora
 	url = git@github.com:BarnardArchives/bc_islandora.git
-[submodule "sites/all/libraries/bookreader"]
-	path = sites/all/libraries/bookreader
-	url = git://github.com/openlibrary/bookreader.git
 [submodule "sites/all/libraries/tuque"]
 	path = sites/all/libraries/tuque
 	url = git://github.com/Islandora/tuque.git
@@ -289,3 +283,26 @@
 [submodule "sites/all/modules/filemime"]
 	path = sites/all/modules/filemime
 	url = https://git.drupal.org/project/filemime.git
+[submodule "sites/all/modules/file_entity"]
+	path = sites/all/modules/file_entity
+	url = https://git.drupal.org/project/file_entity.git
+[submodule "sites/all/modules/node_export"]
+	path = sites/all/modules/node_export
+	url = https://git.drupal.org/project/node_export.git
+	branch = 7.x-3.x
+[submodule "sites/all/modules/module_missing_message_fixer"]
+	path = sites/all/modules/module_missing_message_fixer
+	url = https://git.drupal.org/project/module_missing_message_fixer.git
+	branch = 7.x-1.x
+[submodule "sites/all/modules/islandora_paged_tei_seadragon"]
+	path = sites/all/modules/islandora_paged_tei_seadragon
+	url = https://github.com/discoverygarden/islandora_paged_tei_seadragon.git
+[submodule "sites/all/themes/barnard_bootstrap/bootstrap"]
+	path = sites/all/themes/barnard_bootstrap/bootstrap
+	url = https://github.com/twbs/bootstrap-sass.git
+[submodule "sites/all/modules/islandora_solution_pack_streaming_media"]
+	path = sites/all/modules/islandora_solution_pack_streaming_media
+	url = https://github.com/rosiel/islandora_solution_pack_streaming_media.git
+[submodule "sites/all/modules/islandora_videojs"]
+	path = sites/all/modules/islandora_videojs
+	url = https://github.com/Islandora/islandora_videojs.git

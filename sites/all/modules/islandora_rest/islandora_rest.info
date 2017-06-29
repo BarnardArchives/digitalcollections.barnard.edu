@@ -1,0 +1,8 @@
+name = "Islandora REST"
+description = "A basic REST interface for islandora."
+dependencies[] = islandora
+files[] = tests/islandora_rest.test
+files[] = tests/islandora_http_rest_test_case.inc
+package = Islandora
+php = 5.3
+core = 7.x
