@@ -64,9 +64,6 @@
 [submodule "sites/all/modules/islandora_importer"]
 	path = sites/all/modules/islandora_importer
 	url = git://github.com/Islandora/islandora_importer.git
-[submodule "sites/all/modules/islandora_internet_archive_bookreader"]
-	path = sites/all/modules/islandora_internet_archive_bookreader
-	url = git://github.com/Islandora/islandora_internet_archive_bookreader.git
 [submodule "sites/all/modules/islandora_ip_embargo"]
 	path = sites/all/modules/islandora_ip_embargo
 	url = https://github.com/Islandora/islandora_ip_embargo.git
@@ -306,3 +303,12 @@
 [submodule "sites/all/modules/islandora_videojs"]
 	path = sites/all/modules/islandora_videojs
 	url = https://github.com/Islandora/islandora_videojs.git
+[submodule "sites/all/libraries/JAIL"]
+	path = sites/all/libraries/JAIL
+	url = https://github.com/sebarmeli/JAIL.git
+[submodule "sites/all/modules/islandora_internet_archive_bookreader"]
+	path = sites/all/modules/islandora_internet_archive_bookreader
+	url = git@github.com:BarnardArchives/islandora_internet_archive_bookreader.git
+[submodule "sites/all/modules/internet_archive_bookreader"]
+	path = sites/all/modules/internet_archive_bookreader
+	url = https://github.com/Islandora/internet_archive_bookreader.git
