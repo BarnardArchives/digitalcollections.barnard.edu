@@ -312,3 +312,6 @@
 [submodule "sites/all/modules/internet_archive_bookreader"]
 	path = sites/all/modules/internet_archive_bookreader
 	url = https://github.com/Islandora/internet_archive_bookreader.git
+[submodule "sites/all/modules/islandora_datastreams_io"]
+	path = sites/all/modules/islandora_datastreams_io
+	url = https://github.com/ulsdevteam/islandora_datastreams_io.git

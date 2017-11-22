@@ -73,7 +73,7 @@ function barnard_bootstrap_preprocess_islandora_book_book(&$vars) {
     // Provide a link to this object's PDF datastream via $vars['dl_links'].
     $vars['dl_links'] = _bc_islandora_dl_links($object, array('PDF'));
     drupal_add_js(libraries_get_path('openseadragon') . '/openseadragon.js');
-    $vars['viewer'] = theme('bc_islandora_newspaper_issue', array('object' => $object));
+    $vars['viewer'] = theme('bc_islandora_newspaper_issue_navigator', array('object' => $object));
   }
 }
 
