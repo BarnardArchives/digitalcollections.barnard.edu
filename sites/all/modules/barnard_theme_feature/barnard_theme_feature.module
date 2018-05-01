@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the barnard_theme_feature feature.
+ */
+
+include_once 'barnard_theme_feature.features.inc';

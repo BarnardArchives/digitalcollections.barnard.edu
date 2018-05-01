@@ -1,0 +1,72 @@
+<?php
+
+/**
+ * @file
+ * OpenSeadragon for paged content.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function islandora_openseadragon_paged_menu() {
+  return array(
+    'admin/islandora/islandora_viewers/openseadragon_paged' => array(
+      'title' => 'OpenSeadragon paged',
+      'description' => 'Configure the OpenSeadragon paged viewer.',
+      'page callback' => 'drupal_get_form',
+      'access arguments' => array('administer site configuration'),
+      'page arguments' => array('islandora_openseadragon_paged_admin'),
+      'file' => 'includes/admin.form.inc',
+      'type' => MENU_NORMAL_ITEM,
+    ),
+  );
+}
+
+/**
+ * Implements hook_islandora_viewer_info().
+ */
+function islandora_openseadragon_paged_islandora_viewer_info() {
+  return array(
+    'islandora_openseadragon_paged' => array(
+      'label' => t('Paged Content OpenSeadragon viewer'),
+      'description' => t('OpenSeadragon with page navigation.'),
+      'callback' => 'islandora_openseadragon_paged_callback',
+      'model' => array(
+        'islandora:manuscriptCModel',
+        'islandora:bookCModel',
+        'islandora:newspaperIssueCModel',
+      ),
+    ),
+  );
+}
+
+/**
+ * Callback function for the viewer.
+ *
+ * @param array $params
+ *   An array of parameters to pass to islandora_paged_seadragon_viewer.
+ *
+ * @return string
+ *   HTML string for the viewer.
+ */
+function islandora_openseadragon_paged_callback(array $params) {
+  return theme('islandora_paged_seadragon_viewer', $params);
+}
+
+/**
+ * Implements hook_theme().
+ */
+function islandora_openseadragon_paged_theme() {
+  // Solution packs using this as a viewer need to set these variables.
+  return array(
+    'islandora_paged_seadragon_viewer' => array(
+      'file' => 'theme/theme.inc',
+      'template' => 'theme/islandora-paged-seadragon-viewer',
+      'variables' => array(
+        'object' => NULL,
+        'transform_object' => NULL,
+        'pages' => array(),
+      ),
+    ),
+  );
+}

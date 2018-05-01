@@ -1,0 +1,5 @@
+name = Masquerade
+description = "This module allows permitted users to masquerade as other users."
+core = 7.x
+files[] = masquerade.test
+configure = admin/config/people/masquerade

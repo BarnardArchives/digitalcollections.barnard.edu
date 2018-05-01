@@ -1,0 +1,7 @@
+name = Islandora Google Analytics Reports
+description = Views providing Google Analytics statistics.
+package = Islandora Tools
+core = 7.x
+dependencies[] = google_analytics_reports
+scripts[] = js/track_ds_downloads.js
+files[] = islandora_ga_reports.views_default.inc

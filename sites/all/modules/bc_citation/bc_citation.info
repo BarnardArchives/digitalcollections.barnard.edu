@@ -1,0 +1,10 @@
+name = BC Islandora Object Citation
+description = Lorem Ipsum
+package = Barnard College Custom Islandora
+core = 7.x
+version = pre-alpha-0
+dependencies[] = islandora
+dependencies[] = citeproc
+dependencies[] = csl
+dependencies[] = libraries
+dependencies[] = file

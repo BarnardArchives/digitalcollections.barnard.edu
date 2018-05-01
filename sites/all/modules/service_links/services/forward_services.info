@@ -1,0 +1,6 @@
+name = Forward Services
+description = Add the support for Forward module which send the link through email.
+core = 7.x
+package = Service Links - Services
+dependencies[] = service_links 
+dependencies[] = forward

@@ -1,0 +1,225 @@
+<?php
+
+/**
+ * @file
+ * IP address range embargo support for Islandora objects.
+ */
+
+// Permissions.
+define('ISLANDORA_IP_EMBARGO_ADMINISTER_PERMISSION', 'administer islandora ip embargoes');
+define('ISLANDORA_IP_EMBARGO_CONTROL_EMBARGOES', 'control islandora ip embargoes');
+define('ISLANDORA_IP_EMBARGO_MANAGE_EMBARGOES', 'manage islandora ip embargoes');
+
+/**
+ * Implements hook_permission().
+ */
+function islandora_ip_embargo_permission() {
+  return array(
+    ISLANDORA_IP_EMBARGO_ADMINISTER_PERMISSION => array(
+      'title' => t('Administer embargoes'),
+      'description' => t("Access Islandora IP Embargo's administration page."),
+    ),
+    ISLANDORA_IP_EMBARGO_CONTROL_EMBARGOES => array(
+      'title' => t('Control embargoes'),
+      'description' => t("Create, edit, delete an object's IP embargoes."),
+    ),
+    ISLANDORA_IP_EMBARGO_MANAGE_EMBARGOES => array(
+      'title' => t('Manage embargoes'),
+      'description' => t('Manage embargoed objects'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function islandora_ip_embargo_menu() {
+  return array(
+    'admin/islandora/tools/ip_embargo' => array(
+      'title' => 'Islandora IP Embargo',
+      'description' => 'Configure the Islandora IP Embargo module.',
+      'type' => MENU_NORMAL_ITEM,
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_ip_embargo_manage_lists_form'),
+      'file' => 'includes/forms.inc',
+      'access arguments' => array(ISLANDORA_IP_EMBARGO_ADMINISTER_PERMISSION),
+    ),
+    'admin/islandora/tools/ip_embargo/lists' => array(
+      'title' => 'Network address lists',
+      'weight' => -10,
+      'description' => 'Configure IP Embargo network address lists.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_ip_embargo_manage_lists_form'),
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+      'file' => 'includes/forms.inc',
+      'access arguments' => array(ISLANDORA_IP_EMBARGO_ADMINISTER_PERMISSION),
+    ),
+    'admin/islandora/tools/ip_embargo/lists/add' => array(
+      'title' => 'Add an Islandora IP Embargo list',
+      'description' => 'Create a list of IP addresses.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_ip_embargo_add_list_form'),
+      'type' => MENU_NORMAL_ITEM,
+      'file' => 'includes/forms.inc',
+      'access arguments' => array(ISLANDORA_IP_EMBARGO_ADMINISTER_PERMISSION),
+    ),
+    'admin/islandora/tools/ip_embargo/ranges/add/%' => array(
+      'title' => 'Add an Islandora IP Embargo Range',
+      'description' => 'Create an IP Embargo address range.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_ip_embargo_add_range_form', 6),
+      'type' => MENU_NORMAL_ITEM,
+      'file' => 'includes/forms.inc',
+      'access arguments' => array(ISLANDORA_IP_EMBARGO_ADMINISTER_PERMISSION),
+    ),
+    'admin/islandora/tools/ip_embargo/misc' => array(
+      'title' => 'Islandora IP Embargo settings',
+      'description' => 'Settings.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_ip_embargo_settings_form'),
+      'type' => MENU_LOCAL_TASK,
+      'file' => 'includes/forms.inc',
+      'access arguments' => array(ISLANDORA_IP_EMBARGO_ADMINISTER_PERMISSION),
+    ),
+    'admin/islandora/tools/ip_embargo/lists/%' => array(
+      'title' => 'Islandora IP Embargo list',
+      'description' => "Configure an IP Embargo list's name and ranges.",
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_ip_embargo_edit_list_form', 5),
+      'type' => MENU_NORMAL_ITEM,
+      'file' => 'includes/forms.inc',
+      'access arguments' => array(ISLANDORA_IP_EMBARGO_ADMINISTER_PERMISSION),
+    ),
+    'islandora/object/%islandora_object/ip_embargo' => array(
+      'title' => 'IP Embargo',
+      'description' => "Configure an IP range embargo on the object.",
+      'file' => 'includes/forms.inc',
+      'page arguments' => array('islandora_ip_embargo_object_embargo_form', 2),
+      'page callback' => 'drupal_get_form',
+      'type' => MENU_LOCAL_TASK,
+      'access arguments' => array(ISLANDORA_IP_EMBARGO_CONTROL_EMBARGOES),
+    ),
+    'admin/islandora/tools/ip_embargo/manage' => array(
+      'title' => 'Manage Embargoed Objects',
+      'description' => "View a list of all embargoed objects",
+      'file' => 'includes/forms.inc',
+      'page arguments' => array('islandora_ip_embargo_manage_embargo_list_form'),
+      'page callback' => 'drupal_get_form',
+      'type' => MENU_LOCAL_TASK,
+      'access arguments' => array(ISLANDORA_IP_EMBARGO_MANAGE_EMBARGOES),
+    ),
+  );
+}
+
+/**
+ * Implements hook_islandora_object_access().
+ *
+ * Checks for an IP address embargo and handles redirects if necessary.
+ */
+function islandora_ip_embargo_islandora_object_access($op, $islandora_object, $user) {
+  module_load_include('inc', 'islandora_ip_embargo', 'includes/utilities');
+  // Handle an embargo.
+  if (islandora_ip_embargo_restrict_access($islandora_object->id) && !user_access(ISLANDORA_IP_EMBARGO_MANAGE_EMBARGOES)) {
+    // If there is a redirect configured then use it. If not let Drupal do it.
+    $redirect_url = variable_get('islandora_ip_embargo_embargoed_redirect', '');
+    if ($redirect_url) {
+      if (strpos(current_path(), "islandora/object/{$islandora_object->id}") !== FALSE && strpos(current_path(), '/datastream/TN') === FALSE) {
+        if (variable_get('islandora_ip_embargo_embargoed_redirect_append_url', 0)) {
+          global $base_url;
+          $redirect_target = $redirect_url . $base_url . '/' . current_path();
+          drupal_goto($redirect_target);
+        }
+        else {
+          drupal_goto($redirect_url);
+        }
+      }
+      else {
+        return FALSE;
+      }
+    }
+    else {
+      return FALSE;
+    }
+  }
+
+  // If we found no issues we let things proceed.
+  return NULL;
+}
+
+/**
+ * Implements hook_cron().
+ */
+function islandora_ip_embargo_cron() {
+  module_load_include('inc', 'islandora_ip_embargo', 'includes/utilities');
+
+  watchdog('Cron Job Begin', 'The ip embargo cron job has begun.');
+
+  islandora_ip_embargo_send_embargo_lift_events(variable_get(
+    'islandora_ip_embargo_days_before_embargo_trigger',
+    0
+  ));
+
+  // Execute cleanup on embargo expiry timestamps that have expired.
+  islandora_ip_embargo_cron_cleanup(time());
+}
+
+/**
+ * Implements hook_preprocess_theme().
+ *
+ * Checks the path, if it's an Islandora TN DS then it uses JS to watermark
+ * the resulting image.
+ */
+function islandora_ip_embargo_preprocess_image(&$variables) {
+  module_load_include('inc', 'islandora_ip_embargo', 'includes/utilities');
+  // XXX: We manually split up the URL here instead of using parse_url
+  // because the parse_url function interperates the : in the path as
+  // a port number and chokes if the PID is > 65535. We want to keep this
+  // check as fast as we can because it could potentially be done a large
+  // number of times in a large render array, so we don't want to load the
+  // whole islandora object, just to check the URL.
+
+  // Strip the query parameters from URL.
+  $image_path = strtok($variables['path'], '?');
+  $image_path_parts = explode('/', $image_path);
+  $size_of_image_path = count($image_path_parts);
+
+  if ($image_path_parts[$size_of_image_path - 1] == 'view' &&
+      $image_path_parts[$size_of_image_path - 2] == 'TN' &&
+      $image_path_parts[$size_of_image_path - 3] == 'datastream') {
+
+    $pid = urldecode($image_path_parts[$size_of_image_path - 4]);
+    $embargo_result = islandora_ip_embargo_get_embargo($pid);
+
+    $text = variable_get('islandora_ip_embargo_overlay_text', 'EMBARGOED');
+    $color = variable_get('islandora_ip_embargo_overlay_text_color', 'FF0000');
+
+    if ($embargo_result->rowCount()) {
+      drupal_add_js(drupal_get_path('module', 'islandora_ip_embargo') . '/js/embargoed_images.js');
+      drupal_add_js(array('islandora_ip_embargo' => array('text' => $text, 'color' => $color)), array('type' => 'setting'));
+      if (isset($variables['#attributes']['class'])) {
+        $variables['attributes']['class'] = $variables['#attributes']['class']
+          . 'islandora_ip_embargo_embargoed';
+      }
+      else {
+        $variables['attributes']['class'] = 'islandora_ip_embargo_embargoed';
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_islandora_access_override_datastream_handlers().
+ */
+function islandora_ip_embargo_islandora_access_override_datastream_handlers() {
+  $mod_path = drupal_get_path('module', 'islandora_ip_embargo');
+  $handlers = array();
+
+  $handlers[ISLANDORA_VIEW_OBJECTS] = array(
+    array(
+      'callable' => 'islandora_ip_embargo_thumbnail_access_callback',
+      'file' => "$mod_path/includes/datastream.access-override.inc",
+    ),
+  );
+
+  return $handlers;
+}

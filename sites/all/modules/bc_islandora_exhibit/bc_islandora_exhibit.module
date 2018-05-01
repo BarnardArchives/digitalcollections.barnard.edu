@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * @file
+ * Exhibit behavior for Barnard Digital Collections.
+ */
+
+require_once 'includes/utilities.inc';
+
+/**
+ * Implements hook_theme().
+ */
+function bc_islandora_exhibit_theme() {
+  return array(
+    'node__exhibition' => array(
+      'render element' => 'content',
+      'base hook' => 'node',
+      'template' => 'node--exhibition',
+      'path' => drupal_get_path('module', 'bc_islandora_exhibit') . '/templates',
+    ),
+  );
+}
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function bc_islandora_exhibit_preprocess_node(&$variables) {
+  if (isset($variables['node']) && $variables['node']->type == 'exhibition') {
+    $object_data = _bc_islandora_prepare_exhibit_objects($variables['node']);
+    $variables['ex_themes'] = $object_data['theme_output'];
+    $variables['objects'] = $object_data['objects'];
+  }
+}

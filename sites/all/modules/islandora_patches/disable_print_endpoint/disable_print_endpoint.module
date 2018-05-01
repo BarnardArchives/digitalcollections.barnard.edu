@@ -1,0 +1,12 @@
+<?php
+/**
+ * @file
+ * Main hook implementations.
+ */
+
+/**
+ * Implements hook_menu_alter().
+ */
+function disable_print_endpoint_menu_alter(&$items) {
+  $items['islandora/object/%islandora_object/print']['page callback'] = 'drupal_not_found';
+}

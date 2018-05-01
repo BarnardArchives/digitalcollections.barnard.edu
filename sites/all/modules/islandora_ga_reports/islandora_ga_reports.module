@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * Google Analytics API returns months as their corresponding integer.
+ * Views module does not allow rewriting fields with PHP. This formats month to text.
+ * This should probably be the responsiblilty of the theme but is included for convenience.
+ *
+ * @param $var
+ *   Theme variables.
+ */
+function islandora_ga_reports_preprocess_views_view_field(&$var) {
+  if ($var['field']->field == 'month' && is_numeric($var['output'])) {
+    $var['output'] = date('F', mktime(0, 0, 0, $var['output'], 1));
+  }
+}
+
+/**
+ * Implementation of hook_views_api().
+ */
+function islandora_ga_reports_views_api() {
+  return array('api' => 3.0);
+}
+

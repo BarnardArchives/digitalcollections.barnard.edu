@@ -1,0 +1,54 @@
+
+<dsCompositeModel xmlns="info:fedora/fedora-system:def/dsCompositeModel#">
+  <dsTypeModel ID="DC">
+    <form FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/" MIME="text/xml"></form>
+  </dsTypeModel>
+  <dsTypeModel ID="MODS" optional="true">
+    <form FORMAT_URI="http://www.loc.gov/mods/v3" MIME="text/xml"></form>
+  </dsTypeModel>
+  <dsTypeModel ID="RELS-EXT">
+    <form FORMAT_URI="info:fedora/fedora-system:FedoraRELSExt-1.0" MIME="application/rdf+xml"></form>
+  </dsTypeModel>
+  <dsTypeModel ID="RELS-INT" optional="true">
+    <form FORMAT_URI="info:fedora/fedora-system:FedoraRELSInt-1.0" MIME="application/rdf+xml"></form>
+  </dsTypeModel>
+  <dsTypeModel ID="OBJ">
+    <form MIME="application/vnd.oasis.opendocument.text"></form>
+    <form MIME="application/vnd.sun.xml.writer"></form>
+    <form MIME="application/rtf"></form>
+    <form MIME="application/msword"></form>
+    <form MIME="application/vnd.openxmlformats-officedocument.wordprocessingml.document"></form>
+    <form MIME="application/vnd.wordperfect"></form>
+    <form MIME="text/plain"></form>
+    <form MIME="text/html"></form>
+    <form MIME="application/vnd.oasis.opendocument.spreadsheet"></form>
+    <form MIME="application/vnd.sun.xml.calc"></form>
+    <form MIME="application/vnd.ms-excel"></form>
+    <form MIME="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></form>
+    <form MIME="text/csv"></form>
+    <form MIME="text/tab-separated-values"></form>
+    <form MIME="application/vnd.oasis.opendocument.presentation"></form>
+    <form MIME="application/vnd.openxmlformats-officedocument.presentationml.slideshow"></form>
+    <form MIME="application/vnd.openxmlformats-officedocument.presentationml.presentation"></form>
+    <form MIME="application/vnd.sun.xml.impress"></form>
+    <form MIME="application/vnd.ms-powerpoint"></form>
+    <form MIME="application/pdf"></form>
+  </dsTypeModel>
+  <!-- XXX: "PDF" is optional just to effect the bind order in the zip_importer. -->
+  <dsTypeModel ID="PDF" optional="true">
+    <form MIME="application/pdf"></form>
+  </dsTypeModel>
+  <dsTypeModel ID="TECHMD">
+    <form MIME="text/xml"></form>
+  </dsTypeModel>
+  <dsTypeModel ID="FULL_TEXT">
+      <form MIME="text/plain"></form>
+  </dsTypeModel>
+  <dsTypeModel ID="TN">
+    <form MIME="image/jpeg"></form>
+  </dsTypeModel>
+  <dsTypeModel ID="PREVIEW">
+    <form MIME="image/jpeg"></form>
+  </dsTypeModel>
+</dsCompositeModel>
+

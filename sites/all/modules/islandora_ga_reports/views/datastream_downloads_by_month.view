@@ -1,0 +1,81 @@
+<?php
+
+$view = new view();
+$view->name = 'datastream_downloads_by_month';
+$view->description = 'Google Analytics integration,downloads by month';
+$view->tag = 'islandora';
+$view->base_table = 'google_analytics';
+$view->human_name = 'Datastream downloads by month';
+$view->core = 7;
+$view->api_version = '3.0';
+$view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+/* Display: Master */
+$handler = $view->new_display('default', 'Master', 'default');
+$handler->display->display_options['title'] = 'Downloads By Month';
+$handler->display->display_options['use_more_always'] = FALSE;
+$handler->display->display_options['access']['type'] = 'none';
+$handler->display->display_options['cache']['type'] = 'none';
+$handler->display->display_options['query']['type'] = 'views_query';
+$handler->display->display_options['exposed_form']['type'] = 'basic';
+$handler->display->display_options['pager']['type'] = 'some';
+$handler->display->display_options['pager']['options']['items_per_page'] = '5';
+$handler->display->display_options['pager']['options']['offset'] = '0';
+$handler->display->display_options['style_plugin'] = 'table';
+$handler->display->display_options['style_options']['columns'] = array(
+  'country' => 'country',
+  'pageviews' => 'pageviews',
+);
+$handler->display->display_options['style_options']['default'] = '-1';
+$handler->display->display_options['style_options']['info'] = array(
+  'country' => array(
+    'sortable' => 0,
+    'default_sort_order' => 'asc',
+    'align' => '',
+    'separator' => '',
+    'empty_column' => 0,
+  ),
+  'pageviews' => array(
+    'sortable' => 0,
+    'default_sort_order' => 'asc',
+    'align' => '',
+    'separator' => '',
+    'empty_column' => 0,
+  ),
+);
+/* Field: Time Dimensions: ga:month */
+$handler->display->display_options['fields']['month']['id'] = 'month';
+$handler->display->display_options['fields']['month']['table'] = 'google_analytics';
+$handler->display->display_options['fields']['month']['field'] = 'month';
+$handler->display->display_options['fields']['month']['label'] = 'Month';
+/* Field: Page Tracking Metrics: ga:pageviews */
+$handler->display->display_options['fields']['pageviews']['id'] = 'pageviews';
+$handler->display->display_options['fields']['pageviews']['table'] = 'google_analytics';
+$handler->display->display_options['fields']['pageviews']['field'] = 'pageviews';
+$handler->display->display_options['fields']['pageviews']['label'] = 'Downloads';
+/* Sort criterion: Time Dimensions: ga:month */
+$handler->display->display_options['sorts']['month']['id'] = 'month';
+$handler->display->display_options['sorts']['month']['table'] = 'google_analytics';
+$handler->display->display_options['sorts']['month']['field'] = 'month';
+/* Contextual filter: Page Tracking Dimensions: ga:pagePath */
+$handler->display->display_options['arguments']['pagePath']['id'] = 'pagePath';
+$handler->display->display_options['arguments']['pagePath']['table'] = 'google_analytics';
+$handler->display->display_options['arguments']['pagePath']['field'] = 'pagePath';
+$handler->display->display_options['arguments']['pagePath']['default_action'] = 'default';
+$handler->display->display_options['arguments']['pagePath']['default_argument_type'] = 'php';
+$handler->display->display_options['arguments']['pagePath']['default_argument_options']['code'] = '$url = urldecode(request_uri()) . \'/datastream/OBJ/download\';
+return $url;';
+$handler->display->display_options['arguments']['pagePath']['summary']['number_of_records'] = '0';
+$handler->display->display_options['arguments']['pagePath']['summary']['format'] = 'default_summary';
+$handler->display->display_options['arguments']['pagePath']['summary_options']['items_per_page'] = '25';
+/* Filter criterion: Page Tracking Metrics: ga:pageviews */
+$handler->display->display_options['filters']['pageviews']['id'] = 'pageviews';
+$handler->display->display_options['filters']['pageviews']['table'] = 'google_analytics';
+$handler->display->display_options['filters']['pageviews']['field'] = 'pageviews';
+$handler->display->display_options['filters']['pageviews']['operator'] = '!=';
+$handler->display->display_options['filters']['pageviews']['value']['value'] = '0';
+
+/* Display: Block */
+$handler = $view->new_display('block', 'Block', 'block');
+$handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
+

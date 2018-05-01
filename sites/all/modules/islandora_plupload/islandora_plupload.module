@@ -1,0 +1,135 @@
+<?php
+
+/**
+ * @file
+ * Inserts plupload file upload elements into Islandora forms.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function islandora_plupload_menu() {
+  $items = array();
+  $items['admin/islandora/tools/plupload'] = array(
+    'title' => 'Plupload',
+    'access arguments' => array('administer islandora plupload'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('islandora_plupload_admin_form'),
+    'file' => 'includes/admin.form.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function islandora_plupload_permission() {
+  return array(
+    'administer islandora plupload' => array(
+      'title' => t('Administer Islandora Plupload'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function islandora_plupload_form_alter(&$form, &$form_state, $form_id) {
+  if (strpos($form_id, 'islandora') !== FALSE) {
+    islandora_plupload_alter_managed_files($form);
+  }
+}
+
+/**
+ * Recursively change managed_file elements to plupload.
+ *
+ * @param array $form
+ *   A form or element array.
+ */
+function islandora_plupload_alter_managed_files(&$form) {
+  $islandora_plupload_max = variable_get('islandora_plupload_max_filesize', 3000);
+  if (is_array($form) && !empty($form)) {
+    $children = element_children($form);
+    foreach ($children as $element_key) {
+      $element =& $form[$element_key];
+      islandora_plupload_alter_managed_files($element);
+      if (isset($element['#type']) && $element['#type'] === 'managed_file' && !(isset($element['#islandora_plupload_do_not_alter']) && $element['#islandora_plupload_do_not_alter'])) {
+        $element['#type'] = 'plupload';
+        // Element value validation is hard-coded to occur in form.inc
+        // function _form_validate() before the elements own validation hooks
+        // are run. We must ignore the #required property of plupload elements,
+        // and use our own #upload_required property. So that we can validate
+        // the unconventinal values used for submitted plupload elements in our
+        // own element validation handler rather than the one provided by
+        // Drupal.
+        $element['#upload_required'] = isset($element['#required']) ? $element['#required'] : FALSE;
+        $element['#required'] = FALSE;
+        unset($element['#description']);
+        $element['#upload_validators']['file_validate_size'] = array($islandora_plupload_max * 1024 * 1024);
+        $settings = array(
+          'max_file_size' => $islandora_plupload_max . 'MB',
+          'chunk_size' => variable_get('islandora_plupload_chunk_size', 15) . 'MB',
+          'max_file_count' => 1,
+        );
+        $element['#plupload_settings'] = $settings;
+        $element['#submit_element'] = '#edit-next,#edit-submit';
+        $element['#element_validate'][] = 'islandora_plupload_element_validate';
+        drupal_add_js(drupal_get_path('module', 'islandora_plupload') . '/js/element.js', array('type' => 'file', 'scope' => 'footer'));
+      }
+    }
+  }
+}
+
+/**
+ * Plupload element validation. Format the value as a managed_file would be.
+ *
+ * @param array $element
+ *   The form element.
+ * @param array $form_state
+ *   The form state.
+ */
+function islandora_plupload_element_validate($element, &$form_state) {
+  module_load_include('inc', 'islandora', 'includes/mime_detect');
+  $element_value =& drupal_array_get_nested_value($form_state['values'], $element['#parents']);
+  // Need to check to make sure there is a value here as we could have
+  // optional plupload elements in forms.
+  $first_element_value = isset($element_value) ? reset($element_value) : FALSE;
+
+  if ($first_element_value && is_array($first_element_value)) {
+    $file = plupload_file_uri_to_object($first_element_value["tmppath"]);
+    $file->filename = $first_element_value['name'];
+    $mime_detect = new MimeDetect();
+    $file->filemime = $mime_detect->getMimeType($file->filename);
+    islandora_plupload_file_save($file);
+    $element_value = $file->fid;
+  }
+  elseif (!is_numeric($element_value)) {
+    $element_value = 0;
+    if ($element['#upload_required']) {
+      form_error($element, t('@name field is required.', array('@name' => $element['#title'])));
+    }
+  }
+}
+
+/**
+ * Copy of Drupal file_save that buries errors using filesize() on files > 2GB.
+ */
+function islandora_plupload_file_save($file) {
+  $file->timestamp = REQUEST_TIME;
+  if (!isset($file->filesize)) {
+    $file->filesize = @filesize($file->uri);
+  }
+  module_invoke_all('file_presave', $file);
+  module_invoke_all('entity_presave', $file, 'file');
+
+  if (empty($file->fid)) {
+    drupal_write_record('file_managed', $file);
+    // Inform modules about the newly added file.
+    module_invoke_all('file_insert', $file);
+    module_invoke_all('entity_insert', $file, 'file');
+  }
+
+  unset($file->original);
+  return $file;
+}

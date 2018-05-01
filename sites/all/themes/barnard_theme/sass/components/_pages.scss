@@ -1,0 +1,38 @@
+////////////////////////
+// Pages Styling
+////////////////////////
+
+#header, #footer {
+	background: black;
+	height: 45px;
+	width: 100%;
+	position: absolute;
+	left: 0; right: 0;
+	z-index: 50;
+	padding-left: 3.5em;
+}
+
+#footer {
+	margin-top: 3em;
+	.footer-content {
+		margin: 0;
+		a {
+			text-transform: uppercase;
+			text-decoration: none;
+			font-size: 90%;
+			letter-spacing: 0.5pt;
+			line-height: 4em;
+			&:link, &:visited {
+				color: white;
+			}
+		    &:hover, &:active {
+				color: #ccc;
+		    }	
+		}
+	}
+}
+
+#name-and-slogan, #main-menu {
+	float: left;
+	clear: left;
+}

@@ -1,0 +1,15 @@
+name = Islandora Solr Content Type
+description = A Drupal content type for Islandora objects indexed and served by SOLR. A SOLR query is used to generate the content on the page. This content type allows end-users to use Solr searching and faceting without the being redirected from the page.
+version = 7.x-1.x-pre1
+core = 7.x
+package = Barnard College Custom Islandora
+configure = admin/islandora/islandora_solr_content_type
+files[] = islandora_solr_content_type.install
+files[] = islandora_solr_content_type.module
+dependencies[] = field
+dependencies[] = list
+dependencies[] = number
+dependencies[] = options
+dependencies[] = islandora
+dependencies[] = islandora_solr
+stylesheets[all][] = css/islandora_solr_content_type.css
