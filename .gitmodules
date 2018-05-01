@@ -289,3 +289,6 @@
 [submodule "sites/all/modules/filemime"]
 	path = sites/all/modules/filemime
 	url = https://git.drupal.org/project/filemime.git
+[submodule "sites/all/modules/islandora_datastreams_io"]
+	path = sites/all/modules/islandora_datastreams_io
+	url = https://github.com/ulsdevteam/islandora_datastreams_io.git
