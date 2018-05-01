@@ -55,7 +55,6 @@ function google_analytics_reports_api_theme() {
     'google_analytics_reports_api_profile_label' => array(
       'arguments' => array(
         'profile' => NULL,
-        'active' => FALSE,
       ),
     ),
   );
@@ -168,7 +167,7 @@ function google_analytics_reports_api_report_data($params = array(), $cache_opti
   }
   else {
     drupal_set_message(t('There was an authentication error. Please check your Google Analytics API settings and try again.'), 'error', FALSE);
-    watchdog('google analytics reports api', 'There was an authentication error. Please check your Google Analytics API settings and try again.', array(), WATCHDOG_ERROR);
+    watchdog('google analytics reports api', 'There was an authentication error. Please check your Google Analytics API settings and try again.', WATCHDOG_ERROR);
     return array('error' => TRUE);
   }
 }
@@ -207,60 +206,27 @@ function google_analytics_reports_api_cache_time() {
  * @ingroup themeable
  */
 function theme_google_analytics_reports_api_profile_label($variables) {
-  if (isset($variables['active']) && ($variables['active'])) {
-    return parse_url($variables['profile']->websiteUrl, PHP_URL_HOST) . ' - ' . $variables['profile']->name . ' (' . $variables['profile']->id . ')';
-  }
-  else {
-    return $variables['profile']->name . ' (' . $variables['profile']->id . ')';
-  }
+  return $variables['profile']->name . ' (' . $variables['profile']->id . ')';
 }
 
 /**
  * Implements hook_domain_conf().
  */
 function google_analytics_reports_api_domain_conf() {
-  $access_token = variable_get('google_analytics_reports_api_access_token', 0);
-
+  $profile_id = variable_get('google_analytics_reports_api_profile_id', 0);
   $form['google_analytics_reports_api'] = array(
     '#type' => 'fieldset',
     '#title' => t('Google Analytics Reports API'),
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
-
-  if ($access_token) {
-    // Load file with google_analytics_reports_api_admin() function.
-    module_load_include('inc', 'google_analytics_reports_api', 'google_analytics_reports_api.admin');
+  if ($profile_id) {
     $admin_form = google_analytics_reports_api_admin();
-    $form['google_analytics_reports_api']['google_analytics_reports_api_profile_id'] = $admin_form['settings']['google_analytics_reports_api_profile_id'];
+    $form['google_analytics_reports_api']['google_analytics_reports_api_profile_id'] = $admin_form['ga']['google_analytics_reports_api_profile_id'];
     $form['google_analytics_reports_api']['google_analytics_reports_api_profile_id']['#description'] = t('Choose your Google Analytics profile.');
   }
   else {
-    $form['google_analytics_reports_api']['google_analytics_reports_api_authorize']['#markup'] = '<p>' . t('You must <a href="@url">authorize</a> Drupal to use your Google Analytics account before you can view reports.',
-        array('@url' => url('admin/config/system/google-analytics-reports-api'))) . '</p>';
+    $form['google_analytics_reports_api']['authorize']['#markup'] = '<p>' . t('You must <a href="!url">authorize</a> Drupal to use your Analytics account before you can view reports.', array('!url' => url('admin/config/system/google-analytics-reports-api'))) . '</p>';
   }
-
   return $form;
-}
-
-/**
- * No overlay for config page.
- *
- * Implements hook_admin_paths()
- */
-function google_analytics_reports_admin_paths() {
-  return array(
-    'admin/config/system/google-analytics-reports-api' => FALSE,
-  );
-}
-
-/**
- * However config page should still use the admin theme.
- *
- * Implements hook_custom_theme().
- */
-function google_analytics_reports_custom_theme() {
-  if ('admin/config/system/google-analytics-reports-api' == current_path()) {
-    return variable_get('admin_theme', 'seven');
-  }
 }

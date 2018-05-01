@@ -71,7 +71,8 @@ class GoogleAnalyticsReportsApiFeed {
    *   - current page url.
    */
   public static function currentUrl() {
-    return url(request_path(), array('absolute' => TRUE));
+    global $base_url;
+    return $base_url . request_uri();
   }
 
   /**
@@ -142,12 +143,12 @@ class GoogleAnalyticsReportsApiFeed {
     }
     else {
       $error_vars = array(
-        '@code' => $this->response->code,
-        '@message' => $this->response->error,
-        '@details' => print_r(drupal_json_decode($this->response->data), TRUE),
+        '!code' => $this->response->code,
+        '!message' => $this->response->error,
+        '!details' => strip_tags($this->response->data),
       );
-      $this->error = t('<strong>Code</strong>: @code, <strong>Error</strong>: @message, <strong>Message</strong>: <pre>@details</pre>', $error_vars);
-      watchdog('google analytics reports api', '<strong>Code</strong>: @code, <strong>Error</strong>: @message, <strong>Message</strong>: <pre>@details</pre>', $error_vars, WATCHDOG_ERROR);
+      $this->error = t('Code: !code - Error: !message - Message: !details', $error_vars);
+      watchdog('google analytics reports api', 'Code: !code - Error: !message - Message: !details', $error_vars, WATCHDOG_ERROR);
     }
   }
 
@@ -275,7 +276,6 @@ class GoogleAnalyticsReportsApiFeed {
     // Provide cache defaults if a developer did not override them.
     $cache_defaults = array(
       'cid' => NULL,
-      'bin' => 'cache',
       'expire' => google_analytics_reports_api_cache_time(),
       'refresh' => FALSE,
     );
@@ -283,12 +283,12 @@ class GoogleAnalyticsReportsApiFeed {
 
     // Provide a query MD5 for the cid if the developer did not provide one.
     if (empty($cache_options['cid'])) {
-      $cache_options['cid'] = 'google_analytics_reports_data:' . md5(serialize(array_merge($params, array($url, $method))));
+      $cache_options['cid'] = 'GoogleAnalyticsReportsApiFeed:' . md5(serialize(array_merge($params, array($url, $method))));
     }
 
-    $cache = cache_get($cache_options['cid'], $cache_options['bin']);
+    $cache = cache_get($cache_options['cid']);
 
-    if (!$cache_options['refresh'] && isset($cache) && !empty($cache->data) && ($cache->expire > REQUEST_TIME)) {
+    if (!$cache_options['refresh'] && isset($cache) && !empty($cache->data)) {
       $this->response = $cache->data;
       $this->results = json_decode($this->response->data);
       $this->fromCache = TRUE;
@@ -298,7 +298,7 @@ class GoogleAnalyticsReportsApiFeed {
     }
 
     if (empty($this->error)) {
-      cache_set($cache_options['cid'], $this->response, $cache_options['bin'], $cache_options['expire']);
+      cache_set($cache_options['cid'], $this->response, 'cache', $cache_options['expire']);
     }
 
     return (empty($this->error));
@@ -335,10 +335,10 @@ class GoogleAnalyticsReportsApiFeed {
       $error_vars = array(
         '@code' => $this->response->code,
         '@message' => $this->response->error,
-        '@details' => print_r(drupal_json_decode($this->response->data), TRUE),
+        '@details' => strip_tags($this->response->data),
       );
-      $this->error = t('<strong>Code</strong>: @code, <strong>Error</strong>: @message, <strong>Message</strong>: <pre>@details</pre>', $error_vars);
-      watchdog('google analytics reports api', '<strong>Code</strong>: @code, <strong>Error</strong>: @message, <strong>Message</strong>: <pre>@details</pre>', $error_vars, WATCHDOG_ERROR);
+      $this->error = t('Code: @code, Error: @message, Message: @details', $error_vars);
+      watchdog('google analytics reports api', 'Code: @code, Error: @message, Message: @details', $error_vars, WATCHDOG_ERROR);
     }
   }
 
@@ -487,16 +487,26 @@ class GoogleAnalyticsReportsApiFeed {
    * Sanitize report data.
    */
   protected function sanitizeReport() {
+    // Get all Google Analytics fields.
+    // TODO: Replace with custom hook.
+    if (module_exists('google_analytics_reports')) {
+      module_load_include('inc', 'google_analytics_reports');
+      $fields = google_analytics_reports_get_fields();
+    }
+
     // Named keys for report values.
     $this->results->rawRows = isset($this->results->rows) ? $this->results->rows : array();
     $this->results->rows = array();
     foreach ($this->results->rawRows as $row_key => $row_value) {
       foreach ($row_value as $item_key => $item_value) {
         $field_without_ga = str_replace('ga:', '', $this->results->columnHeaders[$item_key]->name);
+        $item_value = $this->replaceData($field_without_ga, $item_value);
 
-        // Allow other modules to alter executed data before display.
-        drupal_alter('google_analytics_reports_api_reported_data', $field_without_ga, $item_value);
-
+        // Date and time datatypes should not have the digits after the zero.
+        // TODO: Replace with custom hook.
+        if (module_exists('google_analytics_reports') && in_array($fields[$field_without_ga]['datatype'], array('date', 'time'))) {
+          $item_value = round($item_value);
+        }
         $this->results->rows[$row_key][$field_without_ga] = $item_value;
       }
     }
@@ -511,4 +521,26 @@ class GoogleAnalyticsReportsApiFeed {
     unset($this->results->rawTotals);
   }
 
+  /**
+   * Addition replacements.
+   */
+  public function replaceData($type, $value) {
+
+    switch ($type) {
+      case 'userType':
+        return ($value == 'New Visitor') ? t('New Visitor') : t('Returning Visitor');
+
+      case 'date':
+        return strtotime($value);
+
+      case 'yearMonth':
+        return strtotime($value . '01');
+
+      case 'userGender':
+        return ($value == 'male') ? t('Male') : t('Female');
+
+      default:
+        return $value;
+    }
+  }
 }
