@@ -1,0 +1,123 @@
+<?php
+
+// Permissions.
+define('ISLANDORA_DATASTREAMS_IO', 'datastreams input output');
+define('ISLANDORA_DATASTREAMS_IO_EXPORT', 'datastreams output');
+define('ISLANDORA_DATASTREAMS_IO_IMPORT', 'datastreams input');
+
+// pids_fetch_methods:
+define('ISLANDORA_DATASTREAMS_IO_FETCH_SOLR', 0);
+define('ISLANDORA_DATASTREAMS_IO_FETCH_LISTPIDS', 1);
+define('ISLANDORA_DATASTREAMS_IO_FETCH_COLLECTION', 2);
+define('ISLANDORA_DATASTREAMS_IO_FETCH_MODEL', 3);
+
+/**
+ * Implements hook_menu().
+ */
+function islandora_datastreams_io_menu() {
+  return array(
+    'admin/islandora/datastreams_io' => array(
+      'title' => 'Islandora Datastreams Input/Output & Object Relationships',
+      'description' => 'Settings for the Islandora Datastreams Input/Output & Object Relationships module.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_datastreams_io_admin_form'),
+      'access arguments' => array(ISLANDORA_DATASTREAMS_IO),
+      'file' => 'includes/admin.form.inc',
+    ),
+    'islandora/datastreams_io/export' => array(
+      'title' => t('Export Datastreams'),
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_datastreams_io_export_form'),
+      'type' => MENU_CALLBACK,
+      'file' => 'includes/export.form.inc',
+      'access arguments' => array(ISLANDORA_DATASTREAMS_IO_EXPORT),
+    ),
+    // ZIP file download handler
+    'islandora/datastreams_io/download_export/%' => array(
+      'title' => t('Download export'),
+      'page callback' => 'islandora_datastreams_download_export',
+      'page arguments' => array(3),
+      'file' => 'includes/download_export.inc',
+      'access arguments' => array(ISLANDORA_DATASTREAMS_IO_EXPORT),
+    ),
+    'islandora/datastreams_io/import' => array(
+      'title' => t('Import Datastreams'),
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_datastreams_io_import_form'),
+      'type' => MENU_CALLBACK,
+      'file' => 'includes/import.form.inc',
+      'access arguments' => array(ISLANDORA_DATASTREAMS_IO_IMPORT),
+    ),
+    'islandora/datastreams_io/relationships' => array(
+      'title' => t('Object Relationships'),
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_datastreams_io_relationships_form'),
+      'type' => MENU_CALLBACK,
+      'file' => 'includes/relationships.form.inc',
+      'access arguments' => array(ISLANDORA_DATASTREAMS_IO_EXPORT),
+    ),
+    'islandora/datastreams_io/transform' => array(
+      'title' => t('Transform Datastreams'),
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_datastreams_io_transform_form'),
+      'type' => MENU_CALLBACK,
+      'file' => 'includes/transform.form.inc',
+      'access arguments' => array(ISLANDORA_DATASTREAMS_IO_EXPORT),
+    ),
+  );
+}
+
+/**
+ * Implements hook_permission().
+ */
+function islandora_datastreams_io_permission() {
+  return array(
+    ISLANDORA_DATASTREAMS_IO => array(
+      'title' => t('Use the datastreams import and export tool'),
+      'description' => t('User can import / export selected datastreams per ' .
+        'collection, model type, Solr query (if installed), or by list of PID values.'),
+    ),
+    ISLANDORA_DATASTREAMS_IO_EXPORT => array(
+      'title' => t('Use to export object datastreams.'),
+      'description' => t('User can export selected objects\' datastreams.'),
+    ),
+    ISLANDORA_DATASTREAMS_IO_IMPORT => array(
+      'title' => t('Use the import object datastreams.'),
+      'description' => t('User can import selected objects\' datastreams.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_presprocess_theme().
+ *
+ * This code will remove the sidebar and must check to see whether or not the path is on a user page.
+ */
+function islandora_datastreams_io_preprocess_page(&$vars) {
+  $item = menu_get_item();
+  if (is_array($item)) {
+    if ($item['path'] == 'islandora/datastreams_io/export/batch/%' ||
+        $item['path'] == 'islandora/datastreams_io/export' ||
+        $item['path'] == 'islandora/datastreams_io/relationships' ||
+        $item['path'] == 'islandora/datastreams_io/transform') {
+      $path = drupal_get_path('module', 'islandora_datastreams_io');
+      drupal_add_js($path . '/js/batch_functions.js');
+    }
+  }
+}
+
+/** 
+ * Helper function that will populate the PIDS and PIDS fetch method for the export form.
+ * This is intended to be called from units that want to pre-populate and use the export form.
+ *
+ * The allowable fetch methods are:
+ *   define('ISLANDORA_DATASTREAMS_IO_FETCH_SOLR', 0);
+   define('ISLANDORA_DATASTREAMS_IO_FETCH_LISTPIDS', 1);
+   define('ISLANDORA_DATASTREAMS_IO_FETCH_COLLECTION', 2);
+   define('ISLANDORA_DATASTREAMS_IO_FETCH_MODEL', 3);
+ */
+function islandora_datastreams_io_pids_to_export_form($pids_value, $pids_fetch_method) {
+  $_SESSION['pids_value'] = json_encode($pids_value);
+  $_SESSION['pids_fetch_method'] = $pids_fetch_method;
+  drupal_goto('/islandora/datastreams_io/export');
+}
