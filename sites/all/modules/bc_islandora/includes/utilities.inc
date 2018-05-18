@@ -77,3 +77,31 @@ function _barnard_islandora_get_latest_possible_date($date_to) {
   }
   return NULL;
 }
+
+
+/**
+ * Determine if we're conducting a solr search with search terms.
+ *
+ * @return bool
+ *   TRUE if searching
+ *   FALSE if not
+ */
+function _bc_solr_searching() {
+  // Determine if any active search terms or if we are just showing all results.
+  $searching = &drupal_static(__FUNCTION__);
+  if (!isset($searching)) {
+    $searching = FALSE;
+    global $_islandora_solr_queryclass;
+    if(!empty($_islandora_solr_queryclass->solrQuery) && !in_array($_islandora_solr_queryclass->solrQuery, $_islandora_solr_queryclass->differentKindsOfNothing)) {
+      $searching = TRUE;
+    }
+    elseif (!empty($_islandora_solr_queryclass->internalSolrParams)) {
+      $qp = $_islandora_solr_queryclass->internalSolrParams;
+      unset($qp['islandora_solr_search_navigation']);
+      unset($qp['type']);
+      unset($qp['sort']);
+      $searching = count($qp) > 0;
+    }
+  }
+  return $searching;
+}
