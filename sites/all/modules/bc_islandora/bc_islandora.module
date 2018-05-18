@@ -385,7 +385,6 @@ function bc_islandora_islandora_solr_query_alter($islandora_solr_query) {
   module_load_include('inc', 'bc_islandora', 'includes/utilities');
   if(!_bc_solr_searching()) {
     // If not searching, exclude paged content from search.
-    drupal_set_message(t('Excluding individual pages of paged content while browsing.'));
     $islandora_solr_query->solrParams['fq'][] = '-RELS_EXT_hasModel_uri_s: "info:fedora/islandora:pageCModel"';
   }
 
