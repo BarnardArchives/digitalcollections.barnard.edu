@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for islandora_openseadragon_paged.
+ */
+
+/**
+ * Implements hook_enable().
+ */
+function islandora_openseadragon_enable() {
+  $osd_settings = islandora_openseadragon_get_settings();
+
+  variable_set('islandora_openseadragon_settings', array($osd_settings + array(
+    'preserveViewport' => 'true',
+    'showReferenceStrip' => 'true',
+    'referenceStripSizeRatio' => '0.15',
+  )));
+}

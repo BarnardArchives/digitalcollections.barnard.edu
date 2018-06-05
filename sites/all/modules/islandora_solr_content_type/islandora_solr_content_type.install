@@ -1,0 +1,37 @@
+<?php
+/**
+ * @file
+ * Handles install and uninstall of module.
+ * Fields, instance, and variables for our content type.
+ * For brevity field names are shortened to "isct" - the initialism of the
+ * module.
+ */
+
+// Loads our content structure: fields, instances, variables.
+require_once 'includes/content.config.inc';
+
+/**
+ * Implements hook_install().
+ */
+function islandora_solr_content_type_install() {
+  node_types_rebuild();
+  islandora_solr_content_type_install_custom_type();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function islandora_solr_content_type_uninstall() {
+  $sql = 'SELECT nid FROM {node} n WHERE n.type = :type';
+  $result = db_query($sql, array(':type' => 'islandora_solr_content_type'));
+  $nids = array();
+  foreach ($result as $row) {
+    $nids[] = $row->nid;
+  }
+  node_delete_multiple($nids);
+  islandora_solr_content_type_uninstall_custom_type();
+  node_type_delete('islandora_solr_content_type');
+  field_purge_batch(1000);
+}
+
+// vim: set filetype=php:

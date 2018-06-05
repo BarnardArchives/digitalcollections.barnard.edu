@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the  feature.
+ */
+
+include_once 'bc_islandora_exhibit_feature.features.inc';

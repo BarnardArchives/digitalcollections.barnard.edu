@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for this module.
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * @see islandora_paged_content_islandora_required_objects()
+ */
+function islandora_jodconverter_install() {
+  variable_set('islandora_jodconverter_openoffice_port', 8100);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function islandora_jodconverter_uninstall() {
+  $variables = array(
+    'islandora_jodconverter_openoffice_port',
+  );
+  array_walk($variables, 'variable_del');
+}

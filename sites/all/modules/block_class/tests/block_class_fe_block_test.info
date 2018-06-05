@@ -1,0 +1,8 @@
+name = Block Class FE Block Integration Test Helper
+description = Helper module for testing the integration of Block Class with Features through the FE Block module.
+core = 7.x
+package = Features
+dependencies[] = fe_block
+features[fe_block_settings][] = user-online
+features[features_api][] = api:2
+hidden = TRUE

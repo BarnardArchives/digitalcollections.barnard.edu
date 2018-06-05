@@ -1,0 +1,28 @@
+language: php
+dist: precise
+sudo: required
+php:
+  - 5.3.3
+  - 5.4
+branches:
+  only:
+    - /^7.x/
+env:
+  - FEDORA_VERSION="3.5"
+  - FEDORA_VERSION="3.6.2"
+  - FEDORA_VERSION="3.7.0"
+before_install:
+  - cd $HOME
+  - git clone -b 7.x git://github.com/Islandora/islandora.git
+  - git clone -b 7.x git://github.com/discoverygarden/islandora_jodconverter.git
+  - export ISLANDORA_DIR=$HOME/islandora
+  - $HOME/islandora/tests/scripts/travis_setup.sh
+  - cd $HOME/drupal-*
+  - ln -s $TRAVIS_BUILD_DIR sites/all/modules/islandora_jodconverter
+  - drush dl libraries
+  - drush en --user=1 --yes islandora_jodconverter
+script:
+  - ant -buildfile sites/all/modules/islandora_jodconverter/build.xml lint
+  - $ISLANDORA_DIR/tests/scripts/line_endings.sh sites/all/modules/islandora_jodconverter
+  - drush coder-review --reviews=production,security,style,i18n,potx,sniffer islandora_jodconverter
+  - phpcpd --names *.module,*.inc,*.test sites/all/modules/islandora_jodconverter

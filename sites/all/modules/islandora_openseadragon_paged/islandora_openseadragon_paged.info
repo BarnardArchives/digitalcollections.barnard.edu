@@ -1,0 +1,7 @@
+name = "Islandora OpenSeadragon Paged"
+description = "OpenSeadragon for paged content."
+dependencies[] = islandora_openseadragon
+package = Islandora Viewers
+version = 7.x-dev
+core = 7.x
+php = 5.3

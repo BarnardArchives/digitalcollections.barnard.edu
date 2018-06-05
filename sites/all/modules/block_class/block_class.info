@@ -1,0 +1,9 @@
+name = Block Class
+description = Allows assigning CSS classes to blocks.
+core = 7.x
+
+dependencies[] = block
+files[] = block_class.test
+test_dependencies[] = context
+test_dependencies[] = features (2.x)
+test_dependencies[] = features_extra

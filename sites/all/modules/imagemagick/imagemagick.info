@@ -1,0 +1,4 @@
+name = ImageMagick
+description = Provides ImageMagick integration.
+core = 7.x
+configure = admin/config/media/image-toolkit

@@ -1,0 +1,80 @@
+<?php
+
+/**
+ * @file
+ * Attempts to push some datastreams.
+ */
+
+class IslandoraDatastreamCrudPushDatastreamsTestCase extends IslandoraCollectionWebTestCase {
+
+  /**
+   * Get test information.
+   *
+   * @see IslandoraWebTestCase::getInfo()
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Islandora Datastream CRUD Push Ingest',
+      'description' => 'Pushes new datastreams to some objects.',
+      'group' => 'Islandora Datastream CRUD',
+    );
+  }
+
+  /**
+   * Set up the test environment.
+   *
+   * @see IslandoraWebTestCase::setUp()
+   */
+  public function setUp() {
+    parent::setUp(array(
+      'islandora',
+      'islandora_basic_image',
+      'islandora_basic_collection',
+      'islandora_solr',
+      'islandora_batch',
+      'islandora_datastream_crud',
+    ));
+  }
+
+  /**
+   * Creates a user, ingests objects, and attempts to push some datastreams.
+   */
+  public function testPushDatastreams() {
+    $user = $this->drupalCreateUser(array(
+      'view fedora repository objects',
+      'ingest fedora objects',
+      'administer site configuration',
+      'manage object properties',
+      'delete fedora objects and datastreams',
+      'create child collection',
+    ));
+    $this->drupalLogin($user);
+
+    $this->createTestCollection('Test collection', 'islandora:sp_basic_image', 'islandora:testcollection');
+
+    $batch_target_dir = drupal_get_path('module', 'islandora_datastream_crud') . '/tests/fixtures/batch_ingest';
+    $batch_ingest_cmd = "drush -v -u 1 islandora_batch_scan_preprocess --content_models=islandora:sp_basic_image --parent=islandora:testcollection --parent_relationship_pred=isMemberOfCollection --type=directory --namespace=testing --target=" . $batch_target_dir;
+    exec($batch_ingest_cmd);
+    exec("drush -v -u 1 islandora_batch_ingest");
+
+    // Push some FOO datastreams.
+    $datastreams_dir = drupal_get_path('module', 'islandora_datastream_crud') . '/tests/fixtures/datastream_crud';
+    $crud_cmd = "drush islandora_datastream_crud_push_datastreams --user=1 -y --datastreams_source_directory=" . $datastreams_dir;
+    exec($crud_cmd);
+
+    $checksums = array(
+      // Each checksums is generated from the datastream file using linux's
+      // sha1sum.
+      'testing:1' => '1970dce0be2215876428151464eaa12dc72d5e54',
+      'testing:2' => 'ab9a55603d33156a380bd0ca66b0f0c65ecf2e37',
+      'testing:3' => '60ef11c0d33b763cef5c1b63410322d989f030bf',
+    );
+    foreach ($checksums as $pid => $sha1) {
+      $object = $this->getObjectFromPath('islandora/object/' . $pid);
+      $datastreams = array(
+        array('FOO', 'checksum', array('sha1' => $sha1)),
+      );
+      $this->validateDatastreams($object, $datastreams);
+    }
+  }
+}

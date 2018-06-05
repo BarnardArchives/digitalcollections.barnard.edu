@@ -1,0 +1,169 @@
+body {
+  background: #fff; }
+  body .logged-in #navigation {
+    margin-top: 110px; }
+
+.breadcrumb {
+  margin-bottom: 15px; }
+
+#dl-links {
+  margin-bottom: 10px; }
+
+.islandora-compound-title {
+  font-size: 125% !important; }
+
+.islandora-compound-manage {
+  font-size: 85% !important; }
+
+.islandora-compound-details {
+  border-bottom: 1px dotted #ccc;
+  margin: 1em 0;
+  font-size: 90% !important; }
+
+.islandora-compound-thumbs {
+  border-top: none !important; }
+
+.islandora-compound-thumb {
+  margin-bottom: 1em;
+  padding-bottom: 0 !important; }
+
+.islandora-compound-thumb .islandora-compound-caption {
+  font-size: 90% !important; }
+
+#block-bc-islandora-bc-islandora-newspaper {
+  width: 100%;
+  margin: 0 auto; }
+
+#return-to-page {
+  margin-bottom: 5px; }
+
+.bulletin-calendar .inactive, .bulletin-calendar.inactive {
+  display: none; }
+.bulletin-calendar .active, .bulletin-calendar.active {
+  display: block; }
+.bulletin-calendar ul {
+  list-style-type: none;
+  margin-left: 0px;
+  padding-left: 0px; }
+.bulletin-calendar li {
+  display: inline-block;
+  margin: 0 10px 10px 0; }
+
+.yearbook-calendar .inactive, .yearbook-calendar.inactive {
+  display: none; }
+.yearbook-calendar .active, .yearbook-calendar.active {
+  display: block; }
+.yearbook-calendar ul {
+  list-style-type: none;
+  margin-left: 0px;
+  padding-left: 0px; }
+.yearbook-calendar li {
+  display: inline-block;
+  margin: 0 10px 10px 0; }
+
+#book-page-viewer {
+  margin-top: 10px; }
+
+#yearbook-nav span.year {
+  margin: 0 10px 10px 0; }
+#yearbook-nav .decade {
+  margin-left: 50px;
+  margin-bottom: 25px; }
+
+.islandora-basic-collection.student-pubs .islandora-basic-collection-object {
+  margin-left: 0; }
+
+.islandora-newspaper-issue-navigator {
+  display: block;
+  margin-bottom: 10px; }
+
+.islandora-newspaper-object {
+  margin-top: 0 !important; }
+
+.landingpage#collections {
+  margin: 0 auto;
+  text-align: center;
+  max-width: 860px; }
+
+.landingpage-icon {
+  display: inline-block;
+  width: 220px;
+  height: 225px;
+  margin-right: 50px;
+  margin-bottom: 50px;
+  text-align: center;
+  cursor: pointer; }
+
+.landingpage-icon h1 {
+  font-weight: bold;
+  font-size: 1.3em;
+  margin-top: 8.9em;
+  margin-bottom: 0; }
+
+.landingpage-icon a {
+  text-decoration: none; }
+
+.landingpage-icon a.lp-link {
+  display: block;
+  font-size: 0.95em; }
+
+.landingpage-link {
+  width: 200px; }
+
+.landingpage-icon#photos {
+  background: url(/sites/all/modules/bc_islandora/img/photographsicon.jpg) no-repeat top left;
+  height: 225px;
+  width: 225px; }
+
+.landingpage-icon#bulletin {
+  background: url(/sites/all/modules/bc_islandora/img/bulletinicon.jpg) no-repeat; }
+
+.landingpage-icon#yearbook {
+  background: url(/sites/all/modules/bc_islandora/img/yearbookicon.jpg) no-repeat; }
+
+.landingpage-icon#student-pubs {
+  background: url(/sites/all/modules/bc_islandora/img/studentpubicon.jpg) no-repeat; }
+
+.landingpage-icon#bcrw {
+  background: url(/sites/all/modules/bc_islandora/img/bcrw.jpg) no-repeat; }
+
+.landingpage-icon#alumnscapbooks {
+  background: url(/sites/all/modules/bc_islandora/img/scrapbooks.jpg) no-repeat; }
+
+.islandora-metadata p {
+  margin: 0; }
+
+#block-islandora-solr-display-switch {
+  width: 15%; }
+
+#block-islandora-solr-display-switch h2 {
+  float: left;
+  font-weight: normal;
+  font-size: 100%;
+  margin-top: 1.5em;
+  margin-right: 0.25em;
+  line-height: 1.5em; }
+
+#block-islandora-solr-display-switch ul {
+  list-style: none outside none;
+  margin-bottom: 0; }
+
+.socialmedia {
+  display: block;
+  margin: 20px 0; }
+
+.socialmedia a {
+  margin-right: 10px; }
+
+.islandora-openseadragon {
+  width: 85% !important; }
+
+.form-item.form-type-textfield.form-item-date-filter-date-filter-from {
+  display: inline-block;
+  margin: 1em 0; }
+
+.form-item.form-type-textfield.form-item-date-filter-date-filter-to {
+  display: inline-block;
+  margin: 1em 0; }
+
+/*# sourceMappingURL=bc_islandora.css.map */

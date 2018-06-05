@@ -1,0 +1,6 @@
+name = Islandora Plupload
+description = Integrate Plupload for Islandora file upload chunking and resumption.
+core = 7.x
+dependencies[] = islandora
+dependencies[] = plupload
+package = Islandora Tools

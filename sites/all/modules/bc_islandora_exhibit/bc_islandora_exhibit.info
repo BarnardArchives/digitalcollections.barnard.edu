@@ -1,0 +1,8 @@
+name = Barnard Islandora Exhibits
+description = "Custom functionality for digital exhibits"
+version = 7.x-0.1-dev
+core = 7.x
+dependencies[] = features
+dependencies[] = views
+scripts[] = js/exhibit.js
+stylesheets[all][] = css/exhibit.css

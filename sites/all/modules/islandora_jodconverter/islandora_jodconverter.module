@@ -1,0 +1,75 @@
+<?php
+
+/**
+ * @file
+ * Defines all the hooks this module implements.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function islandora_jodconverter_menu() {
+  return array(
+    'admin/islandora/tools/jodcoverter' => array(
+      'title' => 'JODConverter',
+      'description' => 'Configure the JODConverter.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_jodconverter_admin_settings_form'),
+      'access arguments' => array('administer site configuration'),
+      'file' => 'includes/admin.form.inc',
+      'type' => MENU_NORMAL_ITEM,
+    ),
+  );
+}
+
+/**
+ * Convert a document and get the output message.
+ *
+ * @param string $from
+ *   Convert from path.
+ * @param string $to
+ *   Convert to path.
+ * @param string $type
+ *   convert to type.
+ *
+ * @return bool
+ *   TRUE if successful, FALSE otherwise.
+ */
+function islandora_jodconverter_convert($from, $to = NULL, $type = NULL) {
+  module_load_include('inc', 'islandora_jodconverter', 'includes/utilities');
+
+  // @todo validate extension or type is using.
+  $ext = islandora_jodconverter_get_ext($from);
+  if (!$ext) {
+    watchdog('JODConverter', 'The original do not have an extension', array(), WATCHDOG_ERROR);
+    drupal_set_message(t('The original do not have an extension'), 'error');
+    return FALSE;
+  }
+  else {
+    $to_format = islandora_jodconverter_get_format($ext);
+
+    // Get the to extensions.
+    $to_ext = isset($to) ? islandora_jodconverter_get_ext($to) : strtolower($type);
+    if (!is_array($to_format) || !in_array($to_ext, $to_format['to'])) {
+      watchdog('JODConverter', 'Can not convert %src files to %dest format', array('%src' => $ext, '%dest' => $to_ext), WATCHDOG_ERROR);
+      drupal_set_message(t('Can not convert %src files to %dest format', array('%src' => $ext, '%dest' => $to_ext)), 'error');
+      return FALSE;
+    }
+  }
+
+  if (!$to && !$type) {
+    watchdog('JODConverter', 'Convert type undefined', array(), WATCHDOG_ERROR);
+    drupal_set_message(t('Convert type undefined'), 'error');
+    return FALSE;
+  }
+  $command = isset($to) ? "$from $to" : "-f $type $from";
+  $message = islandora_jodconverter_exec_convert($command);
+  $success = count($message) == 4 && $message[1] == 'INFO: connected' && $message[3] == 'INFO: disconnected';
+  if (!$success) {
+    $output = implode("\n", $message);
+    watchdog('JODConverter', "Convert Fail of %from.\nWith message: \n %message", array('%from' => $from, '%message' => $output), WATCHDOG_ERROR);
+    drupal_set_message(t("Convert Fail of %from.\nWith message: \n %message", array('%from' => $from, '%message' => $output)), 'error');
+    return FALSE;
+  }
+  return TRUE;
+}

@@ -1,0 +1,6 @@
+name = Islandora JODConverter
+description = Connector to JODCoverter services.
+package = Islandora Tools
+dependencies[] = libraries
+core = 7.x
+

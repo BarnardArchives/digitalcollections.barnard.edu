@@ -1,0 +1,6 @@
+name = Print Services
+description = Add the support for Print module which render the page as PDF or printable HTML
+core = 7.x
+package = Service Links - Services
+dependencies[] = service_links
+dependencies[] = print

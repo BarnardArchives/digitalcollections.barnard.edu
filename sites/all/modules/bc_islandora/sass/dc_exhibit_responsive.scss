@@ -1,0 +1,16 @@
+@media all and (min-width: 320px) and (max-width: 540px) {
+	.view-id-exhibition {
+		.exhibition-object {
+			width: auto !important;
+			.views-field {
+			}
+			.exhibition-tn {
+				float: none !important;
+			}
+			.exhibition-body,
+			.exhibition-title {
+				left: 0 !important;
+			}
+		}
+	}
+}

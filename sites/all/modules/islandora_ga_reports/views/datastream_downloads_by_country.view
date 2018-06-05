@@ -1,0 +1,82 @@
+<?php
+
+$view = new view();
+$view->name = 'datastream_downloads_by_country';
+$view->description = 'Google Analytics integration,downloads by country';
+$view->tag = 'islandora';
+$view->base_table = 'google_analytics';
+$view->human_name = 'Datastream downloads by country';
+$view->core = 7;
+$view->api_version = '3.0';
+$view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+/* Display: Master */
+$handler = $view->new_display('default', 'Master', 'default');
+$handler->display->display_options['title'] = 'Downloads By Country';
+$handler->display->display_options['use_more_always'] = FALSE;
+$handler->display->display_options['access']['type'] = 'none';
+$handler->display->display_options['cache']['type'] = 'none';
+$handler->display->display_options['query']['type'] = 'views_query';
+$handler->display->display_options['exposed_form']['type'] = 'basic';
+$handler->display->display_options['pager']['type'] = 'some';
+$handler->display->display_options['pager']['options']['items_per_page'] = '5';
+$handler->display->display_options['pager']['options']['offset'] = '0';
+$handler->display->display_options['style_plugin'] = 'table';
+$handler->display->display_options['style_options']['columns'] = array(
+  'country' => 'country',
+  'pageviews' => 'pageviews',
+);
+$handler->display->display_options['style_options']['default'] = '-1';
+$handler->display->display_options['style_options']['info'] = array(
+  'country' => array(
+    'sortable' => 0,
+    'default_sort_order' => 'asc',
+    'align' => '',
+    'separator' => '',
+    'empty_column' => 0,
+  ),
+  'pageviews' => array(
+    'sortable' => 0,
+    'default_sort_order' => 'asc',
+    'align' => '',
+    'separator' => '',
+    'empty_column' => 0,
+  ),
+);
+/* Field: Geo / Network Dimensions: ga:country */
+$handler->display->display_options['fields']['country']['id'] = 'country';
+$handler->display->display_options['fields']['country']['table'] = 'google_analytics';
+$handler->display->display_options['fields']['country']['field'] = 'country';
+$handler->display->display_options['fields']['country']['label'] = 'Country';
+/* Field: Page Tracking Metrics: ga:pageviews */
+$handler->display->display_options['fields']['pageviews']['id'] = 'pageviews';
+$handler->display->display_options['fields']['pageviews']['table'] = 'google_analytics';
+$handler->display->display_options['fields']['pageviews']['field'] = 'pageviews';
+$handler->display->display_options['fields']['pageviews']['label'] = 'Downloads';
+/* Sort criterion: Page Tracking Metrics: ga:pageviews */
+$handler->display->display_options['sorts']['pageviews']['id'] = 'pageviews';
+$handler->display->display_options['sorts']['pageviews']['table'] = 'google_analytics';
+$handler->display->display_options['sorts']['pageviews']['field'] = 'pageviews';
+$handler->display->display_options['sorts']['pageviews']['order'] = 'DESC';
+/* Contextual filter: Page Tracking Dimensions: ga:pagePath */
+$handler->display->display_options['arguments']['pagePath']['id'] = 'pagePath';
+$handler->display->display_options['arguments']['pagePath']['table'] = 'google_analytics';
+$handler->display->display_options['arguments']['pagePath']['field'] = 'pagePath';
+$handler->display->display_options['arguments']['pagePath']['default_action'] = 'default';
+$handler->display->display_options['arguments']['pagePath']['default_argument_type'] = 'php';
+$handler->display->display_options['arguments']['pagePath']['default_argument_options']['code'] = '$url = urldecode(request_uri()) . \'/datastream/OBJ/download\';
+return $url;';
+$handler->display->display_options['arguments']['pagePath']['summary']['number_of_records'] = '0';
+$handler->display->display_options['arguments']['pagePath']['summary']['format'] = 'default_summary';
+$handler->display->display_options['arguments']['pagePath']['summary_options']['items_per_page'] = '25';
+/* Filter criterion: Geo / Network Dimensions: ga:country */
+$handler->display->display_options['filters']['country']['id'] = 'country';
+$handler->display->display_options['filters']['country']['table'] = 'google_analytics';
+$handler->display->display_options['filters']['country']['field'] = 'country';
+$handler->display->display_options['filters']['country']['operator'] = '!=';
+$handler->display->display_options['filters']['country']['value'] = '(not set)';
+
+/* Display: Block */
+$handler = $view->new_display('block', 'Block', 'block');
+$handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
+

@@ -1,0 +1,12 @@
+<?php
+/**
+ * @file
+ * Main hook implementations.
+ */
+
+/**
+ * Implements hook_menu_alter().
+ */
+function disable_dl_clip_menu_alter(&$items) {
+  $items['islandora/object/%islandora_object/download_clip']['page callback'] = 'drupal_not_found';
+}
