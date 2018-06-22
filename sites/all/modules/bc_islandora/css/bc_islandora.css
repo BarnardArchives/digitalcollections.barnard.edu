@@ -1,7 +1,8 @@
 body {
   background: #fff; }
-  body .logged-in #navigation {
-    margin-top: 110px; }
+
+body .logged-in #navigation {
+  margin-top: 110px; }
 
 .breadcrumb {
   margin-bottom: 15px; }
@@ -88,7 +89,7 @@ body {
 .landingpage-icon {
   display: inline-block;
   width: 220px;
-  height: 225px;
+  background-size: 220px 225px !important;
   margin-right: 50px;
   margin-bottom: 50px;
   text-align: center;
@@ -110,25 +111,31 @@ body {
 .landingpage-link {
   width: 200px; }
 
-.landingpage-icon#photos {
-  background: url(/sites/all/modules/bc_islandora/img/photographsicon.jpg) no-repeat top left;
-  height: 225px;
-  width: 225px; }
+/*New Section*/
+.collection-description {
+    background-color: rgb(153, 204, 255); }
 
-.landingpage-icon#bulletin {
-  background: url(/sites/all/modules/bc_islandora/img/bulletinicon.jpg) no-repeat; }
+.landingpage-icon#photograph-collection {
+  background: url(/sites/all/modules/bc_islandora/img/icons/photographs.jpg) no-repeat; }
 
-.landingpage-icon#yearbook {
-  background: url(/sites/all/modules/bc_islandora/img/yearbookicon.jpg) no-repeat; }
+.landingpage-icon#newspaper-collection {
+  background: url(/sites/all/modules/bc_islandora/img/icons/bulletin.jpg) no-repeat; }
 
-.landingpage-icon#student-pubs {
-  background: url(/sites/all/modules/bc_islandora/img/studentpubicon.jpg) no-repeat; }
+.landingpage-icon#yearbook-collection {
+  background: url(/sites/all/modules/bc_islandora/img/icons/mortarboard.jpg) no-repeat; }
 
-.landingpage-icon#bcrw {
-  background: url(/sites/all/modules/bc_islandora/img/bcrw.jpg) no-repeat; }
+.landingpage-icon#student-publication-collection {
+  background: url(/sites/all/modules/bc_islandora/img/icons/studentpublications.jpg) no-repeat; }
 
-.landingpage-icon#alumnscapbooks {
-  background: url(/sites/all/modules/bc_islandora/img/scrapbooks.jpg) no-repeat; }
+.landingpage-icon#barnard-center-for-research-on-women-collection {
+  background: url(/sites/all/modules/bc_islandora/img/icons/bcrw.jpg) no-repeat; }
+
+.landingpage-icon#scrapbook-collection {
+  background: url(/sites/all/modules/bc_islandora/img/icons/scrapbooks.jpg) no-repeat; }
+
+.landingpage-icon#barnard-magazine-collection {
+  background: url(/sites/all/modules/bc_islandora/img/icons/barnardmagazine.jpg) no-repeat; }
+/*End New*/
 
 .islandora-metadata p {
   margin: 0; }

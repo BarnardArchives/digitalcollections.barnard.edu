@@ -378,14 +378,5 @@ function bc_islandora_islandora_datastream_alter($object, $datastream, &$context
   }
 }
 
-/**
- * Implements hook_islandora_solr_query_alter().
- */
-function bc_islandora_islandora_solr_query_alter($islandora_solr_query) {
-  module_load_include('inc', 'bc_islandora', 'includes/utilities');
-  if(!_bc_solr_searching()) {
-    // If not searching, exclude paged content from search.
-    $islandora_solr_query->solrParams['fq'][] = '-RELS_EXT_hasModel_uri_s: "info:fedora/islandora:pageCModel"';
-  }
 
-}
+
