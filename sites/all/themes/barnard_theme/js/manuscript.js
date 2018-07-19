@@ -33,7 +33,8 @@
             $('.manuscript-transcript-page').first().addClass('active').show();
             // NB this only works because islandora uses outdated OpenSeadragon.
             // Might need to change in the future...
-            settings.islandora_open_seadragon_viewer.onPageChange = function(event) {
+            // @TODO RESOLVE THIS ISSUE SO THAT ON CLICK PAGE IS UPDATED.
+            settings.islandoraOpenSeadragon.onPageChange = function(event) {
                 var target_page = event.page + 1;
                 console.log('got target page: ' + target_page);
                 var $active_page = $('#manuscript-viewer-transcript-pane').find('.manuscript-transcript-page.active');
