@@ -73,8 +73,8 @@ function template_preprocess_islandora_paged_seadragon_viewer(array &$variables)
 function _openseadragon_paged_viewer($variables) {
   module_load_include('inc', 'islandora_openseadragon', 'includes/utilities');
   $library_path = libraries_get_path('openseadragon');
+  $paged_module_path = drupal_get_path('module', 'islandora_openseadragon_paged');
   $module_path = drupal_get_path('module', 'islandora_openseadragon');
-  
   drupal_add_js(array(
     'islandoraOpenSeadragon' => $variables['settings'],
   ), 'setting');
@@ -83,7 +83,7 @@ function _openseadragon_paged_viewer($variables) {
   if (islandora_openseadragon_use_djatoka_server()) {
     drupal_add_js("$module_path/js/djtilesource.js", array('weight' => -3));
   }
-  drupal_add_js("$module_path/js/islandora_openseadragon.js", array('weight' => -2));
+  drupal_add_js("$paged_module_path/js/islandora_openseadragon_paged.js", array('weight' => -2));
   drupal_add_css("$module_path/css/islandora_openseadragon.theme.css");
 
   return "<div id=\"{$variables['id']}\" class=\"islandora-openseadragon\"></div>";
