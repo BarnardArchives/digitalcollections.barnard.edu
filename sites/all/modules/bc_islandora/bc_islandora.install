@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * Enable and configure videojs player, disable jwplayer.
+ */
+function bc_islandora_update_7001() {
+  $enables = array('islandora_videojs');
+  $disables = array('islandora_jwplayer');
+  module_enable($enables);
+  module_disable($disables);
+
+  $config = array (
+    'name' =>
+      array (
+        'none' => 'none',
+        'islandora_videojs' => 'islandora_videojs',
+      ),
+    'default' => 'islandora_videojs',
+  );
+  foreach(array('islandora_audio_viewers', 'islandora_video_viewers') as $variable) {
+    variable_set($variable, $config);
+  }
+}

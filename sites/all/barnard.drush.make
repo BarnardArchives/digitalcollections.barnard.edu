@@ -26,9 +26,7 @@ projects[islandora_internet_archive_bookreader][download][url] = "https://github
 projects[islandora_ip_embargo][download][url] = "https://github.com/Islandora/islandora_ip_embargo.git"
 projects[islandora_ip_embargo][download][branch] = "7.x"
 projects[islandora_ip_embargo][download][tag] = ""
-projects[islandora_jwplayer][download][url] = "https://github.com/Islandora/islandora_jwplayer.git"
-projects[islandora_jwplayer][download][branch] = "7.x"
-projects[islandora_jwplayer][download][tag] = ""
+projects[islandora_videojs][download][url] = "https://github.com/Islandora/islandora_videojs.git"
 projects[islandora_marcxml][download][url] = "https://github.com/Islandora/islandora_marcxml.git"
 projects[islandora_oai][download][url] = "https://github.com/Islandora/islandora_oai.git"
 projects[islandora_ocr][download][url] = "https://github.com/Islandora/islandora_ocr.git"
@@ -138,3 +136,6 @@ libraries[tuque][download][branch] = "1.x"
 
 libraries[citeproc-php][download][url] = "git@github.com:Islandora/citeproc-php.git"
 libraries[citeproc-php][download][branch] = "master"
+
+libraries[videojs][download][type] = "file"
+libraries[videojs][download][url] = "https://github.com/videojs/video.js/releases/download/v5.10.2/video-js-5.10.2.zip"
