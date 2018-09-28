@@ -94,6 +94,14 @@ function islandora_compound_object_admin_form($form, &$form_state) {
     '#default_value' => variable_get('islandora_compound_object_show_compound_parents_in_breadcrumbs', FALSE),
   );
 
+  $form['islandora_compound_object_redirect_to_first'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Redirect to first child when a compound object is requested.'),
+    '#description' => t('Users will be redirected to the first child of a Compound Object when enabling this setting.'),
+    '#default_value' => variable_get('islandora_compound_object_redirect_to_first', FALSE),
+    '#element_validate' => array('islandora_compound_object_admin_form_redirect_to_first_validation'),
+  );
+
   $form['islandora_compound_object_query_backend'] = array(
     '#type' => 'radios',
     '#title' => t('Compound Member Query'),
@@ -122,6 +130,28 @@ function islandora_compound_object_admin_form_jail_validation(array $element, ar
     drupal_set_message(t('The <a href="@url">JAIL</a> library must be present in the libraries folder to use this display.', array(
       '@url' => url('https://github.com/sebarmeli/JAIL', array('absolute' => TRUE)),
     )), 'error');
+  }
+}
+
+/**
+ * Warn if both redirect to first and compound parent in breadcrumb are enabled.
+ *
+ * @param array $element
+ *   The element to check.
+ * @param array $form_state
+ *   The Drupal form state.
+ * @param array $form
+ *   The Drupal form definition.
+ */
+function islandora_compound_object_admin_form_redirect_to_first_validation(array $element, array &$form_state, array $form) {
+  if ($element['#value'] == 1) {
+    if (isset($form_state['values']['islandora_compound_object_show_compound_parents_in_breadcrumbs'])
+        && $form_state['values']['islandora_compound_object_show_compound_parents_in_breadcrumbs'] == 1) {
+      $first_title = rtrim($element['#title'], '.!?');
+      $parent_title = rtrim($form['islandora_compound_object_show_compound_parents_in_breadcrumbs']['#title'], '.!?');
+      drupal_set_message(t("Enabling both %first and %parent is not recommended, because the compound object parent in the breadcrumb will be redirect to the first child, so cannot be actually reached.",
+        array('%first' => $first_title, '%parent' => $parent_title)), 'warning');
+    }
   }
 }
 

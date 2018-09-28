@@ -43,7 +43,7 @@ function islandora_marcxml_menu() {
     ),
     'admin/islandora/tools/islandora_marcxml' => array(
       'title' => 'Islandora MARCXML',
-      'description' => 'Configure settings for the Bookmark module.',
+      'description' => 'Configure the Islandora MARCXML module.',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('islandora_marcxml_admin_settings'),
       'access arguments' => array('administer site configuration'),

@@ -30,9 +30,7 @@ Set the 'Child relationship predicate' and 'Solr filter query', as well as selec
 Optionally, enable the JAIL compound block to utilize the lazy loading image
 ability as outlined below.
 
-![compound_solution_pack_admin](https://user-images.githubusercontent.com/25011926/32280294-bab317e0-bef1-11e7-975b-f12efcd16b95.png)
-
-
+![Configuration](https://user-images.githubusercontent.com/25011926/39826766-c1af422c-5383-11e8-967a-b18411809200.png)
 
 **Block**:
 
@@ -44,7 +42,7 @@ library which allows for lazy loading of images. This allows the block to load
 images only when they are being accessed which will greatly increase performance
 on compounds with many children.
 
-![compound_solution_pack_block](https://user-images.githubusercontent.com/25011926/32280310-c82c0440-bef1-11e7-936f-99f74e51e716.png)
+![compobjblocks_to_configure01b](https://cloud.githubusercontent.com/assets/11573234/24410256/9e01dfc0-13a0-11e7-9edf-454addc13128.JPG)
 
 
 
@@ -70,7 +68,7 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 ## Maintainers/Sponsors
 Current maintainers:
 
-* [Jared Whiklo](https://github.com/whikloj)
+* [Diego Pino](https://github.com/diegopino)
 
 ## Development
 

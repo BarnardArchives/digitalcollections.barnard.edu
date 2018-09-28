@@ -4,5 +4,5 @@ package = Islandora Tools
 dependencies[] = islandora
 dependencies[] = islandora_batch
 dependencies[] = rules
-version = 7.x-1.10
+version = 7.x-1.11
 core = 7.x

@@ -419,7 +419,6 @@ function islandora_batch_process_results($results, $timeout, $lock_timeout, &$co
         // Push to backend.
         $ingested_object = islandora_add_object($ingest_object);
         if ($ingested_object) {
-          $object['data'] = serialize($ingested_object);
           $context['message'] = t('Ingested %pid.', array('%pid' => $ingested_object->id));
         }
         else {

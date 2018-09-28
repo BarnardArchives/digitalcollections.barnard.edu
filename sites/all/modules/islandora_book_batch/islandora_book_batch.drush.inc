@@ -57,6 +57,10 @@ function islandora_book_batch_drush_command() {
         'description' => 'A flag to allow for conditional OCR generation.',
         'value' => 'optional',
       ),
+      'do_not_generate_hocr' => array(
+        'description' => 'A flag to allow for conditional HOCR generation.',
+        'value' => 'optional',
+      ),
       'aggregate_ocr' => array(
         'description' => 'A flag to cause OCR to be aggregated to books, if OCR is also being generated per-page.',
         'value' => 'optional',
@@ -138,11 +142,9 @@ function drush_islandora_book_batch_preprocess() {
     $parameters['content_models'] = array('islandora:bookCModel');
   }
 
-  if ($do_not_generate = drush_get_option('do_not_generate_ocr', FALSE)) {
-    $parameters['generate_ocr'] = FALSE;
-  }
-  else {
-    $parameters['generate_ocr'] = TRUE;
+  if (module_exists('islandora_ocr')) {
+    $parameters['generate_ocr'] = !((bool) drush_get_option('do_not_generate_ocr', FALSE));
+    $parameters['generate_hocr'] = !((bool) drush_get_option('do_not_generate_hocr', FALSE));
   }
 
   $preprocessor = new IslandoraBookBatch($connection, $parameters);

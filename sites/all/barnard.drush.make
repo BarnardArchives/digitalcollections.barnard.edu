@@ -12,7 +12,7 @@ api = 2
 ; Defaults that apply to all modules.
 defaults[projects][type] = "module"
 defaults[projects][download][type] = "git"
-defaults[projects][download][tag]  = "7.x-1.10"
+defaults[projects][download][tag]  = "7.x-1.11"
 defaults[projects][download][overwrite] = TRUE
 defaults[projects][subdir] = ""
 
@@ -27,6 +27,8 @@ projects[islandora_ip_embargo][download][url] = "https://github.com/Islandora/is
 projects[islandora_ip_embargo][download][branch] = "7.x"
 projects[islandora_ip_embargo][download][tag] = ""
 projects[islandora_jwplayer][download][url] = "https://github.com/Islandora/islandora_jwplayer.git"
+projects[islandora_jwplayer][download][branch] = "7.x"
+projects[islandora_jwplayer][download][tag] = ""
 projects[islandora_marcxml][download][url] = "https://github.com/Islandora/islandora_marcxml.git"
 projects[islandora_oai][download][url] = "https://github.com/Islandora/islandora_oai.git"
 projects[islandora_ocr][download][url] = "https://github.com/Islandora/islandora_ocr.git"

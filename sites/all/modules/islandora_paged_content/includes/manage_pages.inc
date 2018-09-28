@@ -66,6 +66,22 @@ function islandora_paged_content_manage_pages_menu(AbstractObject $object) {
         '#collapsible' => TRUE,
         '#collapsed' => TRUE,
       ),
+      'viewinghint' => array(
+        '#access' => user_access(ISLANDORA_METADATA_EDIT),
+        '#title' => t('Page display mode'),
+        '#type' => 'fieldset',
+        'form' => drupal_get_form('islandora_paged_content_manage_viewing_hint_form', $object),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+      ),
+      'hascover' => array(
+        '#access' => user_access(ISLANDORA_METADATA_EDIT),
+        '#title' => t('Book Cover?'),
+        '#type' => 'fieldset',
+        'form' => drupal_get_form('islandora_paged_content_manage_hascover_form', $object),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+      ),
       'sequence' => array(
         '#access' => islandora_datastream_access(ISLANDORA_METADATA_EDIT, $object['RELS-EXT']),
         '#title' => t('Reorder Pages'),
@@ -568,27 +584,30 @@ function islandora_paged_content_ingest_zipped_pages(AbstractObject $object, $al
  *   Drupal form definition.
  */
 function islandora_paged_content_zipped_upload_form(array $form, array &$form_state, $pid, $allowed_extensions, $model, $derivatives) {
-  module_load_include('inc', 'islandora_ocr', 'includes/utilities');
   module_load_include('inc', 'islandora_paged_content', 'includes/utilities');
   $object = islandora_object_load($pid);
   $current_pages = islandora_paged_content_get_pages($object);
   $last_page_number = count($current_pages);
-  $languages = module_exists('islandora_ocr') ? islandora_ocr_get_enabled_tesseract_languages() : array();
   $upload_size = min((int) ini_get('post_max_size'), (int) ini_get('upload_max_filesize'));
   $extensions = array('zip');
   $form = array();
-  $do_ocr = in_array('ocr', $derivatives) && module_exists('islandora_ocr');
   $message = t("This sequence currently has @count pages. Additional pages will be appended to the end of the sequence by default. !break", array("@count" => $last_page_number, '!break' => '<br />'));
   $message .= t("Choose a number lower than @count to insert page(s) at a specific location in the sequence.", array("@count" => $last_page_number, '!break' => '<br />'));
 
-  $form['language'] = array(
-    '#access' => module_exists('islandora_ocr') && $do_ocr,
-    '#title' => t('Language'),
-    '#type' => 'select',
-    '#description' => t('Please select the language the page is written in.'),
-    '#options' => $languages,
-    '#default_value' => 'English',
-  );
+  if (module_exists('islandora_ocr') && in_array('ocr', $derivatives)) {
+    module_load_include('inc', 'islandora_ocr', 'includes/utilities');
+    $languages = islandora_ocr_get_enabled_tesseract_languages();
+    $form['language'] = array(
+      '#title' => t('Language'),
+      '#type' => 'select',
+      '#description' => t('Please select the language the page is written in.'),
+      '#options' => $languages,
+    );
+    if (in_array('English', $languages)) {
+      $form['language']['#default_value'] = 'eng';
+    }
+    $form['ignored_ocr_derivatives'] = islandora_ocr_get_ignored_derivatives_fieldset();
+  }
 
   if ($current_pages) {
     $form['insertion_point'] = array(
@@ -731,7 +750,6 @@ function islandora_paged_content_zipped_upload_form_submit(array $form, array &$
     );
     $file_count = count($files_to_add);
     $config = array(
-      'language' => $language,
       'pid' => $pid,
       'destination_dir' => $destination_dir,
       'namespace' => $namespace,
@@ -739,6 +757,11 @@ function islandora_paged_content_zipped_upload_form_submit(array $form, array &$
       'model' => $form_state['values']['model'],
       'file_count' => $file_count,
       'book_label' => $book_label,
+      'language' => isset($form_state['values']['language']) ? $form_state['values']['language'] : 'eng',
+      'ignored_derivs' => array(
+        'ocr' => isset($form_state['values']['ignore_ocr']) ? $form_state['values']['ignore_ocr'] : FALSE,
+        'hocr' => isset($form_state['values']['ignore_hocr']) ? $form_state['values']['ignore_hocr'] : FALSE,
+      ),
     );
     if (isset($pages_to_renumber[0])) {
       foreach ($pages_to_renumber as $page) {
@@ -794,7 +817,12 @@ function islandora_paged_content_add_pages($repository, $config, $pages_director
   $parent = $config['pid'];
   $object->relationships->add(FEDORA_MODEL_URI, 'hasModel', $config['model']);
 
-  islandora_paged_content_set_relationship($rels_ext, ISLANDORA_RELS_EXT_URI, 'hasLanguage', $config['language'], TRUE);
+  // Re-checking module existence here in case this batch op is called from
+  // somewhere other than the form.
+  if (module_exists('islandora_ocr')) {
+    module_load_include('inc', 'islandora_ocr', 'includes/derivatives');
+    islandora_ocr_set_generating_rels_ext_statements($object, !$config['ignored_derivs']['ocr'], !$config['ignored_derivs']['hocr'], $config['language']);
+  }
   islandora_paged_content_set_relationship($rels_ext, ISLANDORA_RELS_EXT_URI, 'isPageOf', $parent);
   islandora_paged_content_set_relationship($rels_ext, ISLANDORA_RELS_EXT_URI, 'isSequenceNumber', (string) $config['page_number'], TRUE);
   islandora_paged_content_set_relationship($rels_ext, ISLANDORA_RELS_EXT_URI, 'isPageNumber', (string) $config['page_number'], TRUE);
@@ -896,4 +924,108 @@ function islandora_paged_content_manage_page_progression_form_submit($form, &$fo
   $object = islandora_object_load($form_state['pid']);
   islandora_paged_content_set_page_progression($object, $form_state['values']['page_progression']);
   drupal_set_message(t('Page progression updated.'));
+}
+
+/**
+ * Form handler for setting the Viewing mode hint for a paged content.
+ *
+ * @param array $form
+ *   The Drupal form.
+ * @param array $form_state
+ *   The Drupal form state.
+ * @param AbstractObject $object
+ *   The object to fetch the pages from.
+ *
+ * @return array
+ *   The Drupal form.
+ */
+function islandora_paged_content_manage_viewing_hint_form(array $form, array &$form_state, AbstractObject $object) {
+  module_load_include('inc', 'islandora_paged_content', 'includes/utilities');
+  $viewing_hint = islandora_paged_content_get_viewing_hint($object);
+  $viewing_hint = isset($viewing_hint) ? $viewing_hint : 'notset';
+  $form_state['pid'] = $object->id;
+  return array(
+    'viewing_hint' => array(
+      '#type' => 'radios',
+      '#title' => t('Page display mode'),
+      '#description' => t("This affects how Islandora viewers display page sequences. 'Paged' here is equivalent to the '2-up' mode in IA Book Reader. If left as 'System Default', global option for each viewer will be respected."),
+      '#options' => array(
+        'notset' => t('System Default'),
+        'paged' => t('Paged'),
+        'individual' => t('Individual'),
+      ),
+      '#default_value' => $viewing_hint,
+    ),
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Set Page display mode'),
+    ),
+  );
+}
+
+/**
+ * Submit handler for setting the Viewing mode hint for paged content.
+ *
+ * @param array $form
+ *   An array representing a form within Drupal.
+ * @param array $form_state
+ *   An array containing the Drupal form state.
+ */
+function islandora_paged_content_manage_viewing_hint_form_submit($form, &$form_state) {
+  module_load_include('inc', 'islandora_paged_content', 'includes/utilities');
+  $object = islandora_object_load($form_state['pid']);
+  $viewing_hint = $form_state['values']['viewing_hint'] == 'notset' ? NULL : $form_state['values']['viewing_hint'];
+  islandora_paged_content_set_viewing_hint($object, $viewing_hint);
+  drupal_set_message(t('Page display mode updated.'));
+}
+
+/**
+ * Form handler for setting the hasCover property flag.
+ *
+ * @param array $form
+ *   The Drupal form.
+ * @param array $form_state
+ *   The Drupal form state.
+ * @param AbstractObject $object
+ *   The object to fetch the pages from.
+ *
+ * @return array
+ *   The Drupal form.
+ */
+function islandora_paged_content_manage_hascover_form(array $form, array &$form_state, AbstractObject $object) {
+  module_load_include('inc', 'islandora_paged_content', 'includes/utilities');
+  $hascover = islandora_paged_content_get_hascover($object);
+  $form_state['pid'] = $object->id;
+  return array(
+    'has_cover' => array(
+      '#type' => 'radios',
+      '#title' => t('Book Cover?'),
+      '#description' => t("This affects how Paged CMODEL Viewers display their first page in a sequence. If set to 'Without Cover', the first page will be displayed on the left side, for a Left-to-Right progression, which means the display will start with a full 2 page spread. Needs to be used in conjuction with a 'Paged' Page display mode or the global '2-up' setting for the IA Book Reader viewer"),
+      '#options' => array(
+        'true' => t('Has Cover or First Recto (default)'),
+        'false' => t('Without Cover'),
+      ),
+      '#default_value' => $hascover,
+    ),
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Set Book Cover Presence'),
+    ),
+  );
+}
+
+/**
+ * Submit handler for setting the Viewing mode hint for paged content.
+ *
+ * @param array $form
+ *   An array representing a form within Drupal.
+ * @param array $form_state
+ *   An array containing the Drupal form state.
+ */
+function islandora_paged_content_manage_hascover_form_submit($form, &$form_state) {
+  module_load_include('inc', 'islandora_paged_content', 'includes/utilities');
+  $object = islandora_object_load($form_state['pid']);
+  $hascover = $form_state['values']['has_cover'];
+  islandora_paged_content_set_hascover($object, $hascover);
+  drupal_set_message(t('Book Cover Presence set.'));
 }

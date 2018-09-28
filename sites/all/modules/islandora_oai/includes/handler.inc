@@ -250,6 +250,10 @@ function islandora_oai_object_response_xml($params) {
         '@datastream' => $param,
       ), WATCHDOG_ERROR);
   }
+
+  // Allow modules to alter the OAI-PMH record.
+  drupal_alter('islandora_oai_record', $oai_output, $params);
+
   return $oai_output;
 }
 

@@ -168,6 +168,10 @@
             $(this).find('.slider-popup-to-wrapper').stop(false, true).fadeOut('slow');
           });
 
+          // Add aria-label for WCAG 2.0 compliance.
+          $(sliderId + ' > a:eq(0)').attr('aria-label', "From");
+          $(sliderId + ' > a:eq(1)').attr('aria-label', "To");
+
           // Flot
           // prepare flot data
           var d1 = [];

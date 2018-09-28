@@ -33,6 +33,7 @@ function islandora_solr_menu() {
   $items['islandora/search'] = array(
     'title' => 'Search results',
     'page callback' => 'islandora_solr',
+    'page arguments' => array(2, NULL),
     'access arguments' => array('search islandora solr'),
     'type' => MENU_CALLBACK,
   );
@@ -283,14 +284,20 @@ function islandora_solr($query = NULL, $params = NULL) {
   // Set primary display.
   // Check if display param is an valid, enabled profile; otherwise, show
   // default.
-  if (isset($params['display']) && in_array($params['display'], $enabled_profiles)) {
-    $islandora_solr_primary_display = $params['display'];
+  if (isset($params['display'])) {
+    if (in_array($params['display'], $enabled_profiles)) {
+      $islandora_solr_primary_display = $params['display'];
+    }
+    else {
+      // Unset invalid parameter.
+      unset($params['display']);
+    }
   }
-  else {
+
+  if (empty($islandora_solr_primary_display)) {
     $islandora_solr_primary_display = variable_get('islandora_solr_primary_display', 'default');
-    // Unset invalid parameter.
-    unset($params['display']);
   }
+
   $params['islandora_solr_search_navigation'] = variable_get('islandora_solr_search_navigation', FALSE);
 
   // !!! Set the global variable. !!!

@@ -4,5 +4,6 @@ package = Islandora Viewers
 dependencies[] = libraries
 dependencies[] = islandora_paged_content
 dependencies[] = colorbox
-version = 7.x-1.10
+dependencies[] = token
+version = 7.x-1.11
 core = 7.x

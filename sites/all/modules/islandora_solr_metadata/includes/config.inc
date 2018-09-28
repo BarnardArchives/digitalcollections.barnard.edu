@@ -34,6 +34,7 @@ function islandora_solr_metadata_config_form($form, &$form_state, $configuration
       $form_state['field_data'][$field_name] = array(
         'configuration_id' => $configuration_id,
         'solr_field' => $field_name,
+        'display_label' => $field_name,
         // Arbitrary large sort weight so it always comes last.
         'weight' => 10000,
         'ajax-volatile' => TRUE,

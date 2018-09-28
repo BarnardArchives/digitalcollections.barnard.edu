@@ -10,7 +10,7 @@ This module requires the following modules/libraries:
 
 * [Islandora](https://github.com/islandora/islandora)
 * [Tuque](https://github.com/islandora/tuque)
-* [Islandora Solr Search](http://github.com/Islandora/islandora_solr_search)
+* [Islandora Solr](https://github.com/Islandora/islandora_solr_search)
 
 ## Installation
 
@@ -28,7 +28,7 @@ General configuration and metadata field configurations is available at Administ
 
 ## Notes
 
-* To use Solr Metadata with Scholar's citation/thesis cModels, please enable the `Use Standard Metadata Display` option in Administration >> Islandora >> Solution pack configuration >> Scholar (/admin/islandora/solution_pack_config/scholar).
+* To use Solr Metadata with Scholar's citation/thesis cModels, please enable the `Use Standard Metadata Display` option in Administration » Islandora » Solution pack configuration » Scholar (/admin/islandora/solution_pack_config/scholar).
 
 ![Configuration](https://cloud.githubusercontent.com/assets/2052902/25194782/7e9bef70-2509-11e7-9167-737ea21982d0.png)
 
@@ -38,7 +38,7 @@ The backbone of this module is to allow users to select fields indexed in their 
 
 The Islandora Solr Metadata module uses templates to fuel the markup displayed when it's the defined viewer for an object. As such these are overwritable to alter the display of the metadata as seen fit.
 
-For a more indepth look at the metadata display framework and an example module implementation see the [Islandora wiki](http://github.com/Islandora/islandora/wiki/Metadata-Display-Viewers).
+For a more indepth look at the metadata display framework and an example module implementation see the [Islandora wiki](https://github.com/Islandora/islandora/wiki/Metadata-Display-Viewers).
 
 It's to be noted that you can have a content model associated with more than one configuration at a time. Similarly, on objects with two content models, two or more configurations could respond to display the markup for the object. These cases are handled by merging the displays based around the weight. Take for example the case where you have two responding configurations where the first configuration contains the a and c fields and the second the b and d fields. The metadata display output would then be in the following order: a, b, c, d. As such, it's at the discretion of the user, through the creation of configurations, to determine how they want their metadata to be displayed.
 
@@ -57,7 +57,7 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 
 Current maintainers:
 
-* [Rosie Le Faive](https://github.com/rosiel)
+* [Jordan Dukart](https://github.com/jordandukart)
 
 ## Development
 
