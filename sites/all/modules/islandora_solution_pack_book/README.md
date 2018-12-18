@@ -35,10 +35,17 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 * [Islandora Group](https://groups.google.com/forum/?hl=en&fromgroups#!forum/islandora)
 * [Islandora Dev Group](https://groups.google.com/forum/?hl=en&fromgroups#!forum/islandora-dev)
 
+### Known issues
+
+* **Islandora Book MODS Form**: In August 2018, a bug in the Book MODS form was identified and fixed. 
+The form's **ISBN** element was set to READ all instances of any MODS identifier element, but to CREATE identifiers with the 'type="isbn"' attribute. 
+When editing an object with this form, the form would create a new copy of every identifier element regardless of attributes, which may have led users to remove those identifiers. 
+Any objects edited using this form before the August 2018 fix should be reviewed to ensure their metadata is correct.
+
 ## Maintainers/Sponsors
 Current maintainers:
 
-* [Diego Pino](https://github.com/DiegoPino)
+* [Alan Stanley](https://github.com/ajstanley)
 
 ## Development
 

@@ -9,16 +9,36 @@
  * Implements hook_menu().
  */
 function islandora_simple_workflow_menu() {
-  $items = array();
-  $items['admin/islandora/tools/simple_workflow/list'] = array(
-    'title' => 'Simple Workflow objects',
-    'description' => 'List of inactive objects.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('islandora_simple_workflow_manage_form'),
-    'access arguments' => array('manage inactive objects'),
-    'file' => 'includes/manage.inc',
+  return array(
+    'admin/islandora/tools/simple_workflow' => array(
+      'title' => 'Simple Workflow inactive objects',
+      'type' => MENU_NORMAL_ITEM,
+      'description' => 'List of inactive objects.',
+      'access arguments' => array('manage inactive objects'),
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_simple_workflow_manage_form'),
+      'file' => 'includes/manage.inc',
+    ),
+    'admin/islandora/tools/simple_workflow/list' => array(
+      'title' => 'Simple Workflow inactive objects',
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+      'weight' => -10,
+      'description' => 'List of inactive objects.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_simple_workflow_manage_form'),
+      'access arguments' => array('manage inactive objects'),
+      'file' => 'includes/manage.inc',
+    ),
+    'admin/islandora/tools/simple_workflow/settings' => array(
+      'title' => 'Simple Workflow settings',
+      'type' => MENU_LOCAL_TASK,
+      'description' => 'Configuration settings for Islandora Simple Workflow module.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_simple_workflow_admin_form'),
+      'access arguments' => array('administer site configuration'),
+      'file' => 'includes/admin.inc',
+    ),
   );
-  return $items;
 }
 
 /**

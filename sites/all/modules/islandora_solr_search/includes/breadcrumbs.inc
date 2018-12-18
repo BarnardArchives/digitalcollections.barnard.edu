@@ -102,7 +102,6 @@ function islandora_solr_get_breadcrumbs_recursive($pid, array &$context = NULL) 
  *   Array with the parent pid and current object label.
  */
 function islandora_solr_get_breadcrumb_parent($pid) {
-  module_load_include('inc', 'islandora_solr', 'includes/query_processor');
   $solr_build = new IslandoraSolrQueryProcessor();
   $solr_query = format_string('PID:"!pid"', array(
     '!pid' => $pid,
@@ -114,6 +113,7 @@ function islandora_solr_get_breadcrumb_parent($pid) {
     'facet' => 'false',
   );
   $solr_build->buildQuery($solr_query, $solr_params);
+  $solr_build->solrStart = 0;
   $solr_build->solrParams = array_replace_recursive($solr_build->solrParams, $solr_params);
   $solr_build->solrParams = islandora_solr_remove_base_filters($solr_build->solrParams);
   $solr_build->solrParams = islandora_solr_clean_compound_filters($solr_build->solrParams);

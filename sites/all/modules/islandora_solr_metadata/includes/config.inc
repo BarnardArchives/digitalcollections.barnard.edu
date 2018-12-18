@@ -523,6 +523,14 @@ function islandora_solr_metadata_config_field_form($form, &$form_state, $config_
     '#default_value' => $get_default('uri_replacement', ''),
     '#autocomplete_path' => 'islandora_solr/autocomplete_luke',
   );
+  if (islandora_solr_is_date_field($field_name)) {
+    $set['date_format'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Date format'),
+      '#default_value' => $get_default('date_format', ''),
+      '#description' => t('The format of the date, as it will be displayed in the search results. Use <a href="!url" target="_blank">PHP date()</a> formatting. Works best when the date format matches the granularity of the source data. Otherwise it is possible that there will be duplicates displayed.', array('!url' => 'http://php.net/manual/function.date.php')),
+    );
+  }
   // Add in truncation fields for metadata field.
   $truncation_config = array(
     'default_values' => array(

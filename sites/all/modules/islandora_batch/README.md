@@ -22,7 +22,6 @@ This module requires the following modules/libraries:
 Additionally, installing and enabling [Views](https://drupal.org/project/views)
 will allow additional reporting and management displays to be rendered.
 
-
 ## Installation
 
 Install as usual, see [this](https://drupal.org/documentation/install/modules-themes/modules-7) for further information.
@@ -33,7 +32,7 @@ After you have installed and enabled the Islandora Batch module, go to Administr
 
 ![Configuration menu](https://cloud.githubusercontent.com/assets/10052068/18972680/23935662-8668-11e6-8a21-4c52d7aac69f.png)
 
-You should make sure that the path to your java executable is correct.  Optionally, if you have the Drupal Views module enabled, you can also have the module link back to the Batch Queue in its results messages
+You should make sure that the path to your `java` executable is correct.  Optionally, if you have the Drupal Views module enabled, you can also have the module link back to the Batch Queue in its results messages
 
 ## Documentation
 
@@ -96,6 +95,7 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 Current maintainers:
 
 * [Adam Vessey](https://github.com/adam-vessey)
+* [Diego Pino](https://github.com/DiegoPino)
 
 ## Development
 

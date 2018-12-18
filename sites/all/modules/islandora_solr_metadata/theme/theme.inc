@@ -225,6 +225,7 @@ function islandora_solr_metadata_query_fields($object, &$solr_fields) {
             'hyperlink' => 0,
             'formatter' => NULL,
             'uri_replacement' => '',
+            'date_format' => '',
           );
           // Replace URI or PID with a configured field.
           if (!empty($field_config['uri_replacement'])) {
@@ -263,7 +264,9 @@ function islandora_solr_metadata_query_fields($object, &$solr_fields) {
               ));
             }
           }
-
+          if (islandora_solr_is_date_field($solr_field) && !empty($solr_fields[$solr_field]['date_format'])) {
+            $value = format_date(strtotime($value), 'custom', $solr_fields[$solr_field]['date_format'], 'UTC');
+          }
           if (is_callable($field_config['formatter'])) {
             $value = call_user_func($field_config['formatter'], $value);
           }

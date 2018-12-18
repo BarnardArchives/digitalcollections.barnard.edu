@@ -33,8 +33,6 @@ Set the paths for 'Djatoka server base URL' and configure OpenSeadragon in Admin
 
 ![Configuration](https://user-images.githubusercontent.com/25011926/40389344-2a7854ea-5de0-11e8-8db9-7a1bf25f2561.png)
 
-
-
 If you have an *existing* install it's required to update Openseadragon to it's latest version. You can do this quickly 
 with the provided Drush command.
 

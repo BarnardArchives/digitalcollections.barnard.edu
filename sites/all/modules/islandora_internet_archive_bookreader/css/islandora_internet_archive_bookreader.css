@@ -15,6 +15,14 @@ div#BookReader {
   font-weight: 700;
   color: #dedede;
 }
+/**
+* All text elements must have sufficient contrast between text in the
+* foreground and background colors behind it in accordance with WCAG 2 AA
+* contrast ratio thresholds.
+**/
+#BRreturn a {
+  color: black;
+}
 #BookReader a {
   outline: none;
 }

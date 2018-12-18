@@ -32,6 +32,10 @@ Drupal.settings.islandoraInternetArchiveBookReader_jQuery = jQuery.noConflict(tr
           $('#textSrch').hide();
           $('#btnSrch').hide();
         }
+        // Add class 'aria-label' for accessibility support for screen readers.
+        $('.ui-slider-handle').each(function(e){
+          $(this).attr('aria-label', Drupal.t("Book Slider Handle"));
+        });
         if ($.browser.mobile && settings.islandoraInternetArchiveBookReader.mobilize) {
           bookReader.goFullScreen();
         }

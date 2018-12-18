@@ -1,10 +1,9 @@
-/*jshint browser: true, devel:true*/
-/*global jQuery, Drupal, Spinner*/
 /**
  * @file
  * Enforce max_file_count for Plupload elements.
  */
-(function($) {
+
+(function ($) {
   'use strict';
   Drupal.behaviors.islandoraPlupload = {
     attach: function (context, settings) {
@@ -35,7 +34,7 @@
             // If there is a spinner on the form then make it spin!
             if (Drupal.behaviors.spinner !== undefined) {
               if (settings.plupload[id].submit_element !== undefined) {
-                $(settings.plupload[id].submit_element).click(function(event) {
+                $(settings.plupload[id].submit_element).click(function (event) {
                   if (event.originalEvent === undefined) {
                     var form = $(this).parents('form');
                     if (settings.spinner['edit-next'] !== undefined && form.data('submitted') === undefined) {

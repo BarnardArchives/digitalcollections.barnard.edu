@@ -32,7 +32,9 @@
        theme_image(
          array(
            'path' => $parent_tn,
-           'attributes' => array(),
+           'attributes' => array(
+             'alt' => $parent_label,
+           ),
          )
        ),
        'islandora/object/' . $parent_pid,
@@ -61,11 +63,21 @@
        theme_image(
          array(
            'path' => $sibling['TN'],
-           'attributes' => array('class' => $sibling['class']),
+           'attributes' => array(
+             'class' => $sibling['class'],
+             'title' => $sibling['label'],
+             'alt' => $sibling['label'],
+           ),
          )
        ),
        'islandora/object/' . $sibling['pid'],
-       array('html' => TRUE, 'query' => $query_params)
+       array(
+         'html' => TRUE,
+         'query' => $query_params,
+         'attributes' => array(
+           'title' => $sibling['label'],
+         )
+       )
      );?>
      </div>
    <?php endforeach; // each themed_siblings ?>

@@ -151,6 +151,7 @@ function islandora_fits_add_datastream($object, $datastream_id, $file_uri) {
   try {
     $ingest = !isset($object[$datastream_id]);
     $mime_detector = new MimeDetect();
+    $techmd_dsid = variable_get('islandora_fits_techmd_dsid', 'TECHMD');
     if ($ingest) {
       $ds = $object->constructDatastream($datastream_id, 'M');
       $ds->label = $datastream_id;
@@ -169,8 +170,9 @@ function islandora_fits_add_datastream($object, $datastream_id, $file_uri) {
       'success' => TRUE,
       'messages' => array(
         array(
-          'message' => t('Created TECHMD derivative for (@pid).'),
+          'message' => t('Created @techmd derivative for (@pid).'),
           'message_sub' => array(
+            '@techmd' => $techmd_dsid,
             '@pid' => $object->id,
           ),
           'type' => 'dsm',
@@ -183,8 +185,9 @@ function islandora_fits_add_datastream($object, $datastream_id, $file_uri) {
       'success' => FALSE,
       'messages' => array(
         array(
-          'message' => t('Failed to create TECHMD derivative for @pid.'),
+          'message' => t('Failed to create @techmd derivative for @pid.'),
           'message_sub' => array(
+            '@techmd' => $techmd_dsid,
             '@pid' => $object->id,
           ),
           'type' => 'watchdog',

@@ -59,7 +59,8 @@ By default, objects with the [Fedora state](https://wiki.duraspace.org/display/F
 
 ### Customization
 
-Hooks provided by Islandora are documented in `islandora.api.php`. A [detailed tutorial](https://github.com/Islandora/islandora/wiki/Multi-paged-Ingest-Forms) on extending the multi-page ingest forms is available on the Github (developers') Wiki.
+* Hooks provided by Islandora are documented in `islandora.api.php`. 
+* A [detailed tutorial](https://github.com/Islandora/islandora/wiki/Multi-paged-Ingest-Forms) on extending the multi-page ingest forms is available on the Github (developers') Wiki.
 
 
 ## Documentation
@@ -80,6 +81,7 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 Current maintainers:
 
 * [Diego Pino](https://github.com/DiegoPino)
+* [Jonathan Green](https://github.com/jonathangreen)
 
 ## Development
 

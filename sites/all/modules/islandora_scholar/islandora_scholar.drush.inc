@@ -146,6 +146,7 @@ EOQ;
   $context['finished'] = $sandbox['offset'] / $sandbox['total'];
 }
 
+
 /**
  * Command callback to update citations with HTML in MODS.
  */
@@ -154,6 +155,7 @@ function drush_islandora_scholar_fix_doi_html_in_mods() {
   $audit = drush_get_option('audit', FALSE);
   $dry_run = drush_get_option('dry-run', FALSE);
   $modify_my_data = drush_get_option('modify-my-data', FALSE);
+
   // Require one and only one of --audit, --dry-run, --encode.
   if (!($audit || $dry_run || $modify_my_data)) {
     drush_print("This function requires one option of the following: --audit, --dry-run, --modify-my-data.");
@@ -167,6 +169,7 @@ function drush_islandora_scholar_fix_doi_html_in_mods() {
     drush_invoke('help', array('islandora-scholar-fix-doi-html-in-mods'));
     exit;
   }
+
   // Require an action if --dry-run or --modify-my-data is selected.
   if (($modify_my_data OR $dry_run) AND (!in_array($action, array('strip', 'encode')))) {
     drush_print("This function requires an action option, since the GUI variable of how
@@ -174,7 +177,9 @@ function drush_islandora_scholar_fix_doi_html_in_mods() {
      `--action=strip`. For more information use `drush help islandora-scholar-fix-doi-html-in-mods`.");
     exit;
   }
+
   $method = ($modify_my_data ? 'modify' : ($dry_run ? 'dry-run' : 'audit'));
+
   // Confirm if modifying.
   if ($modify_my_data) {
     $warnings = dt("WARNING: You are about to alter datastream content in place.\n");
@@ -187,6 +192,7 @@ function drush_islandora_scholar_fix_doi_html_in_mods() {
       exit;
     }
   }
+
   batch_set(islandora_scholar_fix_doi_html_in_mods_create_batch($action, $method));
   drush_backend_batch_process();
 }
@@ -231,6 +237,7 @@ WHERE {
 ORDER BY ?pid
 EOQ;
   $connection = islandora_get_tuque_connection();
+
   $sandbox = &$context['sandbox'];
   if (!isset($sandbox['offset'])) {
     $sparql_count = $connection->repository->ri->countQuery($query, 'sparql');
@@ -240,10 +247,12 @@ EOQ;
       return;
     }
   }
+
   $context['message'] = t('Processing results @start to @end.', array(
     '@start' => $sandbox['offset'],
     '@end' => min($sandbox['offset'] + $batch_size, $sandbox['total']),
   ));
+
   $offset_start = $sandbox['offset'];
   $query .= "
   LIMIT $batch_size
@@ -288,6 +297,7 @@ EOQ;
             }
             $node->appendChild($sanitized_content);
             $new_value = $node->ownerDocument->saveXML($node);
+
             drush_print("OLD VALUE:\n$old_value");
             drush_print("NEW VALUE:\n$new_value");
           }

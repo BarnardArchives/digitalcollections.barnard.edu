@@ -4,6 +4,6 @@ dependencies[] = libraries
 dependencies[] = islandora
 dependencies[] = token
 package = Islandora Viewers
-version = 7.x-1.11
+version = 7.x-1.12
 core = 7.x
 php = 5.3

@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The Islandora Compound Object Solution Pack enables generic parent-child relationships between objects. The object view of a compound object is replaced by the view of its first child object. The included "Islandora Compound Object Navigation" block provides a thumbnail navigation of an object's siblings. A "Compound" management tab allows for the addition and removal of parent and child objects for each object.
+The Islandora Compound Object Solution Pack enables the creation and management of parent-child relationships between objects, and an interface to navigate between children of the same object. Children have an order within their parent, which can be managed from the parent object.
 
 ## Requirements
 
@@ -10,49 +10,60 @@ This module requires the following modules/libraries:
 
 * [Islandora](https://github.com/islandora/islandora)
 
-This module has the following as optional requirements for certain features:
+Specific features require the following modules/libraries:
 
-For Islandora Compound Object JAIL Display:
+* [Islandora Solr Search](https://github.com/Islandora/islandora_solr_search) Module
+    * Provides a Solr backend to retrieve children instead of using the resource index
+    * Configurable ability to hide child objects from Solr search results
 
-* [JAIL](https://github.com/sebarmeli/JAIL) library 
+* [JAIL](https://github.com/sebarmeli/JAIL) JQuery library 
+    * For the JAIL Display (lazy-loading) block
+
 
 ## Installation
 
 Install as usual, see [this](https://drupal.org/documentation/install/modules-themes/modules-7) for further information.
 
-If utilizing the lazy loading image ability of the solution pack, the [JAIL](https://github.com/sebarmeli/JAIL)
+If using the JAIL display, the [JAIL](https://github.com/sebarmeli/JAIL)
 library must be present within sites/all/libraries/JAIL.
+
+## Usage
+
+This module provides a "Compound CModel". Objects of this type are shells to hold children. They have no content of their own, and the object page at a Compound CModel object displays the content and metadata of its first child. This module can be configured to allow other objects to have children, in which case, the parent object appears as usual, and the navigation block displays the parent followed by its children.
+
+Compound relationships are managed through the __Manage » Compound__ tab which appears on all objects.
+
+Navigation between objects linked by a Compound relationship requires a block to be placed on the interface in __Structure » Blocks__. This module provides two options: a standard Islandora Compound Object Navigation block, and the Islandora Compound JAIL Display, which uses a javascript library for lazy-loading (improving performance on compound objects with many children).
+
+![compobjblocks_to_configure](docs/compound-blocks.png)
+
 
 ## Configuration
 
-Set the 'Child relationship predicate' and 'Solr filter query', as well as select options in Administration » Islandora » Solution pack configuration » Compound Object Solution Pack (admin/islandora/solution_pack_config/compound_object).
+Options for this module can be set at 
+__Administration » Islandora » Solution pack configuration » Compound Object Solution Pack__  (`admin/islandora/solution_pack_config/compound_object`). Configuration options are documented further in [our Wiki](https://wiki.duraspace.org/display/ISLANDORA/Compound+Solution+Pack).
 
-Optionally, enable the JAIL compound block to utilize the lazy loading image
-ability as outlined below.
-
-![Configuration](https://user-images.githubusercontent.com/25011926/39826766-c1af422c-5383-11e8-967a-b18411809200.png)
-
-**Block**:
-
-There exist two block options for displaying compound objects within Islandora.
-The default "Islandora Compound Object Navigation" block will provide navigation
-controls and loading of all objects related to the parent compound. The latter
-option is a block utilizing the [JAIL](https://github.com/sebarmeli/JAIL)
-library which allows for lazy loading of images. This allows the block to load
-images only when they are being accessed which will greatly increase performance
-on compounds with many children.
-
-![compobjblocks_to_configure01b](https://cloud.githubusercontent.com/assets/11573234/24410256/9e01dfc0-13a0-11e7-9edf-454addc13128.JPG)
+__New in 7.x-1.12:__ If the Solr Search Module is enabled, you can use Solr instead of SPARQL to query for Compound membership. Options for this can be configured on the __Solr backend__ tab (`admin/islandora/solution_pack_config/compound_object/solr`).
 
 
+![Configuration](https://user-images.githubusercontent.com/25011926/39889778-d1a91aca-5466-11e8-8eb1-1978cac81104.png)
 
-**Theme**:
+
+**Theme:**
 
 The "Islandora Compound Object Navigation" block can be themed. See `theme_islandora_compound_prev_next()`.
 
-**Drush**:
+**Batch Ingest:**
 
-A Drush command has been added, to be run from the command line (Terminal), that will update the existing rel-predicate of existing compound objects to `isConstituentOf`. It can be run with the drush command `drush update_rels_predicate`. This command accpets no arguments.
+A zip importer for child objects is available as a submodule, and documentation is in its own README.
+
+**Drush:**
+
+If compound objects were created before 7.x-1.2, they will use the relationship `isPartOf` instead of `isConstituentOf`. A drush command, `drush update_rels_predicate`, can be run from the command line to update these predicates. To use it, temporarily set the __Child relationship predicate__ in the compound solution pack to `isPartOf`. The script will set it to `isConstituentOf` when it finishes.
+
+Notes on usage:
+* The script acts on the children of Compound CModel objects; it does not affect compounds where the parent is a different type.
+* If anonymous cannot view Islandora objects, then the drush script must be explicitly run as a user who can.
 
 ## Documentation
 
