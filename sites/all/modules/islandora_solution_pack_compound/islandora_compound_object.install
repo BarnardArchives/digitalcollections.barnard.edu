@@ -31,6 +31,17 @@ function islandora_compound_object_uninstall() {
     'islandora_compound_object_use_jail_view',
     'islandora_compound_object_query_backend',
     'islandora_compound_object_tn_deriv_hooks',
+    'islandora_compound_object_redirect_to_first',
   );
   array_walk($variables, 'variable_del');
+}
+
+/**
+ * Update compound backend name.
+ */
+function islandora_compound_update_7001() {
+  $backend = variable_get('islandora_compound_object_query_backend', ISLANDORA_COMPOUND_OBJECT_LEGACY_BACKEND);
+  if ($backend == 'islandora_basic_collection_sparql_query_backend') {
+    variable_set('islandora_compound_object_query_backend', ISLANDORA_COMPOUND_OBJECT_SPARQL_BACKEND);
+  }
 }

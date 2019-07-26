@@ -583,7 +583,7 @@ class HOCR {
    */
   public static function stripDoctype($hocr_string) {
     // Wipe out the HTML DOCTYPE definition.
-    $doctype_regex = '/<!DOCTYPE\s+html.*?>\s+/si';
+    $doctype_regex = '/<!DOCTYPE\s+html.*?>/si';
 
     return preg_replace($doctype_regex, '', $hocr_string);
   }

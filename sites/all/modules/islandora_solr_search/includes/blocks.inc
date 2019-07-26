@@ -673,6 +673,8 @@ function islandora_solr_advanced_search_form($form, &$form_state) {
           '#type' => 'select',
           '#prefix' => '<div>',
           '#suffix' => '</div>',
+          '#title' => t('Operator'),
+          '#title_display' => 'invisible',
           '#default_value' => isset($value['boolean']) ? $value['boolean'] : 'AND',
           '#options' => array(
             'AND' => 'AND',

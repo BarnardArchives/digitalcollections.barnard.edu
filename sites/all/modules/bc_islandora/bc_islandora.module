@@ -127,6 +127,31 @@ function bc_islandora_menu() {
 }
 
 /**
+ * Implements hook_block_info().
+ */
+function bc_islandora_block_info() {
+  $blocks = [];
+  $blocks['solr_sort_select'] = [
+    'info' => t('Barnard Islandora Solr Sort'),
+    'cache' => DRUPAL_NO_CACHE,
+  ];
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function bc_islandora_block_view($delta = '') {
+  switch($delta) {
+    case 'solr_sort_select':
+      require_once drupal_get_path('module', 'bc_islandora') . '/includes/blocks.inc';
+      $block['content'] = bc_islandora_islandora_solr_sort_select();
+      break;
+  }
+  return $block;
+}
+
+/**
  * Implements hook_theme().
  */
 function bc_islandora_theme($existing, $type, $theme, $path) {
@@ -151,44 +176,6 @@ function bc_islandora_theme($existing, $type, $theme, $path) {
       'file' => 'includes/theme.inc',
     ],
   ];
-}
-
-/**
- * Implements hook_preprocess_HOOK().
- */
-function bc_islandora_preprocess_islandora_internet_archive_bookreader(array &$variables) {
-  $object = $variables['object'];
-  $pid = $object->id;
-  $ns = islandora_get_namespace($pid);
-
-  $thumbs = explode(', ', variable_get('bc_islandora_bookreader_initial_thumbs'));
-  $one_ups = explode(', ', variable_get('bc_islandora_bookreader_initial_1up'));
-
-  if (in_array($pid, $thumbs) || in_array($ns, $thumbs)) {
-    drupal_add_js([
-      'islandoraInternetArchiveBookReader' =>
-        ['bookReaderInitialMode' => 3],
-    ], 'setting');
-  }
-  elseif (in_array($pid, $one_ups) || in_array($ns, $one_ups)) {
-    drupal_add_js([
-      'islandoraInternetArchiveBookReader' =>
-        ['bookReaderInitialMode' => 1],
-    ], 'setting');
-  }
-
-  $barnard_islandora_path = drupal_get_path('module', 'bc_islandora');
-
-  // This is the extended BookReader that is to be called BEFORE IIAB.
-  drupal_add_js("$barnard_islandora_path/js/compound_book_reader.js",
-    [
-      'group' => JS_LIBRARY,
-      'weight' => -5,
-    ]
-  );
-  // This just replaces the default with ours: it hides additional items, and
-  // is not required for functionality.
-  drupal_add_js("$barnard_islandora_path/js/barnard_islandora_internet_archive_bookreader.js");
 }
 
 /*****
@@ -378,14 +365,5 @@ function bc_islandora_islandora_datastream_alter($object, $datastream, &$context
   }
 }
 
-/**
- * Implements hook_islandora_solr_query_alter().
- */
-function bc_islandora_islandora_solr_query_alter($islandora_solr_query) {
-  module_load_include('inc', 'bc_islandora', 'includes/utilities');
-  if(!_bc_solr_searching()) {
-    // If not searching, exclude paged content from search.
-    // drupal_set_message(t('Excluding individual pages of paged content while browsing.'));
-    $islandora_solr_query->solrParams['fq'][] = '-RELS_EXT_hasModel_uri_s: "info:fedora/islandora:pageCModel"';
-  }
-}
+
+

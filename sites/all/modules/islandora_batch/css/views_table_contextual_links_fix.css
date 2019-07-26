@@ -1,4 +1,15 @@
-.islandora-batch-view-table td.views-field-contextual-links .contextual-links-wrapper {
-  width: 34px;
-  position: relative;
+.views-table {
+    display: table;
+    width: 100%;
+    max-width: 100%;
+    table-layout: fixed;
+}
+
+.views-table td,
+.views-table th {
+  word-wrap: break-word;
+}
+
+td.views-field-actions .ctools-dropbutton-wrapper {
+  min-height: 20px;
 }

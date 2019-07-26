@@ -39,6 +39,7 @@ function islandora_scholar_get_view(AbstractObject $object) {
       '#weight' => $i++,
     ),
   );
+
   if (isset($object['MODS']) && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $object['MODS'])) {
     module_load_include('inc', 'islandora_scholar', 'includes/csl_select.form');
     $display['citation_select'] = drupal_get_form('islandora_scholar_citation_select_form', $object->id);
@@ -72,11 +73,42 @@ function islandora_scholar_get_view(AbstractObject $object) {
         '#weight' => 0,
       );
     }
+
+    if (variable_get('islandora_scholar_library_catalog_search_enabled', FALSE)) {
+      // Library Catalog Search.
+      $mods_xml = simplexml_load_string($object['MODS']->content);
+      $mods_xml->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
+      // Search for library search URL.
+      $search_url = NULL;
+      $search_url = variable_get('islandora_scholar_library_catalog_search_URL', 'https://american.summon.serialssolutions.com');
+      // Search for library search parameters.
+      $search_params = NULL;
+      $search_params = variable_get('islandora_scholar_library_catalog_search_params', '/search?s.q=');
+      // Search for primary search term (usually DOI).
+      $search_term = NULL;
+      $primary_search = $mods_xml->xpath("" . variable_get('islandora_scholar_library_catalog_primary_search_xpath', '//mods:identifier[@type="doi"]'));
+      if ($primary_search) {
+        $search_term = (string) reset($primary_search);
+      }
+      if (!$search_term) {
+        // Search for default search term (usually title).
+        $default_search = $mods_xml->xpath("" . variable_get('islandora_scholar_library_catalog_default_search_xpath', '//mods:title'));
+        $search_term = (string) reset($default_search);
+      }
+      if (!$search_term) {
+        $search_term = $object->label;
+      }
+
+      $display['library_catalog_search'] = array(
+        '#type' => 'item',
+        '#markup' => l(t('Search for this publication in your library discovery service'), "$search_url$search_params\"$search_term\""),
+        '#weight' => 0,
+      );
+    }
   }
   else {
     $display['citation']['#markup'] = t('Unable to load MODS.');
   }
-
   module_load_include('inc', 'islandora', 'includes/solution_packs');
   $viewer = islandora_get_viewer(array(), 'islandora_scholar_viewers', $object);
 
@@ -87,31 +119,46 @@ function islandora_scholar_get_view(AbstractObject $object) {
     );
   }
   elseif (isset($object['PREVIEW']) && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $object['PREVIEW'])) {
-    $image = theme('image', array(
+    $image = theme(
+      'image',
+      array(
         'path' => "islandora/object/$object->id/datastream/PREVIEW/view",
-      ));
+        'alt' => t('PREVIEW Datastream'),
+      )
+    );
     if (isset($object['PDF']) && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $object['PDF'])) {
       $display['preview'] = array(
-        '#markup' => l($image, "islandora/object/$object->id/datastream/PDF/view", array(
+        '#markup' => l($image, "islandora/object/$object->id/datastream/PDF/view",
+          array(
             'html' => TRUE,
-          )),
+            'attributes' => array(
+              'title' => t('PDF Datastream'),
+            ),
+          )
+        ),
         '#weight' => $display['preview']['#weight'],
       );
     }
     else {
       $display['preview'] = array(
         '#theme' => 'image',
+        '#attributes' => array(
+          'alt' => t('PDF Preview'),
+        ),
         '#path' => "islandora/object/$object/datastream/PREVIEW/view",
         '#weight' => $display['preview']['#weight'],
       );
     }
   }
 
-  if (isset($object['PDF']) && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $object['PDF'])) {
+  $default_viewer = variable_get('islandora_scholar_viewers');
+  $default_viewer = $default_viewer['default'];
+  if (isset($object['PDF']) && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $object['PDF']) && $default_viewer == 'none') {
+    $filename = str_replace(":", "_", $object->id);
     $display['pdf_download'] = array(
       '#type' => 'item',
       '#title' => t('Download'),
-      '#markup' => l(t('PDF'), "islandora/object/$object->id/datastream/PDF/download/citation.pdf"),
+      '#markup' => l(t('PDF'), "islandora/object/$object->id/datastream/PDF/download/$filename.pdf"),
       '#weight' => $display['pdf_download']['#weight'],
     );
   }
@@ -204,7 +251,7 @@ function islandora_scholar_get_metadata_display($object, $weight) {
     module_load_include('inc', 'islandora_scholar', 'includes/coins');
     $display = array(
       '#type' => 'fieldset',
-      '#title' => t('Metadata'),
+      '#title' => t('Details'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
       '#weight' => $weight,

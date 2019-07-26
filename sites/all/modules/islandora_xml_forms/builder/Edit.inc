@@ -11,7 +11,7 @@
  * Includes all the required CSS/JS files needed to render the Form Builder GUI.
  *
  * @param string $form_name
- *   The name of the form to edit.
+ *   The name of the form to edit (rawurlencoded).
  *
  * @return string
  *   The html where the Form Builder GUI will be rendered.
@@ -19,11 +19,16 @@
 function xml_form_builder_edit($form_name) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
 
+  $form_name = rawurldecode($form_name);
   if (!XMLFormDatabase::Exists($form_name)) {
     drupal_set_message(t('Form "%name" does not exist.', array('%name' => $form_name)), 'error');
     drupal_not_found();
     exit();
   }
+  $breadcrumb[] = l(t('Home'), '<front>');
+  $breadcrumb[] = l(t('Islandora Admin'), 'admin/islandora');
+  $breadcrumb[] = l(t('Form Builder'), 'admin/islandora/xmlform');
+  drupal_set_breadcrumb($breadcrumb);
 
   xml_form_builder_edit_include_css();
   xml_form_builder_edit_include_js();
@@ -83,7 +88,7 @@ function xml_form_builder_edit_include_js() {
  * the database as an XML Form Definition.
  *
  * @param string $form_name
- *   The name of the form to update.
+ *   The name of the form to update (rawurlencoded).
  *
  * @throws Exception
  *   If unable to instantiate the JSON form definition, or generate the XML form
@@ -93,6 +98,7 @@ function xml_form_builder_edit_save($form_name) {
   module_load_include('inc', 'xml_form_builder', 'JSONFormDefinition');
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
   module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
+  $form_name = rawurldecode($form_name);
   try {
     // @TODO: this data needs to be sanitized. Can we get this data through the
     // form API?

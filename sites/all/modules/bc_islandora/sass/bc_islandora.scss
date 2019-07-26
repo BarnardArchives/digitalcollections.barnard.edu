@@ -33,36 +33,6 @@ body {
   margin-bottom: 10px;
 }
 
-// Barnard Compound Objects
-
-.islandora-compound-title {
-  font-size: 125% !important;
-}
-
-.islandora-compound-manage {
-  font-size: 85% !important;
-}
-
-.islandora-compound-details {
-  border-bottom: 1px dotted #ccc;
-  //padding-bottom: 1em;
-  margin: 1em 0;
-  font-size: 90% !important;
-}
-.islandora-compound-thumbs {
-  border-top: none !important;
-}
-// I don't know if the additional margin is really making anything clearer.
-.islandora-compound-thumb {
-  margin-bottom: 1em;
-  padding-bottom: 0 !important;
-}
-
-.islandora-compound-thumb .islandora-compound-caption {
-  font-size: 90% !important;
-  //max-width: none !important;
-}
-
 // Newspaper and yearbook landing pages.
 #block-bc-islandora-bc-islandora-newspaper {
   width: 100%;

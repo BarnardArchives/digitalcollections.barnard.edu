@@ -22,7 +22,7 @@ This module requires the following modules/libraries:
 * [Book Solution Pack](https://github.com/Islandora/islandora_solution_pack_book)
 
 
-# Installation
+## Installation
 
 Install module as usual, see [this](https://drupal.org/documentation/install/modules-themes/modules-7) for further information.
 
@@ -37,6 +37,31 @@ Further documentation for this module is available at [our wiki](https://wiki.du
 ### Usage
 
 The base ZIP/directory preprocessor can be called as a drush script (see `drush help islandora_book_batch_preprocess` for additional parameters):
+```man
+$ drush help islandora_book_batch_preprocess
+
+Options:
+ --aggregate_ocr                           A flag to cause OCR to be aggregated to books, if OCR is also being generated per-page.
+ --content_models                          A comma-separated list of content models to assign to the objects. Only applies to the "book" level object.
+ --create_pdfs                             A flag to cause PDFs to be created in books. Page PDF creation is dependant on the configuration within Drupal proper.
+ --directory_dedup                         A flag to indicate that we should avoid repreprocessing books which are located in directories.
+ --do_not_generate_hocr                    A flag to allow for conditional HOCR generation.
+ --do_not_generate_ocr                     A flag to allow for conditional OCR generation.
+ --email_admin                             A flag to notify the site admin when the book is fully ingested (depends on Rules being enabled).
+ --namespace                               The namespace for objects created by this command.  Defaults to namespace set in fedora config.
+ --output_set_id                           A flag to indicate whether to print the set ID of the preprocessed book.
+ --page_progression                        A flag to indicate the page progression for the book. If not specified will default to LR.
+ --parent                                  The collection to which the generated items should be added.  Only applies to the "book" level object. If "directory" and the directory
+                                           containing the book description is a valid PID, it will be set as the parent. If this is specified and itself is a PID, all books will be
+                                           related to the given PID.
+ --parent_relationship_pred                The predicate of the relationship to the parent. Defaults to "isMemberOfCollection".
+ --parent_relationship_uri                 The namespace URI of the relationship to the parent. Defaults to "info:fedora/fedora-system:def/relations-external#".
+ --target                                  The target to directory or zip file to scan. Required.
+ --type                                    Either "directory" or "zip". Required.
+ --wait_for_metadata                       A flag to indicate that we should hold off on trying to ingest books until we have metadata available for themat the book level.
+
+Aliases: ibbp
+```
 
 Books must be broken up into separate directories, such that each directory at the "top" level (in the target directory or Zip file) represents a book. Book pages are their own directories inside of each book directory containing an OBJ and additional datastreams can be added here manually.
 
@@ -75,7 +100,7 @@ Each page directory name will be used as the sequence number of the page created
 
 A file named --METADATA--.xml can contain either MODS, DC or MARCXML which is used to fill in the MODS or DC streams (if not provided explicitly). Similarly, --METADATA--.mrc (containing binary MARC) will be transformed to MODS and then possibly to DC, if neither are provided explicitly.
 
-If no MODS is provided at the book level - either directly as MODS.xml, or transformed from either a DC.xml or the "--METADATA--" file discussed above - the directory name will be used as the title. 
+If no MODS is provided at the book level - either directly as MODS.xml, or transformed from either a DC.xml or the "--METADATA--" file discussed above - the directory name will be used as the title.
 
 Drush made the `target` parameter reserved as of Drush 7. To allow for backwards compatability this will be preserved.
 
@@ -112,7 +137,7 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 
 Current maintainers:
 
-* [Rosie Le Faive](https://github.com/rosiel)
+* [Adam Vessey](https://github.com/adam-vessey)
 
 ## Development
 

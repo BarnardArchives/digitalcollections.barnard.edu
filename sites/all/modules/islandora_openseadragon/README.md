@@ -2,7 +2,7 @@
 
 # Introduction
 
-A module to integrate OpenSeadragon and Islandora. Supports a custom Djatoka tilesource and a IIIF tilesource.
+An Islandora viewer module using OpenSeadragon. Works with large image datastreams (JPEG-2000). Supports a custom Djatoka tilesource and a IIIF tilesource.
 
 Based in spirit from the JS component of Kevin Clarke's [FreeLib-Djatoka](https://github.com/ksclarke/freelib-djatoka)
 
@@ -12,13 +12,14 @@ This module requires the following modules/libraries:
 
 * [Islandora](https://github.com/islandora/islandora)
 * [Tuque](https://github.com/islandora/tuque)
-* [OpenSeadragon](https://github.com/openseadragon/openseadragon/releases/download/v2.2.1/openseadragon-bin-2.2.1.zip)
+* [OpenSeadragon](https://github.com/openseadragon/openseadragon/)
+* [Drupal Token Module](https://www.drupal.org/project/token)
 
 ## Installation
 
 Install as usual, see [this](https://drupal.org/documentation/install/modules-themes/modules-7) for further information.
 
-[Download](https://github.com/openseadragon/openseadragon/releases/download/v2.2.1/openseadragon-bin-2.2.1.zip) and install the Openseadragon library to your sites/libraries folder, or run `drush openseadragon-plugin`. Openseadragon 2.2.1 is known to work well with Islandora.
+[Download](https://github.com/openseadragon/openseadragon/releases/download/v2.3.1/openseadragon-bin-2.3.1.zip) and install the Openseadragon library to your sites/libraries folder, or run `drush openseadragon-plugin`. Openseadragon 2.3.1 is known to work well with Islandora.
 
 Note: If you use the Drush command, it is advisable to Move (not copy) the install script to your `.drush` folder and run it.
 
@@ -28,15 +29,15 @@ Note: If you use the Drush command, it is advisable to Move (not copy) the insta
 
 #### Drupal 
 
-Set the paths for 'Djatoka server base URL' and configure OpenSeadradon in Administration » Islandora » OpenSeadragon (admin/islandora/module).
+Set the paths for 'Djatoka server base URL' and configure OpenSeadragon in Administration » Islandora » Islandora Viewers » OpenSeadragon (admin/islandora/islandora_viewers/openseadragon).
 
-![Configuration](https://camo.githubusercontent.com/c1bf991b5cc758a4420444564a91b286007e6f6e/687474703a2f2f692e696d6775722e636f6d2f4e6566597169432e706e67)
+![Configuration](https://user-images.githubusercontent.com/25011926/40389344-2a7854ea-5de0-11e8-8db9-7a1bf25f2561.png)
 
 If you have an *existing* install it's required to update Openseadragon to it's latest version. You can do this quickly 
 with the provided Drush command.
 
 ```bash
-drush openseadragonplugin
+drush openseadragon-plugin
 ```
 
 #### Apache Reverse Proxy
@@ -75,7 +76,7 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 
 Current maintainers:
 
-* [Jared Whiklo](https://github.com/whikloj)
+* [Jonathan Green](https://github.com/jonathangreen)
 
 ## Development
 

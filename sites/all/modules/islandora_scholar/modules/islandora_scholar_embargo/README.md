@@ -10,6 +10,7 @@ The following Drupal modules are required:
 
  * [Islandora](https://github.com/islandora/islandora)
  * [Islandora_Scholar](https://github.com/islandora/islandora_scholar)
+   * Islandora Scholar does not need to be enabled to run this module, but it must be installed in order to preserve Scholar Embargo's location in the `modules` directory.
  * [Islandora XACML API](https://github.com/islandora/islandora_xacml_editor/tree/7.x/api)
  * [Rules](https://www.drupal.org/project/rules)
 
@@ -34,7 +35,6 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 Current maintainers:
 
 * [Bryan Brown](https://github.com/bryjbrown)
-* [Don Richards](https://github.com/DonRichards)
 
 ## Development
 

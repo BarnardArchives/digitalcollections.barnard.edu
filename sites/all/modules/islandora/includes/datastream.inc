@@ -63,6 +63,10 @@ function islandora_view_datastream(AbstractDatastream $datastream, $download = F
     if ($duplicate_extension_position === FALSE) {
       $filename .= $extension;
     }
+
+    // Allow other modules to modify or replace the filename.
+    drupal_alter('islandora_datastream_filename', $filename, $datastream);
+
     header("Content-Disposition: attachment; filename=\"$filename\"");
   }
 
@@ -161,22 +165,32 @@ function islandora_view_datastream_cache_check(AbstractDatastream $datastream) {
 
   if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
     $modified_since = DateTime::createFromFormat('D, d M Y H:i:s e', $_SERVER['HTTP_IF_MODIFIED_SINCE']);
-    if ($datastream->createdDate->getTimestamp() - $modified_since->getTimestamp() > 0) {
-      // Changed!
+    if ($modified_since === FALSE) {
       return $return;
     }
     else {
-      $return = 304;
+      if ($datastream->createdDate->getTimestamp() - $modified_since->getTimestamp() > 0) {
+        // Changed!
+        return $return;
+      }
+      else {
+        $return = 304;
+      }
     }
   }
   if ($return === 200 && isset($_SERVER['HTTP_IF_UNMODIFIED_SINCE'])) {
     $unmodified_since = DateTime::createFromFormat('D, d M Y H:i:s e', $_SERVER['HTTP_IF_UNMODIFIED_SINCE']);
-    if ($datastream->createdDate->getTimestamp() !== $unmodified_since->getTimestamp()) {
-      // Changed!
-      $return = 412;
+    if ($unmodified_since === FALSE) {
+      return $return;
     }
     else {
-      return $return;
+      if ($datastream->createdDate->getTimestamp() !== $unmodified_since->getTimestamp()) {
+        // Changed!
+        $return = 412;
+      }
+      else {
+        return $return;
+      }
     }
   }
 

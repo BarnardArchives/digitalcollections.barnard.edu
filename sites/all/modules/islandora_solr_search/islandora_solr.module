@@ -33,6 +33,7 @@ function islandora_solr_menu() {
   $items['islandora/search'] = array(
     'title' => 'Search results',
     'page callback' => 'islandora_solr',
+    'page arguments' => array(2, NULL),
     'access arguments' => array('search islandora solr'),
     'type' => MENU_CALLBACK,
   );
@@ -98,6 +99,17 @@ function islandora_solr_menu() {
     'file' => 'includes/admin.inc',
     'type' => MENU_CALLBACK,
   );
+  if (module_exists('islandora_compound_object')) {
+    $items['admin/islandora/solution_pack_config/compound_object/solr'] = array(
+      'title' => 'Solr Backend',
+      'description' => 'Settings form for compound object backend',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_solr_compound_backend_admin_form'),
+      'access arguments' => array('administer compound relationships'),
+      'file' => 'includes/compound_backend.inc',
+      'type' => MENU_LOCAL_TASK,
+    );
+  }
   return $items;
 }
 
@@ -283,14 +295,20 @@ function islandora_solr($query = NULL, $params = NULL) {
   // Set primary display.
   // Check if display param is an valid, enabled profile; otherwise, show
   // default.
-  if (isset($params['display']) && in_array($params['display'], $enabled_profiles)) {
-    $islandora_solr_primary_display = $params['display'];
+  if (isset($params['display'])) {
+    if (in_array($params['display'], $enabled_profiles)) {
+      $islandora_solr_primary_display = $params['display'];
+    }
+    else {
+      // Unset invalid parameter.
+      unset($params['display']);
+    }
   }
-  else {
+
+  if (empty($islandora_solr_primary_display)) {
     $islandora_solr_primary_display = variable_get('islandora_solr_primary_display', 'default');
-    // Unset invalid parameter.
-    unset($params['display']);
   }
+
   $params['islandora_solr_search_navigation'] = variable_get('islandora_solr_search_navigation', FALSE);
 
   // !!! Set the global variable. !!!
@@ -494,6 +512,22 @@ function islandora_solr_islandora_basic_collection_query_backends() {
 }
 
 /**
+ * Implements hook_islandora_compound_object_query_backends().
+ */
+function islandora_solr_islandora_compound_object_query_backends() {
+  $module_path = drupal_get_path('module', 'islandora_solr');
+  return array(
+    'islandora_solr_compound_query_backend' => array(
+      'title' => t('SOLR - Does a Solr query with filters. Configure fields on the <a href="@solr">Solr Backend</a> tab.',
+        array('@solr' => url('admin/islandora/solution_pack_config/compound_object/solr'))
+      ),
+      'callable' => 'islandora_solr_compound_object_query',
+      'file' => "$module_path/includes/compound_backend.inc",
+    ),
+  );
+}
+
+/**
  * Implements hook_islandora_object_purged().
  */
 function islandora_solr_islandora_object_purged($pid) {
@@ -581,4 +615,16 @@ function islandora_solr_islandora_breadcrumbs_backends() {
       'file' => "$module_path/includes/breadcrumbs.inc",
     ),
   );
+}
+
+/**
+ * Implements hook_preprocess().
+ */
+function islandora_solr_preprocess_islandora_objects_subset(&$variables) {
+  $backend = variable_get('islandora_basic_collection_display_backend', ISLANDORA_BASIC_COLLECTION_LEGACY_BACKEND);
+  if ($backend == 'islandora_solr_query_backend') {
+    // Set the collection pager limit based on correct page size.
+    global $_islandora_solr_queryclass;
+    $variables['limit'] = $_islandora_solr_queryclass->solrLimit;
+  }
 }

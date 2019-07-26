@@ -34,10 +34,12 @@ define('ISLANDORA_INGEST', 'ingest fedora objects');
 define('ISLANDORA_PURGE', 'delete fedora objects and datastreams');
 define('ISLANDORA_MANAGE_PROPERTIES', 'manage object properties');
 define('ISLANDORA_VIEW_DATASTREAM_HISTORY', 'view old datastream versions');
+define('ISLANDORA_ACCESS_INACTIVE_AND_DELETED_OBJECTS', 'access inactive and deleted objects');
 define('ISLANDORA_MANAGE_DELETED_OBJECTS', 'manage deleted objects');
 define('ISLANDORA_REVERT_DATASTREAM', 'revert to old datastream');
 define('ISLANDORA_REGENERATE_DERIVATIVES', 'regenerate derivatives for an object');
 define('ISLANDORA_REPLACE_DATASTREAM_CONTENT', 'replace a datastream with new content, preserving version history');
+define('ISLANDORA_MANAGE_ORPHANED_OBJECTS', 'view and delete a list of orphaned objects');
 
 // Hooks.
 define('ISLANDORA_VIEW_HOOK', 'islandora_view_object');
@@ -396,7 +398,14 @@ function islandora_menu() {
     'type' => MENU_NORMAL_ITEM,
     'access arguments' => array(ISLANDORA_MANAGE_DELETED_OBJECTS),
   );
-
+  $items['admin/reports/orphaned_objects/list'] = array(
+    'title' => 'Orphaned Islandora objects',
+    'description' => 'List of orphaned Islandora objects.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('islandora_manage_orphaned_objects_form'),
+    'access arguments' => array(ISLANDORA_MANAGE_ORPHANED_OBJECTS),
+    'file' => 'includes/orphaned_objects.inc',
+  );
   $items['admin/islandora/restore/manage'] = array(
     'description' => 'Restore or permanantly remove objects with Deleted status',
     'title' => 'Manage Deleted Objects',
@@ -578,7 +587,7 @@ function islandora_theme() {
  * Implements hook_permission().
  */
 function islandora_permission() {
-  return array(
+  $permissions = array(
     ISLANDORA_VIEW_OBJECTS => array(
       'title' => t('View repository objects'),
       'description' => t('View objects in the repository. Note: Fedora XACML security policies may override this permission.'),
@@ -623,7 +632,18 @@ function islandora_permission() {
       'title' => t('Replace datastreams'),
       'description' => t('Add new datastream content as latest version.'),
     ),
+    ISLANDORA_MANAGE_ORPHANED_OBJECTS => array(
+      'title' => t('Manage orphaned Islandora objects'),
+      'description' => t('View a list of orphaned Islandora objects.'),
+    ),
   );
+  if (variable_get('islandora_deny_inactive_and_deleted', FALSE)) {
+    $permissions[ISLANDORA_ACCESS_INACTIVE_AND_DELETED_OBJECTS] = array(
+      'title' => t('Access inactive and deleted objects'),
+      'description' => t('Access objects with a Fedora state of Inactive or Deleted.'),
+    );
+  }
+  return $permissions;
 }
 
 /**
@@ -873,13 +893,17 @@ function islandora_object_access_callback($perm, $object = NULL) {
 function islandora_object_datastream_tokened_access_callback($perm, $object = NULL, $datastream = NULL) {
   module_load_include('inc', 'islandora', 'includes/utilities');
 
+  // Token validation requires a valid object and PID in order to make a
+  // potential match in the db.
   $token_account = NULL;
-  $token = filter_input(INPUT_GET, 'token', FILTER_SANITIZE_STRING);
+  if (is_object($object) && is_object($datastream)) {
+    $token = filter_input(INPUT_GET, 'token', FILTER_SANITIZE_STRING);
 
-  if ($token) {
-    $user = islandora_validate_object_token($object->id, $datastream->id, $token);
-    if ($user) {
-      $token_account = user_load($user->uid);
+    if ($token) {
+      $user = islandora_validate_object_token($object->id, $datastream->id, $token);
+      if ($user) {
+        $token_account = user_load($user->uid);
+      }
     }
   }
 
@@ -1690,8 +1714,11 @@ function islandora_object_access($op, $object, $user = NULL) {
  */
 function islandora_islandora_object_access($op, $object, $user) {
   module_load_include('inc', 'islandora', 'includes/utilities');
-
-  return islandora_namespace_accessible($object->id) && user_access($op, $user);
+  $access = (islandora_namespace_accessible($object->id) && user_access($op, $user));
+  if (($object->state != 'A') && variable_get('islandora_deny_inactive_and_deleted', FALSE)) {
+    $access = ($access && user_access(ISLANDORA_ACCESS_INACTIVE_AND_DELETED_OBJECTS, $user));
+  }
+  return $access;
 }
 
 /**
@@ -1714,11 +1741,6 @@ function islandora_datastream_access($op, $datastream, $user = NULL) {
   // Populate the cache on a miss.
   if (!isset($cache[$op][$datastream->parent->id][$datastream->id][$user->uid])) {
     module_load_include('inc', 'islandora', 'includes/utilities');
-    $object_results = islandora_invoke_hook_list('islandora_object_access', $datastream->parent->models, array(
-      $op,
-      $datastream->parent,
-      $user,
-    ));
 
     $datastream_results = islandora_invoke_hook_list('islandora_datastream_access', $datastream->parent->models, array(
       $op,
@@ -1726,11 +1748,9 @@ function islandora_datastream_access($op, $datastream, $user = NULL) {
       $user,
     ));
 
-    // The datastream check returned FALSE, and one in the object or datastream
-    // checks returned TRUE.
+    // The datastream check returned no FALSE, and at least one TRUE.
     $cache[$op][$datastream->parent->id][$datastream->id][$user->uid] = (
-      !in_array(FALSE, $datastream_results, TRUE) &&
-      (in_array(TRUE, $object_results, TRUE) || in_array(TRUE, $datastream_results, TRUE))
+      !in_array(FALSE, $datastream_results, TRUE) && in_array(TRUE, $datastream_results, TRUE)
     );
   }
 
@@ -1957,7 +1977,7 @@ function islandora_islandora_metadata_display_info() {
  */
 function islandora_islandora_datastream_access($op, AbstractDatastream $datastream, $user) {
   module_load_include('inc', 'islandora', 'includes/utilities');
-  $result = islandora_namespace_accessible($datastream->parent->id) && user_access($op, $user);
+  $result = islandora_object_access($op, $datastream->parent, $user);
 
   if ($result && $op == ISLANDORA_REGENERATE_DERIVATIVES) {
     module_load_include('inc', 'islandora', 'includes/derivatives');
@@ -2194,4 +2214,13 @@ function islandora_islandora_breadcrumbs_backends() {
       // default incase anything goes wrong.
     ),
   );
+}
+
+/**
+ * Implements hook_islandora_solution_pack_child_relationships
+ */
+function islandora_islandora_solution_pack_child_relationships($cmodels) {
+  // Return empty arrays from core implementation so that these keys always
+  // exist when the hook is called, even if no module responds.
+  return array('predicate' => array(), 'prefix' => array());
 }

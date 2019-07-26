@@ -147,3 +147,31 @@ function hook_islandora_oai_identify_request_handler() {
  */
 function hook_islandora_oai_self_transform_params($object, $metadata_prefix) {
 }
+
+/**
+ * Allows modules to alter the DC, MODS, etc. OAI-PMH record.
+ *
+ * @param string $oai_record
+ *   The serialized XML OAI record.
+ * @param array $params
+ *   An array containing:
+ *   -metadata_prefix (string): The metadata prefix of the request being
+ *   executed.
+ *   -pid (string): The pid of the object described in the record.
+ */
+function hook_islandora_oai_record_alter(&$oai_record, &$params) {
+  if (ip_address() == '123.456.789.789' && $params['metadata_prefix'] == 'oai_dc') {
+    $rights_value = "We want a custom rights statement.";
+    $rights_element = "<dc:rights>" . $rights_value . "</dc:rights>";
+
+    $dom = new DOMDocument();
+    $dom->preserveWhiteSpace = FALSE;
+    $dom->formatOutput = TRUE;
+    $dom->loadXML($oai_record);
+    $frag = $dom->createDocumentFragment();
+    $frag->appendXML($rights_element);
+    $dom->documentElement->appendChild($frag);
+
+    $oai_record = $dom->saveXML($dom->documentElement);
+  }
+}

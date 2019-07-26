@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Management form for the Islandora Simple Workflow module.
@@ -17,6 +18,7 @@
  */
 function islandora_simple_workflow_manage_form($form, $form_state) {
   module_load_include('inc', 'islandora_simple_workflow', 'includes/utilities');
+  module_load_include('inc', 'islandora', 'includes/utilities');
 
   if (isset($form_state['show_confirm'])) {
     $form['confirm_message'] = array(
@@ -38,15 +40,42 @@ function islandora_simple_workflow_manage_form($form, $form_state) {
     );
   }
   else {
+    $render_parents = variable_get('islandora_simple_workflow_toggle_parent_column', FALSE);
     $inactive_objects = islandora_simple_workflow_get_inactive_objects();
+
     $rows = array();
+
     foreach ($inactive_objects as $inactive_object) {
-      $pid = $inactive_object['object']['value'];
-      $rows[$pid] = array(l($inactive_object['title']['value'] . " (" . $pid . ")", "islandora/object/$pid"));
+      $object_pid = $inactive_object['object']['value'];
+      $rows[$object_pid][] = l($inactive_object['title']['value'] . " (" . $object_pid . ")", "islandora/object/$object_pid");
+
+      if ($render_parents) {
+        $object = islandora_object_load($object_pid);
+
+        if ($object) {
+          $parents = islandora_get_parents_from_rels_ext($object);
+          $inactive_object['parents'] = array();
+
+          foreach ($parents as $parent) {
+            $inactive_object['parents'][] = l($parent->id, "islandora/object/$parent->id");
+          }
+
+          $rows[$object_pid][] = implode(', ', $inactive_object['parents']);
+        }
+      }
     }
+
+    $header = array(
+      t('Object'),
+    );
+
+    if ($render_parents) {
+      $header[] = t('Parents');
+    }
+
     $form['management_table'] = array(
       '#type' => 'tableselect',
-      '#header' => array(t('Object')),
+      '#header' => $header,
       '#options' => $rows,
       '#attributes' => array(),
       '#empty' => t('No inactive objects were found.'),

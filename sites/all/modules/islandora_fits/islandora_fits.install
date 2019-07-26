@@ -12,6 +12,7 @@ function islandora_fits_uninstall() {
   $variables = array(
     'islandora_fits_techmd_dsid',
     'islandora_fits_executable_path',
+    'islandora_fits_do_derivatives',
   );
   array_walk($variables, 'variable_del');
 }

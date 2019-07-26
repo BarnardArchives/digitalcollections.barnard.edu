@@ -314,7 +314,7 @@ function islandora_oai_get_record(&$writer, $args) {
         break;
 
       case 'metadataPrefix':
-        $result = db_query("SELECT * FROM {islandora_oai_metadata_formats} WHERE metadata_prefix=:metadata_prefix", array(':metadata_prefix' => $val));
+        $result = db_query("SELECT * FROM {islandora_oai_metadata_formats} WHERE BINARY metadata_prefix=:metadata_prefix", array(':metadata_prefix' => $val));
         if ($result->rowCount() > 0) {
           $metadata_prefix = $val;
         }
@@ -602,7 +602,7 @@ function islandora_oai_list_id_rec(&$writer, $args, $list_rec = FALSE) {
 
       case 'metadataPrefix':
         if (!isset($metadata_prefix)) {
-          $result = db_query("SELECT * FROM {islandora_oai_metadata_formats} WHERE metadata_prefix=:metadata_prefix ", array(':metadata_prefix' => $val));
+          $result = db_query("SELECT * FROM {islandora_oai_metadata_formats} WHERE BINARY metadata_prefix=:metadata_prefix ", array(':metadata_prefix' => $val));
 
           if ($result->rowCount() > 0 && !isset($metadata_prefix)) {
             $metadata_prefix = $val;
@@ -676,6 +676,9 @@ function islandora_oai_list_id_rec(&$writer, $args, $list_rec = FALSE) {
         return FALSE;
       }
     }
+    $from = isset($from) ? $from : NULL;
+    $until = isset($until) ? $until : NULL;
+    $query_args = array($from, $until);
   }
   $params = array(
     'token' => $token,
@@ -916,7 +919,7 @@ EOQ;
         break;
 
       case 'metadataPrefix':
-        $result = db_query("SELECT * FROM {islandora_oai_metadata_formats} WHERE metadata_prefix=:metadata_prefix", array(':metadata_prefix' => $val));
+        $result = db_query("SELECT * FROM {islandora_oai_metadata_formats} WHERE BINARY metadata_prefix=:metadata_prefix", array(':metadata_prefix' => $val));
         if ($result->rowCount() > 0) {
           $metadata_prefix = $val;
         }

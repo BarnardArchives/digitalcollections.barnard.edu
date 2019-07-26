@@ -22,8 +22,7 @@ This module requires the following modules/libraries:
 Additionally, installing and enabling [Views](https://drupal.org/project/views)
 will allow additional reporting and management displays to be rendered.
 
-
-# Installation
+## Installation
 
 Install as usual, see [this](https://drupal.org/documentation/install/modules-themes/modules-7) for further information.
 
@@ -33,11 +32,11 @@ After you have installed and enabled the Islandora Batch module, go to Administr
 
 ![Configuration menu](https://cloud.githubusercontent.com/assets/10052068/18972680/23935662-8668-11e6-8a21-4c52d7aac69f.png)
 
-You should make sure that the path to your java executable is correct.  Optionally, if you have the Drupal Views module enabled, you can also have the module link back to the Batch Queue in its results messages
+You should make sure that the path to your `java` executable is correct.  Optionally, if you have the Drupal Views module enabled, you can also have the module link back to the Batch Queue in its results messages
 
 ## Documentation
 
-Further documentation for this module is available at [our wiki](https://wiki.duraspace.org/display/ISLANDORA/Islandora+Batch)
+Further documentation for this module is available at [our wiki](https://wiki.duraspace.org/display/ISLANDORA/Islandora+Batch).
 
 ### Usage
 
@@ -78,7 +77,7 @@ then, to ingest the queued objects:
 
 ### Customization
 
-Custom ingests can be written by [extending](http://github.com/Islandora/islandora_batch/wiki/How-To-Extend) any of the existing preprocessors and batch object implementations. Checkout the [example implemenation](http://github.com/Islandora/islandora_batch/wiki/Example-Implementation-Tutorial) for more details.
+Custom ingests can be written by [extending](https://github.com/Islandora/islandora_batch/wiki/How-To-Extend) any of the existing preprocessors and batch object implementations. Checkout the [example implemenation](https://github.com/Islandora/islandora_batch/wiki/Example-Implementation-Tutorial) for more details.
 
 ### Clearing the semaphore table
 
@@ -95,6 +94,7 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 
 Current maintainers:
 
+* [Adam Vessey](https://github.com/adam-vessey)
 * [Diego Pino](https://github.com/DiegoPino)
 
 ## Development

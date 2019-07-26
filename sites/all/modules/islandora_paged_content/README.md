@@ -12,6 +12,7 @@ This module requires the following modules/libraries:
 * [Tuque](https://github.com/islandora/tuque)
 
 This module has the following optional requirements:
+* [Ghostscript](https://www.ghostscript.com/) - Debian/Ubuntu `sudo apt-get install ghostscript`
 * [pdftotext](http://poppler.freedesktop.org) - Debian/Ubuntu `sudo apt-get install poppler-utils`
 * [pdfinfo](http://poppler.freedesktop.org) -  Debian/Ubuntu `sudo apt-get install poppler-utils`
 
@@ -23,16 +24,24 @@ Install as usual, see [this](https://drupal.org/documentation/install/modules-th
 
 Set the path for `gs` (GhostScript), the externally accessible Djatoka URL, and the 'Solr page sequence number field' in Administration » Islandora » Solution pack configuration » Paged Content Module (admin/islandora/solution_pack_config/paged_content).
 
-![Configuration](https://camo.githubusercontent.com/3dc4302d5d459ecf9d6b253be397d446243afde9/687474703a2f2f692e696d6775722e636f6d2f545a65423973772e706e67)
+![Configuration](https://user-images.githubusercontent.com/2857697/39014759-e2ef9c1e-43e0-11e8-921c-c2a3234d65d2.jpg)
 
 There is an option to set the page label to the page's sequence number. On ingest, each page's label will be set to its sequence number. When reordering pages, all of the page labels will be updated with the new sequence numbers.
 
-You can also hide pages contained in a book the search results, so that only the parent object is returned.  If you use this option, make sure that you check the "Aggregate OCR?" box when ingesting your books.  
-Otherwise, the book object will not receive an OCR datastream, and will not be returned in search results. 
+You can also "Hide Page Objects From Search Results", so that only the parent object is returned.  If you use this option, make sure that you check the "Aggregate OCR?" box when ingesting your paged content object. Otherwise, the parent object will not receive an OCR datastream, and will not be returned in search results.
 
 ## Documentation
 
 Further documentation for this module is available at [our wiki](https://wiki.duraspace.org/display/ISLANDORA/Islandora+Paged+Content).
+
+### Drush scripts
+
+`paged-content-consolidate-missing-ocr`
+
+This drush command finds all page objects whose parent does not have a
+OCR datastream, generates it by combining the OCR datastreams from the children
+and adds that datastream to the parent.
+
 
 ## Troubleshooting/Issues
 
@@ -45,7 +54,7 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 
 Current maintainers:
 
-* [Diego Pino](https://github.com/DiegoPino)
+* [Rosie Le Faive](https://github.com/rosiel)
 
 ## Development
 
@@ -54,4 +63,3 @@ If you would like to contribute to this module, please check out [CONTRIBUTING.m
 ## License
 
 [GPLv3](http://www.gnu.org/licenses/gpl-3.0.txt)
-

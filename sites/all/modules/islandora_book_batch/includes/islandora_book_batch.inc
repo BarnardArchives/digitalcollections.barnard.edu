@@ -475,9 +475,14 @@ class IslandoraBookPageBatchObject extends IslandoraFlatBatchObject {
     islandora_paged_content_set_relationship($rels_ext, FEDORA_RELS_EXT_URI, 'isMemberOf', $this->parentId);
     // Add content model relationship.
     $this->models = 'islandora:pageCModel';
+    // The existence of the generate_ocr and generate_hocr parameters are both
+    // dependent on the existence of the islandora_ocr module, so only one
+    // isset() is necessary.
     if (isset($this->preprocessorParameters['generate_ocr'])) {
       module_load_include('inc', 'islandora_ocr', 'includes/derivatives');
-      islandora_ocr_set_generate_ocr_rels_ext_statement($this, $this->preprocessorParameters['generate_ocr']);
+      islandora_ocr_set_generating_rels_ext_statements($this,
+        isset($this->preprocessorParameters['generate_ocr']) ? (bool) $this->preprocessorParameters['generate_ocr'] : FALSE,
+        isset($this->preprocessorParameters['generate_hocr']) ? (bool) $this->preprocessorParameters['generate_hocr'] : FALSE);
     }
   }
 }

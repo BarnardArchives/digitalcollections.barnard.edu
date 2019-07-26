@@ -8,7 +8,7 @@ This module acts a Toolkit for generating OCR and word coordinate information. A
 
 Tesseract is an OCR engine that was developed at HP Labs between 1985 and 1995. It is currently being developed at Google. Recognized as one of the most accurate open source OCR engines available, Tesseract will read binary, grey, or colour images and output text.
 
-A TIFF reader that will read uncompressed TIFF images is also included. Islandora Book Solution Pack currently uses Tesseract version 3.02.02, which can be obtained from the project home page. Lower versions are not supported.
+A TIFF reader that will read uncompressed TIFF images is also included. Islandora Book Solution Pack requires at least Tesseract version 3.02.02, which can be obtained from the project home page. Lower versions are not supported.
 
 ## Requirements
 
@@ -17,7 +17,11 @@ This module requires the following modules/libraries:
 * [Islandora](https://github.com/islandora/islandora)
 * [Tuque](https://github.com/islandora/tuque)
 * [Tesseract](https://github.com/tesseract-ocr/tesseract/wiki)
-* [ImageMagic](http://www.imagemagick.org/) (Optional, Required for OCR preprocessing)
+* [ImageMagick](http://www.imagemagick.org/) (Optional, Required for OCR preprocessing)
+
+Islandora recommends this module for text search of OCR-ed material:
+
+* [Islandora Solr Search](https://github.com/Islandora/islandora_solr_search)
 
 Tesseract installation will differ depending on your operating system; please see the
 [Tesseract Wiki](https://github.com/tesseract-ocr/tesseract/wiki) for detailed instructions.

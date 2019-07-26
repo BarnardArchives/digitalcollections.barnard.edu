@@ -11,16 +11,16 @@
   IslandoraBookReader = function(settings) {
     BookReader.call(this);
     this.settings = settings;
-    this.dimensions = {};
     this.numLeafs = settings.pageCount;
     this.bookTitle = settings.label.substring(0,97) + '...';
     this.bookUrl = document.location.toString();
     this.imagesBaseURL = settings.imagesFolderUri;
     this.logoURL = '';
-    this.mode = settings.mode
+    this.mode = settings.mode;
     this.fullscreen = false;
     this.content_type = settings.content_type;
     this.pageProgression = settings.pageProgression;
+    this.hasCover = settings.hasCover;
   }
 
   // Inherit from Internet Archive BookReader class.
@@ -37,7 +37,6 @@
    *   The index of the page.
    */
   IslandoraBookReader.prototype.getPageNum = function(index) {
-
     return index + 1;
   }
 
@@ -80,80 +79,6 @@
   }
 
   /**
-   * For a given "accessible page index" return metadata from Djatoka.
-   *
-   * @param int index
-   *   The index of the page.
-   *
-   * @return object
-   *   An object contatining the following string fields:
-   *   - width: The width of the image in pixels.
-   *   - height: The width of the image in pixels.
-   *   If this function fails the values for each field will be 0.
-   */
-  IslandoraBookReader.prototype.getPageDimensions = function(index) {
-    var dimensions = { width: 0, height: 0 };
-    var page = this.getPage(index);
-    if (typeof page != 'undefined') {
-      // If we don't have one or the other, make a query out to Djatoka.
-      if (typeof page.width == 'undefined' || typeof page.height == 'undefined') {
-        var pid = page.pid;
-        if (typeof pid == 'undefined') {
-          return dimensions;
-        }
-        var url = this.getDimensionsUri(pid);
-        jQuery.ajax({
-          url: url,
-          dataType: 'json',
-          success: function(data, textStatus, jqXHR) {
-            dimensions.width = parseInt(data.width);
-            dimensions.height = parseInt(data.height);
-          },
-          async: false
-        });
-      }
-      else {
-        dimensions.width = parseInt(page.width);
-        dimensions.height = parseInt(page.height);
-      }
-    }
-
-    return dimensions;
-  }
-
-  /**
-   * Gets the width of the given page.
-   *
-   * @param int index
-   *   The index of the page.
-   *
-   * @return int
-   *   The width in pixels of the given page.
-   */
-  IslandoraBookReader.prototype.getPageWidth = function(index) {
-    if (typeof this.dimensions[index] == 'undefined') {
-      this.dimensions[index] = this.getPageDimensions(index);
-    }
-    return this.dimensions[index].width;
-  }
-
-  /**
-   * Gets the height of the given page.
-   *
-   * @param int index
-   *   The index of the page.
-   *
-   * @return int
-   *   The height in pixels of the given page.
-   */
-  IslandoraBookReader.prototype.getPageHeight = function(index) {
-    if (typeof this.dimensions[index] == 'undefined') {
-      this.dimensions[index] = this.getPageDimensions(index);
-    }
-    return this.dimensions[index].height;
-  }
-
-  /**
    * Checks to see if search is enabled.
    *
    * @return boolean
@@ -161,85 +86,6 @@
    */
   IslandoraBookReader.prototype.searchEnabled = function() {
     return this.settings.searchUri != null;
-  }
-
-  /**
-   * Gets the Djatoka URI.
-   *
-   * @param string resource_uri
-   *   The uri to the image Djatoka will use.
-   *
-   * @return string
-   *   The Djatoka URI for the given resource URI.
-   */
-  IslandoraBookReader.prototype.getDjatokaUri = function(resource_uri) {
-    var base_uri = this.settings.djatokaUri;
-    //Do some sanitation on that base uri.
-    //Since it comes from an admin form, let's make sure there's a '/' at the
-    //end of it.
-    if (base_uri.charAt(base_uri.length) != '/') {
-      base_uri += '/';
-    }
-    var params = $.param({
-      'rft_id': resource_uri,
-      'url_ver': 'Z39.88-2004',
-      'svc_id': 'info:lanl-repo/svc/getRegion',
-      'svc_val_fmt': 'info:ofi/fmt:kev:mtx:jpeg2000',
-      'svc.format': 'image/jpeg',
-      'svc.level': this.settings.compression,
-      'svc.rotate': 0
-    });
-    return (base_uri + 'resolver?' + params);
-  };
-
-  /**
-   * Gets the URI to the dimensions callback for the given page.
-   *
-   * @param string pid
-   *   The id of the object containing the resource.
-   *
-   * @return string
-   *   The Dimensions URI of the callback, to be used to fetch the pages
-   *   dimension.
-   */
-  IslandoraBookReader.prototype.getDimensionsUri = function(pid) {
-    var uri = this.settings.dimensionsUri;
-    uri = uri.replace('PID', pid);
-    return uri;
-  };
-
-  /**
-   * Gets URI to the given page resource.
-   *
-   * @param int index
-   *   The index of the page.
-   *
-   * @return string
-   *   The URI
-   */
-  IslandoraBookReader.prototype.getPageURI = function(index, reduce, rotate) {
-    if (typeof this.settings.pages[index] != 'undefined') {
-      // Using backups? Get the image URI via callback and determine whether to
-      // Djatoka-ize it.
-      if (this.settings.useBackupUri == true) {
-        var callback_uri = null;
-        $.ajax({
-          url: this.settings.tokenUri.replace('PID', this.settings.pages[index].pid),
-          async: false,
-          success: function(data, textStatus, jqXHR) {
-            callback_uri = data;
-          }
-        });
-        if (callback_uri.indexOf("datastream/JP2/view") != -1) {
-          return this.getDjatokaUri(callback_uri);
-        }
-        return callback_uri;
-      }
-      // Not using backups? Just Djatoka-ize the page's image URI.
-      else {
-        return this.getDjatokaUri(this.settings.pages[index].uri);
-      }
-    }
   }
 
   /**
@@ -267,19 +113,31 @@
       // If pageProgression is not set RTL we assume it is LTR
       if (0 == (index & 0x1)) {
         // Even-numbered page
+        if (false === this.hasCover) {
+          return 'L';
+        }
         return 'R';
       }
       else {
         // Odd-numbered page
+         if (false === this.hasCover) {
+          return 'R';
+        }
         return 'L';
       }
     }
     else {
       // RTL
       if (0 == (index & 0x1)) {
+       if (false === this.hasCover) {
+          return 'R';
+        }
         return 'L';
       }
       else {
+        if (false === this.hasCover) {
+          return 'L';
+        }
         return 'R';
       }
     }
@@ -448,6 +306,27 @@
         $('#BookReader').find(icon).attr('title', titles[icon]);
       }
     }
+
+    // Create local vars here, since we can use the 'this' reference in the
+    // each look below.
+    var booktitle = this.settings.label;
+    var number_of_pages = this.settings.pageCount;
+    var pages = this.settings.pages;
+    // Add alt tag for screen reader accessibility.
+    $('.BRnoselect').each(function(i) {
+      // Gives each book page a title, reminiscent of
+      // '{Obj label}: {X} of {Y} ({Page obj label})'.
+      var title = Drupal.t(
+        '@label: @x of @y (@pagetitle)',
+        {
+          '@label': booktitle,
+          '@x': i + 1,
+          '@y': number_of_pages,
+          '@pagetitle': pages[i]['label']
+        }
+      );
+      $(this).attr('alt', title);
+    });
   }
 
   /**
@@ -466,7 +345,7 @@
     $("#BookReader").append(
       "<div id='BRtoolbar'>"
         +   "<span id='BRtoolbarbuttons'>"
-        +     "<form  id='booksearch'><input type='search' id='textSrch' name='textSrch' val='' placeholder='"
+        +     "<form  id='booksearch'><label class='element-invisible' for='textSrch'>" + Drupal.t('Text Search') + "</label><input type='search' id='textSrch' name='textSrch' placeholder='"
         +     Drupal.t('Search inside')
         +     "'/><button type='submit' id='btnSrch' name='btnSrch'>" + Drupal.t('GO') + "</button></form>"
         +     "<button class='BRicon play'></button>"
@@ -584,7 +463,7 @@
    * Adjust the book viewer required styles in fullscreen.
    */
   IslandoraBookReader.prototype.resetReaderSizeAndStyle = function(height, top) {
-    $('div#book-viewer').css({
+    $('div#book-viewer, .ia-bookreader').css({
       'position': 'fixed',
       'width': '100%',
       'height': height,
@@ -637,7 +516,7 @@
       });
     }
     else {
-      $('div#book-viewer').css({
+      $('div#book-viewer, .ia-bookreader').css({
       'position': 'relative',
       'z-index': '0'
       });
@@ -657,7 +536,7 @@
    */
   IslandoraBookReader.prototype.goFullScreen = function() {
     this.fullscreen = true;
-    $('div#book-viewer').css({
+    $('div#book-viewer, .ia-bookreader').css({
       'position': 'fixed',
       'width': '100%',
       'height': '100%',

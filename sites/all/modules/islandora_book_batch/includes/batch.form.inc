@@ -57,14 +57,20 @@ function islandora_book_batch_form($form, &$form_state, $object) {
     if ($derive['ocr']) {
       $form['generate_ocr'] = array(
         '#type' => 'checkbox',
-        '#title' => t('Generate OCR?'),
-        '#description' => t('Whether or not we should generate OCR for the pages of the book.'),
+        '#title' => t('Generate OCR'),
+        '#description' => t('Generate OCR for the pages of each book.'),
+        '#default_value' => TRUE,
+      );
+      $form['generate_hocr'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Generate HOCR'),
+        '#description' => t('Generate HOCR for the pages of each book.'),
         '#default_value' => TRUE,
       );
       $form['aggregate_ocr'] = array(
         '#type' => 'checkbox',
-        '#title' => t('Aggregate OCR?'),
-        '#description' => t('Whether or not we should generate OCR for the books after ingesting all of the pages.'),
+        '#title' => t('Aggregate OCR'),
+        '#description' => t('Consolidate the page OCR and add it to the books after ingesting all of the pages.'),
         '#default_value' => FALSE,
         '#states' => array(
           'invisible' => array(
