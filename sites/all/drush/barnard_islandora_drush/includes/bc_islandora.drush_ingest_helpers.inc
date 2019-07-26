@@ -209,7 +209,17 @@ function create_complete_object($pid, array $data, $collection_pid, $file_path) 
   $file_name = $file_path;
 
   // Ingest a thumbnail of the first page to the parent object.
-  if ($page_number == 1) {
+  if ($data['thumbnail']) {
+    $tn_datastream = $object->constructDatastream('TN');
+    $tn_datastream->setContentFromFile($data['thumbnail'], FALSE);
+    $tn_datastream->label = 'Thumbnail';
+    $tn_datastream->mimetype = 'image/jpg';
+    $tn_datastream->checksum = TRUE;
+    $tn_datastream->checksumType = 'MD5';
+    $object->ingestDatastream($tn_datastream);
+    drush_log('Updated object TN.', 'ok');
+  }
+  elseif ($page_number == 1) {
     $rand = rand('100', '999');
     $tmp_file = '/tmp/tmp_file' . $rand . '.jpg';
     $command = 'convert -quiet -thumbnail 200x200 ' . $file_name . ' ' . $tmp_file;
@@ -238,10 +248,10 @@ function create_complete_object($pid, array $data, $collection_pid, $file_path) 
   $object->relationships->add(FEDORA_MODEL_URI, 'hasModel', $content_model_type);
   $object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOf', $collection_pid);
   $object->relationships->add(ISLANDORA_RELS_EXT_URI, 'hasLanguage', 'eng');
-  $object->relationships->add(ISLANDORA_RELS_EXT_URI, 'isPageOf', $collection_pid);
-  $object->relationships->add(ISLANDORA_RELS_EXT_URI, 'isSequenceNumber', $page_number);
-  $object->relationships->add(ISLANDORA_RELS_EXT_URI, 'isPageNumber', $page_number);
-  $object->relationships->add(ISLANDORA_RELS_EXT_URI, 'isSection', '1');
+//  $object->relationships->add(ISLANDORA_RELS_EXT_URI, 'isPageOf', $collection_pid);
+//  $object->relationships->add(ISLANDORA_RELS_EXT_URI, 'isSequenceNumber', $page_number);
+//  $object->relationships->add(ISLANDORA_RELS_EXT_URI, 'isPageNumber', $page_number);
+//  $object->relationships->add(ISLANDORA_RELS_EXT_URI, 'isSection', '1');
 
 
   // DC Transform:
@@ -290,6 +300,18 @@ function create_complete_object($pid, array $data, $collection_pid, $file_path) 
     $ocr_datastream->checksumType = 'MD5';
     $ocr_datastream->logMessage = 'OCR set from text file || SUCCESS';
     drush_log("$pid had OCR set from text file.", 'success');
+    $object->ingestDatastream($ocr_datastream);
+  }
+
+  if (!empty($data['transcript'])) {
+    $ocr_datastream = $object->constructDatastream('TRANSCRIPT');
+    $ocr_datastream->setContentFromFile($data['transcript'], FALSE);
+    $ocr_datastream->label = 'TRANSCRIPT';
+    $ocr_datastream->mimetype = 'text/plain';
+    $ocr_datastream->checksum = TRUE;
+    $ocr_datastream->checksumType = 'MD5';
+    $ocr_datastream->logMessage = 'TRANSCRIPT	set from text file || SUCCESS';
+    drush_log("$pid had TRANSCRIPT	set from text file.", 'success');
     $object->ingestDatastream($ocr_datastream);
   }
 
@@ -927,6 +949,41 @@ function _map_rg1108_csv_rows(array $data, array $head = []) {
   $ret['volume'] = $data[7];
 
   return $ret;
+}
+
+/**
+ * Simple CSV row mapping based on the header of each row.
+ *
+ * @param array $data
+ *   A structured CSV row.
+ * @param array $head
+ *   Column headings (NB UNUSED).
+ *
+ * @return array
+ *   Chocolaty goodness.
+ */
+function _map_rg1358_audio_csv_rows(array $data, array $head = []) {
+  $object_data_array['id'] = $data[0];
+  $object_data_array['date_exact'] = $data[1];
+  $object_data_array['title'] = $data[2];
+  $object_data_array['creators'][0]['name'] = $data[3];
+  $object_data_array['creators'][0]['uri'] = $data[4];
+  $object_data_array['creators'][1]['name'] = $data[5];
+  $object_data_array['creators'][1]['uri'] = $data[6];
+  // $data[7] - unused
+  $object_data_array['description'] = $data[8];
+  $object_data_array['topics'][0]['topic'] = $data[9];
+  $object_data_array['topics'][0]['uri'] = $data[10];
+  $object_data_array['topics'][1]['topic'] = $data[11];
+  $object_data_array['topics'][1]['uri'] = $data[12];
+  $object_data_array['topics'][2]['topic'] = $data[13];
+  $object_data_array['topics'][2]['uri'] = $data[14];
+  $object_data_array['topics'][3]['topic'] = $data[15];
+  $object_data_array['topics'][3]['uri'] = $data[16];
+  $object_data_array['location'] = $data[17];
+  $object_data_array['extent'] = $data[18];
+
+  return $object_data_array;
 }
 
 /**

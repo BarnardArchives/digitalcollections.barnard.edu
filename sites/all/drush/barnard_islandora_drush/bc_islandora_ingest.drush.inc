@@ -35,6 +35,7 @@ function bc_islandora_ingest_drush_command() {
         'drush -u 1 bciio --type=manuscript --identifier=BC13-58_71Q-Daly1972 /home/vagrant/manuscripts/metadata.csv',
         'drush -u 1 bciio --type=rgBC15 /mnt/barnard.collections/RG15-Alumnae_Scrapbooks/metadata.csv',
         'drush -u 1 bciio --type=rgBC1108 /mnt/barnard.collections/RG11-08-Alumnae_Magazine/metadata.csv',
+        'drush -u 1 bciio --type=rgBC1358_audio /mnt/barnard.collections/RG1358-SFAudio/metadata.csv',
       ),
       'aliases' => array('bciio'),
       // We can pass in users id on the command line using drush -u.

@@ -6,6 +6,211 @@
  */
 
 /**
+ * Generates MODS records: RG BC13-58 - Scholar and Feminist Audio.
+ *
+ * @author Ben Rosner, @br2490
+ *
+ * CSV Row processor for Barnard College S&F Audio.
+ * The formatting of this section is purposeful.
+ * Pay attention to spacing in the creation of variables.
+ *
+ * We use single quote literals for static content, and heredoc strings for
+ * dynamic content. We also use heredoc to gen the final MODs string.
+ */
+function _bc_islandora_rg1358_audio_mods($mods_data, $type) {
+  $identifier_xml = <<<PID
+  <identifier type="local">${mods_data['id']}</identifier>
+PID;
+
+  $titleinfo_title_xml = <<<TITLE
+  <titleInfo>
+    <title>${mods_data['title']}</title>
+  </titleInfo>
+TITLE;
+
+  $related_item_xml = '
+  <relatedItem type="host" displayLabel="Record Group">
+    <titleInfo>
+      <title>Academic Departments and Programs</title>
+    </titleInfo>
+  </relatedItem>
+  <relatedItem type="host">
+    <titleInfo>
+      <title>Barnard Center for Research on Women</title>
+    </titleInfo>
+    <identifier type="local">BC13-58</identifier>
+    <typeOfResource>mixed material</typeOfResource>
+  </relatedItem>';
+
+  // Creators - mods:name.
+  $creators = $mods_data['creators'];
+  $creator_xml = '';
+  foreach ($creators as $creator) {
+    if (!empty($creator['name'])) {
+      if (!empty($creator['uri'])) {
+        $creator_xml .= <<<CR_URI
+  <name type="personal" authority="naf" authorityURI="http://id.loc.gov/authorities/names" valueURI="${creator['uri']}">
+CR_URI;
+      }
+      else {
+        $creator_xml .= '
+  <name type="personal" authority="local">';
+      }
+      $creator_xml .= <<<CXML
+
+    <namePart>${creator['name']}</namePart>
+    <role>
+      <roleTerm type="text" authority="marcrelator">Creator</roleTerm>
+    </role>
+  </name>
+CXML;
+    }
+  }
+
+  // This variable is pretty sneaky, it contains more than the date. We
+  // initialize the variable here with the start of mods:originInfo.
+  $date_xml = '
+  <originInfo>';
+
+  // This generates MODS records for an audio object or compound
+  if ($type !== 'page') {
+
+    // Collections do not require a physical description.
+    if ($type !== 'collection') {
+      $extent_xml = <<<PDESCRIP
+  <physicalDescription>
+    <form authority="marcform">electronic</form>
+    <extent>${mods_data['extent']}</extent>
+    <digitalOrigin>reformatted digital</digitalOrigin>
+    <internetMediaType>audio/mpeg</internetMediaType>
+  </physicalDescription>
+PDESCRIP;
+    }
+
+    $date_xml .= '
+    <place>
+      <placeTerm type="text" authorityURI="http://id.loc.gov/authorities/names" valueURI="http://id.loc.gov/authorities/names/n79007751">New York (N.Y.)</placeTerm>
+    </place>
+    <place>
+      <placeTerm type="code" authority="marccountry">nyu</placeTerm>
+    </place>
+    <publisher>Online collection published by Barnard Archives and Special Collections, Barnard College.</publisher>';
+
+    $description_xml = <<<ABSTRACT
+  <abstract>${mods_data['description']}</abstract>
+ABSTRACT;
+
+    $shelf_location = !empty($mods_data['location']) ? "
+    <shelfLocator>${mods_data['location']}</shelfLocator>" : '';
+
+    $location_xml = <<<LOCATION_LOCATION_LOCATION
+  <location displayLabel="not a PURL">
+    <physicalLocation authority="marcorg">NNC</physicalLocation>
+    <physicalLocation authority="marcorg">NyNyBAW</physicalLocation>
+    <physicalLocation>Barnard College Library (New York, N.Y.)</physicalLocation>{$shelf_location}
+  </location>
+LOCATION_LOCATION_LOCATION;
+
+    $language_xml = '
+  <language>
+    <languageTerm type="text">English</languageTerm>
+    <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+  </language>';
+
+    $access_condition_xml = '
+  <accessCondition type="useAndReproduction">Contact the Archives at archives@barnard.edu for more information on access and use.</accessCondition>';
+
+    $record_info_xml = '
+  <recordInfo>
+    <recordContentSource>Barnard Archives and Special Collections</recordContentSource>
+    <recordContentSource authority="marcorg">NNC</recordContentSource>
+    <recordContentSource authority="marcorg">NyNyBAW</recordContentSource>
+    <languageOfCataloging>
+      <languageTerm type="text" authority="iso639-2b">English</languageTerm>
+      <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+    </languageOfCataloging>
+  </recordInfo>';
+  }
+
+  // Dates - mods:originInfo/date.
+  // Exact Date range.
+  $date_xml .= <<<DATESTR
+
+    <dateCreated encoding="w3cdtf" keyDate="yes">${mods_data['date_exact']}</dateCreated>
+  </originInfo>
+DATESTR;
+
+  // Everything but collections need to have a related collection and PID.
+  if ($type !== "collection") {
+    $resource_type_xml = <<<TYPE
+  <typeOfResource>sound recording</typeOfResource>
+TYPE;
+
+    $genre_xml = <<< GNR
+  <genre authority="aat" authorityURI="http://vocab.getty.edu/aat" valueURI="http://vocab.getty.edu/page/aat/300028661">audiocassettes</genre>
+GNR;
+
+    // Topics - mods:subject.
+    // Static header (single quote, no eval)
+    $subject_xml = '
+  <subject>
+    <name type="corporate" authority="naf" authorityURI="http://id.loc.gov/authorities/names" valueURI="http://id.loc.gov/authorities/names/n79065105">
+      <namePart>Barnard College</namePart>
+    </name>
+  </subject>
+  <subject>
+    <name type="corporate" authority="naf" authorityURI="http://id.loc.gov/authorities/names" valueURI="http://id.loc.gov/authorities/names/no90023871">
+      <namePart>Barnard Center for Research on Women</namePart>
+    </name>
+  </subject>
+  <subject>
+    <name type="corporate" authority="naf" authorityURI="http://id.loc.gov/authorities/names" valueURI="http://id.loc.gov/authorities/names/n98110944">
+      <namePart>Scholar and the Feminist Conference</namePart>
+    </name>
+  </subject>';
+    // Subject terms (requires both a topic and a topic uri).
+    $subjects = $mods_data['topics'];
+    foreach ($subjects as $topic) {
+      if (!empty($topic['topic']) && !empty($topic['uri'])) {
+        $subject_xml .= <<<SUBJ
+
+  <subject authority="lcsh" authorityURI="http://id.loc.gov/authorities/subjects" valueURI="${topic['uri']}">
+    <topic>${topic['topic']}</topic>
+  </subject>
+SUBJ;
+      }
+    }
+  }
+
+  // Build the final return mods record. Better hope you intended everything.
+  $mods_xml = <<<MODS
+<mods xmlns="http://www.loc.gov/mods/v3" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/mods/v3/mods-3-5.xsd">
+
+{$identifier_xml}
+{$titleinfo_title_xml}
+{$creator_xml}
+{$resource_type_xml}
+{$genre_xml}
+{$date_xml}
+{$extent_xml}
+{$description_xml}
+{$location_xml}
+{$language_xml}
+{$subject_xml}
+{$related_item_xml}
+{$record_info_xml}
+{$access_condition_xml}
+
+</mods>
+MODS;
+
+  // Normalize (correct xml formatting if necessary).
+  $ret = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $mods_xml);
+
+  return $ret;
+}
+
+/**
  * Generates Scrapbook MODS records: RG: BC15.
  *
  * @author Ben Rosner, all blame to: brosner@barnard.edu

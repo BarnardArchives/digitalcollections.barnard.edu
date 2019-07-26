@@ -1,3 +1,10 @@
+
+.ex-thumbnails .img-responsive {
+    display: inline;
+    max-width: 100%;
+    height: auto;
+}
+
 .view-id-exhibition {
   margin-top: 20px;
   .views-row-1 {
@@ -29,19 +36,22 @@
   }
 }
 
+
 #ex-nav {
   position: relative;
   top: 50px;
   a {
+    font-family: Arial, sans-serif;
     font-weight: bold;
     text-decoration: none;
     margin-right: 10px;
     padding: 10px;
-    background: #9cf;
-    color: #000;
+    background: #F1BDBB;
+    color: #333333;
     &:hover,
     &:active {
-      background: #2E3D4C;
+      background: #D9ABA9;
+      border: 1px solid #BF9795;
       color: #fff !important;
     }
     &#prev {
@@ -50,15 +60,20 @@
   }
 }
 
+
+
 #ex-themes {
   margin-top: 10px;
+  margin-bottom:12px;
   a.theme {
+    font-family: Arial, sans-serif;
     font-size: 1.05em;
     text-decoration: none;
-    font-weight: bold;
-    color: #73797F;
+    font-weight: 600;
+    color: #3D3D66;
     padding: 5px;
-    margin-right: 25px;
+    margin-right: 20px;
+    border—bottom: 1px solid #3D3D66;
     &:active,
     &:hover {
       color: #7AA3CC;
@@ -70,6 +85,9 @@
     border-bottom: 3px solid;
   }
 }
+
+
+
 
 .ex-obj {
   clear: both;
@@ -96,10 +114,13 @@
   margin-right: 20px;
   margin-bottom: 20px;
   max-width: 600px;
+  .panel-body {
+	background-color: #F5F2E5;
+  }
   .large-image {
     margin-bottom: 20px;
     .caption {
-      font-size: 0.85em;
+      font-size: 1rem;
     }
   }
   .ex-thumbnails a {
@@ -109,6 +130,12 @@
     border: 2px solid #0f2d6b;
   }
 }
+ 
+.ex-images.panel {
+	border: 0;
+}
+
+
 
 .node-exhibition {
   margin-bottom: 50px;
