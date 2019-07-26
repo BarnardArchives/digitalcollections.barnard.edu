@@ -7,6 +7,13 @@ core = 7.x
 ; Should always be 2.
 api = 2
 
+; Defaults that apply to all modules.
+defaults[projects][type] = "module"
+defaults[projects][download][type] = "git"
+defaults[projects][download][tag]  = "7.x-1.12"
+defaults[projects][download][overwrite] = TRUE
+defaults[projects][subdir] = ""
+
 ; Barnard Archives
 projects[islandora_openseadragon_paged][download][url] = "git@github.com:BarnardArchives/islandora_openseadragon_paged.git"
 projects[islandora_openseadragon_paged][download][branch] = "master"
