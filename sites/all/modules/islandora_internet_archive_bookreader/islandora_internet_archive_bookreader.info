@@ -5,5 +5,5 @@ dependencies[] = libraries
 dependencies[] = islandora_paged_content
 dependencies[] = colorbox
 dependencies[] = token
-version = 7.x-1.11
+version = 7.x-1.12
 core = 7.x

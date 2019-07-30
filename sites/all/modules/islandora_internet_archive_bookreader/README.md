@@ -4,7 +4,7 @@
 
 An Islandora wrapper for the Internet Archive BookReader.
 
-This module doesn't do much on its own, its assummed that it will be used in conjunction with a solution pack, where it will be enabled as a viewer.
+This module doesn't do much on its own, it is assumed that it will be used in conjunction with a solution pack, where it will be enabled as a viewer.
 
 ## Requirements
 
@@ -16,7 +16,7 @@ This module requires the following modules/libraries:
 * [Colorbox](https://www.drupal.org/project/colorbox)
 * [Drupal Token Module](https://www.drupal.org/project/token)
 
-And one (1) of the following Image Server options
+And one (1) of the following Image Server options:
 
 * [Djatoka](http://sourceforge.net/apps/mediawiki/djatoka/index.php?title=Main_Page)
 * [An IIIF Image API compliant Image Sever](#iiif)
@@ -57,7 +57,7 @@ This module is able to use either Adore-djatoka or an IIIF Image API compliant I
 Djatoka specific options are:
 
  * Compression level (the larger the number, the lower the quality but also the smaller the file size)
- * Using an Object's JPG datastream as a backup in case Djatoka cannot return a JP2.
+ * Using an Object's JPG datastream as a backup in case Djatoka cannot return a JP2. 
 
 Note: The Adore-datoka Server URI (Open URL endpoint) must be set from [Islandora Paged Content](https://github.com/islandora/islandora_paged_content) Solution Pack's admin settings.
 

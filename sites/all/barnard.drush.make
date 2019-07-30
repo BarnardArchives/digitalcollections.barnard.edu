@@ -12,7 +12,7 @@ api = 2
 ; Defaults that apply to all modules.
 defaults[projects][type] = "module"
 defaults[projects][download][type] = "git"
-defaults[projects][download][tag]  = "7.x-1.11"
+defaults[projects][download][tag]  = "7.x-1.12"
 defaults[projects][download][overwrite] = TRUE
 defaults[projects][subdir] = ""
 
@@ -35,8 +35,6 @@ projects[islandora_paged_content][download][url] = "https://github.com/Islandora
 projects[islandora_simple_workflow][download][url] = "https://github.com/Islandora/islandora_simple_workflow.git"
 projects[islandora_solr_metadata][download][url] = "git@github.com:Islandora/islandora_solr_metadata.git"
 projects[islandora_solr_search][download][url] = "https://github.com/Islandora/islandora_solr_search.git"
-projects[islandora_solr_search][download][branch] = "7.x"
-projects[islandora_solr_search][download][tag] = ""
 projects[islandora_solr_views][download][url] = "https://github.com/Islandora/islandora_solr_views.git"
 projects[islandora_solution_pack_audio][download][url] = "https://github.com/Islandora/islandora_solution_pack_audio.git"
 projects[islandora_solution_pack_book][download][url] = "https://github.com/Islandora/islandora_solution_pack_book.git"

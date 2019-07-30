@@ -64,6 +64,8 @@ function islandora_solr_uninstall() {
     'islandora_solr_breadcrumbs_add_collection_query',
     'islandora_solr_simple_search_label_visibility',
     'islandora_solr_simple_search_label_title',
+    'islandora_solr_compound_relationship_field',
+    'islandora_solr_compound_sequence_pattern',
   ));
   array_walk($variables, 'variable_del');
 }

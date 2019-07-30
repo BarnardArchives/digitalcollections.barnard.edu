@@ -882,10 +882,13 @@ function islandora_doi_filter_html($node, $action = NULL) {
     foreach ($node->childNodes as $child) {
       $text .= $child->ownerDocument->saveXML($child);
     }
+
     $text = preg_replace('/\n\s+/', ' ', $text);
+
     if (!$action) {
       $action = variable_get('islandora_doi_handle_imported_metadata', 'strip');
     }
+
     switch ($action) {
       case 'strip':
         $text = strip_tags($text);
@@ -900,5 +903,6 @@ function islandora_doi_filter_html($node, $action = NULL) {
         break;
     }
   }
+
   return $text;
 }

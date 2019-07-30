@@ -306,6 +306,27 @@
         $('#BookReader').find(icon).attr('title', titles[icon]);
       }
     }
+
+    // Create local vars here, since we can use the 'this' reference in the
+    // each look below.
+    var booktitle = this.settings.label;
+    var number_of_pages = this.settings.pageCount;
+    var pages = this.settings.pages;
+    // Add alt tag for screen reader accessibility.
+    $('.BRnoselect').each(function(i) {
+      // Gives each book page a title, reminiscent of
+      // '{Obj label}: {X} of {Y} ({Page obj label})'.
+      var title = Drupal.t(
+        '@label: @x of @y (@pagetitle)',
+        {
+          '@label': booktitle,
+          '@x': i + 1,
+          '@y': number_of_pages,
+          '@pagetitle': pages[i]['label']
+        }
+      );
+      $(this).attr('alt', title);
+    });
   }
 
   /**
@@ -324,7 +345,7 @@
     $("#BookReader").append(
       "<div id='BRtoolbar'>"
         +   "<span id='BRtoolbarbuttons'>"
-        +     "<form  id='booksearch'><input type='search' id='textSrch' name='textSrch' val='' placeholder='"
+        +     "<form  id='booksearch'><label class='element-invisible' for='textSrch'>" + Drupal.t('Text Search') + "</label><input type='search' id='textSrch' name='textSrch' placeholder='"
         +     Drupal.t('Search inside')
         +     "'/><button type='submit' id='btnSrch' name='btnSrch'>" + Drupal.t('GO') + "</button></form>"
         +     "<button class='BRicon play'></button>"
