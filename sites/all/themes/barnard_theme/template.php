@@ -228,6 +228,21 @@ function barnard_theme_preprocess_islandora_manuscript_page(&$vars) {
 }
 
 /**
+ * Implements hook_preprocess_islandora_book_book().
+ */
+function barnard_theme_preprocess_islandora_oralhistories(&$vars) {
+  // Barnard Core Module.
+  if (!module_exists('bc_islandora')) {
+    return;
+  }
+  module_load_include('inc', 'bc_islandora', 'includes/theme');
+  $object = $vars['object'];
+
+  // Provide a link to this object's transcript datastream via $vars['dl_links'].
+  $vars['dl_links'] = _barnard_islandora_dl_links($object, ['TRANSCRIPT']);
+}
+
+/**
  * Implements hook_CMODEL_PID_islandora_solr_object_result_alter().
  *
  * Replaces the url for the search result to be the book's url, not the page.

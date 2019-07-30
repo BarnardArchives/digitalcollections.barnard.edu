@@ -262,3 +262,19 @@ body.page-islandora-search div.results {
 		width: 90%;
 	}
 }
+
+#transcript-tab > div.tier-selector-processed.navigation-processed {
+	display: none;
+}
+
+ul#tabs-list > li {
+	display: none;
+}
+
+div#video-js-oh {
+	height: 200px !important;
+}
+
+.transcript-container {
+	height: unset;
+}
