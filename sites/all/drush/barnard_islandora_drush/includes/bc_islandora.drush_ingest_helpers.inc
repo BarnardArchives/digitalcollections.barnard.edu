@@ -246,7 +246,7 @@ function create_complete_object($pid, array $data, $collection_pid, $file_path) 
 
   // Begin FEDORA and ISLANDORA relationships.
   $object->relationships->add(FEDORA_MODEL_URI, 'hasModel', $content_model_type);
-  $object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOf', $collection_pid);
+  $object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', $collection_pid);
   $object->relationships->add(ISLANDORA_RELS_EXT_URI, 'hasLanguage', 'eng');
 //  $object->relationships->add(ISLANDORA_RELS_EXT_URI, 'isPageOf', $collection_pid);
 //  $object->relationships->add(ISLANDORA_RELS_EXT_URI, 'isSequenceNumber', $page_number);
@@ -306,8 +306,8 @@ function create_complete_object($pid, array $data, $collection_pid, $file_path) 
   if (!empty($data['transcript'])) {
     $ocr_datastream = $object->constructDatastream('TRANSCRIPT');
     $ocr_datastream->setContentFromFile($data['transcript'], FALSE);
-    $ocr_datastream->label = 'TRANSCRIPT';
-    $ocr_datastream->mimetype = 'text/plain';
+    $ocr_datastream->label = $data['transcript_label'];
+    $ocr_datastream->mimetype = $data['transcript_mime'] !== NULL ? $data['transcript_mime'] : 'text/plain';
     $ocr_datastream->checksum = TRUE;
     $ocr_datastream->checksumType = 'MD5';
     $ocr_datastream->logMessage = 'TRANSCRIPT	set from text file || SUCCESS';
@@ -964,24 +964,25 @@ function _map_rg1108_csv_rows(array $data, array $head = []) {
  */
 function _map_rg1358_audio_csv_rows(array $data, array $head = []) {
   $object_data_array['id'] = $data[0];
-  $object_data_array['date_exact'] = $data[1];
-  $object_data_array['title'] = $data[2];
-  $object_data_array['creators'][0]['name'] = $data[3];
-  $object_data_array['creators'][0]['uri'] = $data[4];
-  $object_data_array['creators'][1]['name'] = $data[5];
-  $object_data_array['creators'][1]['uri'] = $data[6];
-  // $data[7] - unused
-  $object_data_array['description'] = $data[8];
-  $object_data_array['topics'][0]['topic'] = $data[9];
-  $object_data_array['topics'][0]['uri'] = $data[10];
-  $object_data_array['topics'][1]['topic'] = $data[11];
-  $object_data_array['topics'][1]['uri'] = $data[12];
-  $object_data_array['topics'][2]['topic'] = $data[13];
-  $object_data_array['topics'][2]['uri'] = $data[14];
-  $object_data_array['topics'][3]['topic'] = $data[15];
-  $object_data_array['topics'][3]['uri'] = $data[16];
+  $object_data_array['title'] = $data[1];
+  $i = 0;
+  for ($creator = 2; $creator <= 13; $creator+=2) {
+    $object_data_array['creators'][$i]['name'] = $data[$creator];
+    $object_data_array['creators'][$i]['uri'] = $data[$creator+1];
+    $i++;
+  }
+  $object_data_array['date_exact'] = $data[14];
+  $object_data_array['extent'] = $data[15];
+  $object_data_array['description'] = $data[16];
   $object_data_array['location'] = $data[17];
-  $object_data_array['extent'] = $data[18];
+  $i = 0;
+  for ($topics = 18; $topics <= 31; $topics+=2) {
+    $object_data_array['topics'][$i]['topic'] = $data[$topics];
+    $object_data_array['topics'][$i]['uri'] = $data[$topics+1];
+    $i++;
+  }
+  unset($i);
+  $object_data_array['access_condition'] = $data[33];
 
   return $object_data_array;
 }

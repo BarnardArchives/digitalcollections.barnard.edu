@@ -117,8 +117,12 @@ LOCATION_LOCATION_LOCATION;
     <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
   </language>';
 
-    $access_condition_xml = '
-  <accessCondition type="useAndReproduction">Contact the Archives at archives@barnard.edu for more information on access and use.</accessCondition>';
+//    $access_condition_xml = '
+//  <accessCondition type="useAndReproduction">Contact the Archives at archives@barnard.edu for more information on access and use.</accessCondition>';
+
+    $access_condition_xml = <<<ACL
+  {$mods_data['access_condition']}
+ACL;
 
     $record_info_xml = '
   <recordInfo>
