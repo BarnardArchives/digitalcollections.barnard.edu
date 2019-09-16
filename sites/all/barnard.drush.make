@@ -12,7 +12,7 @@ api = 2
 ; Defaults that apply to all modules.
 defaults[projects][type] = "module"
 defaults[projects][download][type] = "git"
-defaults[projects][download][tag]  = "7.x-1.12"
+defaults[projects][download][tag]  = "7.x-1.10"
 defaults[projects][download][overwrite] = TRUE
 defaults[projects][subdir] = ""
 
@@ -26,7 +26,7 @@ projects[islandora_internet_archive_bookreader][download][url] = "https://github
 projects[islandora_ip_embargo][download][url] = "https://github.com/Islandora/islandora_ip_embargo.git"
 projects[islandora_ip_embargo][download][branch] = "7.x"
 projects[islandora_ip_embargo][download][tag] = ""
-projects[islandora_videojs][download][url] = "https://github.com/Islandora/islandora_videojs.git"
+projects[islandora_jwplayer][download][url] = "https://github.com/Islandora/islandora_jwplayer.git"
 projects[islandora_marcxml][download][url] = "https://github.com/Islandora/islandora_marcxml.git"
 projects[islandora_oai][download][url] = "https://github.com/Islandora/islandora_oai.git"
 projects[islandora_ocr][download][url] = "https://github.com/Islandora/islandora_ocr.git"
@@ -35,6 +35,8 @@ projects[islandora_paged_content][download][url] = "https://github.com/Islandora
 projects[islandora_simple_workflow][download][url] = "https://github.com/Islandora/islandora_simple_workflow.git"
 projects[islandora_solr_metadata][download][url] = "git@github.com:Islandora/islandora_solr_metadata.git"
 projects[islandora_solr_search][download][url] = "https://github.com/Islandora/islandora_solr_search.git"
+projects[islandora_solr_search][download][branch] = "7.x"
+projects[islandora_solr_search][download][tag] = ""
 projects[islandora_solr_views][download][url] = "https://github.com/Islandora/islandora_solr_views.git"
 projects[islandora_solution_pack_audio][download][url] = "https://github.com/Islandora/islandora_solution_pack_audio.git"
 projects[islandora_solution_pack_book][download][url] = "https://github.com/Islandora/islandora_solution_pack_book.git"
@@ -134,6 +136,3 @@ libraries[tuque][download][branch] = "1.x"
 
 libraries[citeproc-php][download][url] = "git@github.com:Islandora/citeproc-php.git"
 libraries[citeproc-php][download][branch] = "master"
-
-libraries[videojs][download][type] = "file"
-libraries[videojs][download][url] = "https://github.com/videojs/video.js/releases/download/v5.10.2/video-js-5.10.2.zip"
