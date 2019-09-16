@@ -1,3 +1,9 @@
+.view-id-exhibition .exhibition-object .views-field-title,
+.view-id-exhibition .exhibition-object .views-field-body {
+  // top: unset !important;
+  margin-bottom: unset !important;
+}
+
 .view-id-exhibition {
   margin-top: 20px;
   .views-row-1 {
@@ -10,39 +16,44 @@
     .views-field {
       position: relative;
     }
-    .views-field-title,
-    .views-field-body {
-      top: -20px;
-    }
+    //.views-field-title,
+    //.views-field-body {
+    //  top: -20px;
+    //}
     .exhibition-tn {
+      margin: 10px 10px 10px 0;
       float: left;
     }
-    .exhibition-title {
-      position: relative;
-      left: 25px;
-      top: 20px;
-    }
-    .exhibition-body {
-      position: relative;
-      left: 25px;
-    }
+    //.exhibition-title {
+    //  position: relative;
+    //  left: 25px;
+    //  top: 20px;
+    //}
+    //.exhibition-body {
+    //  position: relative;
+    //  left: 25px;
+    //}
   }
 }
+
 
 #ex-nav {
   position: relative;
   top: 50px;
   a {
-    font-weight: bold;
-    text-decoration: none;
+    font-family: Arial, sans-serif;
+    color: #333333;
+    font-size: 1rem;
+    background-color: #F1BDBB;
     margin-right: 10px;
-    padding: 10px;
-    background: #9cf;
-    color: #000;
+    padding: 12px 20px;
+    border: 1px solid #D9ABA9;
+    border-radius: 4px;
+    text-decoration: none;
     &:hover,
     &:active {
-      background: #2E3D4C;
-      color: #fff !important;
+      background-color: #D9ABA9;
+      border: 1px solid #BF9795;
     }
     &#prev {
       margin-right: 25px;
@@ -52,22 +63,26 @@
 
 #ex-themes {
   margin-top: 10px;
+  margin-bottom:12px;
+  padding-bottom: 30px;
   a.theme {
+    font-family: Arial, sans-serif;
     font-size: 1.05em;
     text-decoration: none;
-    font-weight: bold;
-    color: #73797F;
+    font-weight: 600;
+    color: #3D3D66;
     padding: 5px;
-    margin-right: 25px;
+    margin-right: 20px;
+    border-bottom: 1px solid #3D3D66;
     &:active,
     &:hover {
-      color: #7AA3CC;
-      border-bottom: 3px solid;
+      color: #54548C;
+      border-bottom: 4px solid #54548C;
     };
   }
   a.theme.active {
-    color: #7AA3CC;
-    border-bottom: 3px solid;
+    background-color: #F5F2E5;
+    border-bottom: 4px solid #3D3D66;
   }
 }
 
@@ -96,11 +111,22 @@
   margin-right: 20px;
   margin-bottom: 20px;
   max-width: 600px;
+  .panel-body {
+    background-color: #F5F2E5;
+  }
   .large-image {
-    margin-bottom: 20px;
+    //margin-bottom: 20px;
     .caption {
-      font-size: 0.85em;
+      display: block;
+      padding: 20px 15px 0 15px; // needed to account for panel-body padding.
+      font-size: 1rem;
     }
+  }
+  .ex-thumbnails .img-responsive {
+    display: inline;
+    margin-top: 15px;
+    max-width: 100%;
+    height: auto;
   }
   .ex-thumbnails a {
     margin-right: 10px;
@@ -108,6 +134,10 @@
   .ex-thumbnails img.active {
     border: 2px solid #0f2d6b;
   }
+}
+
+.ex-images.panel {
+  border: 0;
 }
 
 .node-exhibition {
@@ -128,5 +158,9 @@
         left: 0 !important;
       }
     }
+  }
+  .exhibition-tn > .img-responsive {
+    margin: auto;
+    width: 75%;
   }
 }

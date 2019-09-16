@@ -88,20 +88,34 @@
       <?php print $exhibition; ?>
     <?php endif; ?>
     <div id="ex-themes">
-      <?php if (isset($ex_themes)): ?>
-        <?php print $ex_themes; ?>
-      <?php endif; ?>
+      <ul class="nav nav-tabs nav-justified">
+        <?php if (isset($ex_themes)): ?>
+          <li role='presentation'>
+            <a href="/exhibits/student-publishing-barnard#page1" class="theme" data-theme="Introduction">Introduction</a>
+          </li>
+          <li role='presentation'>
+            <a href="/exhibits/student-publishing-barnard#page2" class="theme" data-theme="Arts and Literature">Arts and Literature</a>
+          </li>
+          <li role='presentation'>
+            <a href="/exhibits/student-publishing-barnard#page8" class="theme" data-theme="Student Orientation Guides">Student Orientation Guides</a>
+          </li>
+          <li role='presentation'>
+            <a href="/exhibits/student-publishing-barnard#page10" class="theme" data-theme="Politics and Activism">Politics and Activism</a>
+          </li>
+        <?php endif; ?>
+      </ul>
     </div>
     <?php foreach ($objects as $i => $object): ?>
       <div class="ex-obj" id="slide<?php print $i + 1; ?>" data-theme="<?php print $object['theme']; ?>" data-layout="<?php print $object['layout'];?>">
-        <div class="ex-images">
-          <?php if (isset($object['images'])): ?>
-            <?php foreach ($object['images'] as $j => $img): ?>
-              <div class="large-image" id="<?php print $j + 1; ?>">
-                <?php print l(theme('image_style', array(
-                      'style_name' => 'exhibit',
-                      'path' => $img['uri'],
-                    )),
+        <div class="ex-images panel panel-default">
+          <div class="panel-body">
+            <?php if (isset($object['images'])): ?>
+              <?php foreach ($object['images'] as $j => $img): ?>
+                <div class="large-image" id="<?php print $j + 1; ?>">
+                  <?php print l(theme('image_style', array(
+                    'style_name' => 'exhibit',
+                    'path' => $img['uri'],
+                  )),
                     variable_get('file_public_path', conf_path() . '/files') . '/' . file_uri_target($img['uri']),
                     array(
                       'attributes' => array(
@@ -112,55 +126,61 @@
                       'html' => TRUE,
                     )
                   );
-                ?>
-                <br />
-                <?php // Image caption. ?>
-                <span class="caption">
+                  ?>
+                  <!-- <br />-->
+                  <?php // Image caption. ?>
+                  <span class="caption">
                   <?php print $img['caption']; ?>
-                  <?php // Object link (if available). ?>
-                  <?php if ($img['pid']): ?>
-                    &nbsp;(<?php
+                    <?php // Object link (if available). ?>
+                    <?php if ($img['pid']): ?>
+                      &nbsp;(<?php
                       print l(t('View object'),
                         "islandora/object/{$img['pid']}",
                         array(
                           'attributes' => array('target' => '_blank'),
                         )
                       );
-                    ?>)
-                  <?php endif; ?>
+                      ?>)
+                    <?php endif; ?>
                 </span>
-              </div> <?php // .large-image ?>
-            <?php endforeach; ?>
-          <?php endif; ?>
-          <?php // Thumbnails. ?>
-          <?php if (isset($object['thumbnail_output'])): ?>
-            <div class="ex-thumbnails">
-              <?php print $object['thumbnail_output']; ?>
-            </div>
-          <?php endif; ?>
-      </div> <?php // .ex-images ?>
-      <div class="ex-txt">
-        <?php print $object['description']; ?>
-      </div>
-      <div id="ex-nav">
-        <?php print l(t('« Prev'), request_path(), array(
+                </div> <?php // .large-image ?>
+              <?php endforeach; ?>
+            <?php endif; ?>
+            <?php // Thumbnails. ?>
+            <?php if (isset($object['thumbnail_output'])): ?>
+              <div class="ex-thumbnails">
+                <?php print $object['thumbnail_output']; ?>
+              </div>
+            <?php endif; ?>
+          </div>
+        </div> <?php // .ex-images ?>
+
+        <div class="ex-txt">
+          <?php print $object['description']; ?>
+        </div>
+        <div id="ex-nav">
+
+
+          <?php print l(t('« Prev'), request_path(), array(
             'attributes' => array('id' => 'prev'),
             'fragment' => 'page' . ($i ? $i : count($objects)),
           ));
-        ?>
-        <?php print l(t('Next »'), request_path(), array(
+          ?>
+
+          <?php print l(t('Next »'), request_path(), array(
             'attributes' => array('id' => 'next'),
             'fragment' => 'page' . ($i != count($objects) - 1 ? $i + 2 : '1'),
           ));
-        ?>
+          ?>
+
+        </div>
       </div>
-    </div>
     <?php endforeach; ?>
-    </div> <?php // .ex-obj ?>
-  </div> <?php // .content ?>
+  </div> <?php // .ex-obj ?>
+</div> <?php // .content ?>
 
-  <?php print render($content['links']); ?>
+<?php print render($content['links']); ?>
 
-  <?php print render($content['comments']); ?>
+<?php print render($content['comments']); ?>
 
 </div> <!-- /.node -->
