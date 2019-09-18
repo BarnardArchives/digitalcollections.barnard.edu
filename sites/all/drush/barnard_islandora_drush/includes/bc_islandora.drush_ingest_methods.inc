@@ -11,6 +11,77 @@
 
 require_once 'bc_islandora.drush_ingest_helpers.inc';
 define('BARNARD_SINGLE_OBJECT_COLLECTION', -1);
+
+function _bc_islandora_drush_ingest_rgBC1358_audio($md_file, $options) {
+  // Return early if md_file is not found. This signals failure.
+  if (!file_exists($md_file)) {
+    drush_log(dt("File not found: @md_file", ['@md_file' => $md_file]), 'error');
+    return FALSE;
+  }
+
+  // setup.
+  $object_path = dirname($md_file);
+  $namespace = 'bcrw';
+  $parent_collection = 'BCRW:BarnardCenterForResearchOnWomen';
+
+  $original_setting = variable_get('islandora_audio_defer_derivatives_on_ingest');
+//  variable_set('islandora_audio_defer_derivatives_on_ingest', true);
+
+  // CSV row processor.
+  iconv_set_encoding("internal_encoding", "UTF-8");
+  $csv = array_map( function($csv) { return str_getcsv($csv, "\t", '"'); }, file($md_file));
+  foreach ($csv as $row) {
+    // Path CSV to MD
+    $object_row = _map_rg1358_audio_csv_rows($row);
+
+    // Gather component parts.
+    $audio_part = "${object_row['id']}.mp3";
+    drush_log($audio_part,'warning');
+
+    // We do not want to use the xml transcripts.
+    // $transcript_part = "${object_row['id']}.xml";
+    $text_part =  "${object_row['id']}.txt";
+    $thumbnail_part = "${object_row['id']}_AssetFront.JPG";
+
+    $current_file = "$object_path/mp3files/$audio_part";
+    if (!file_exists(($current_file))) {
+      drush_log(dt("Missing audio part: @current_file. Skipping @object.",
+        [
+          '@object' => $object_row['id'],
+          '@current_file' => $current_file,
+        ]), 'error');
+      continue;
+    }
+    // $current_transcript = "$object_path/$transcript_part";
+    $current_text = "$object_path/transcriptions/$text_part";
+    $current_thumb = "$object_path/jpg/$thumbnail_part";
+
+    $object_row['content_model'] = 'islandora:oralhistoriesCModel';
+    $object_row['mime_label'] =  $audio_part;
+    $object_row['mime_type'] = 'audio/mpeg';
+
+//    if (file_exists($current_transcript)) {
+//      $object_row['transcript'] = $current_transcript;
+//      $object_row['transcript_mime'] = 'application/xml';
+//    } else {
+    $object_row['uncorrected_transcript'] = file_exists($current_text) ? $current_text : '';
+    $object_row['transcript_mime'] = 'text/plain';
+//    }
+    $object_row['transcript_label'] = "${object_row['id']}_UNCORRECTED_TRANSCRIPT";
+
+    $object_row['xml'] = _bc_islandora_rg1358_audio_mods($object_row, 'book');
+    file_exists($current_thumb) ? $object_row['thumbnail'] =  $current_thumb : NULL;
+
+//    drush_log(print_r($object_row['xml']), 'notice');
+
+    $pid = create_complete_object($namespace, $object_row, $parent_collection, $current_file);
+    drush_log(dt("Object completed: @object to PID: @pid", ['@object' => $object_row['id'], '@md_file' => $md_file]), 'notice');
+  }
+
+//  variable_set('islandora_audio_defer_derivatives_on_ingest', $original_setting);
+}
+
+
 /**
  * Record Group BC15: Alumnae Scrapbooks, ingest method.
  *

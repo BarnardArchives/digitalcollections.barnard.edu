@@ -31,6 +31,9 @@ function _barnard_islandora_generate_transcript($object) {
   elseif (isset($object['OCR'])) {
     $object_ocr .= $object['OCR']->getContent(NULL);
   }
+  elseif (isset($object['UNCORRECTED_TRANSCRIPT'])) {
+    $object_ocr .= $object['UNCORRECTED_TRANSCRIPT']->getContent(NULL);
+  }
 
   return $object_ocr;
 }
