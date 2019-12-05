@@ -239,7 +239,7 @@ function create_complete_object($pid, array $data, $collection_pid, $file_path) 
     }
   }
 
-  $xml = $data['xml'];
+  $xml = mb_convert_encoding($data['xml'], 'UTF-8');
 
   $mods_xml = new DOMDocument();
   $mods_xml->loadXML($xml);
@@ -303,15 +303,15 @@ function create_complete_object($pid, array $data, $collection_pid, $file_path) 
     $object->ingestDatastream($ocr_datastream);
   }
 
-  if (!empty($data['transcript'])) {
-    $ocr_datastream = $object->constructDatastream('TRANSCRIPT');
-    $ocr_datastream->setContentFromFile($data['transcript'], FALSE);
+  if (!empty($data['uncorrected_transcript'])) {
+    $ocr_datastream = $object->constructDatastream('UNCORRECTED_TRANSCRIPT');
+    $ocr_datastream->setContentFromFile($data['uncorrected_transcript'], FALSE);
     $ocr_datastream->label = $data['transcript_label'];
     $ocr_datastream->mimetype = $data['transcript_mime'] !== NULL ? $data['transcript_mime'] : 'text/plain';
     $ocr_datastream->checksum = TRUE;
     $ocr_datastream->checksumType = 'MD5';
-    $ocr_datastream->logMessage = 'TRANSCRIPT	set from text file || SUCCESS';
-    drush_log("$pid had TRANSCRIPT	set from text file.", 'success');
+    $ocr_datastream->logMessage = 'UNCORRECTED_TRANSCRIPT	set from text file || SUCCESS';
+    drush_log("$pid had UNCORRECTED_TRANSCRIPT set from text file.", 'success');
     $object->ingestDatastream($ocr_datastream);
   }
 
@@ -952,6 +952,17 @@ function _map_rg1108_csv_rows(array $data, array $head = []) {
 }
 
 /**
+ * Takes an array of data and encodes it for use in XML.
+ *
+ * @param array $data - an array of unescaped values to be used in XML.
+ */
+function _preprocess_data(array &$data) {
+  foreach ($data as &$row) {
+    $row = htmlspecialchars($row);
+  }
+}
+
+/**
  * Simple CSV row mapping based on the header of each row.
  *
  * @param array $data
@@ -963,6 +974,7 @@ function _map_rg1108_csv_rows(array $data, array $head = []) {
  *   Chocolaty goodness.
  */
 function _map_rg1358_audio_csv_rows(array $data, array $head = []) {
+  _preprocess_data($data);
   $object_data_array['id'] = $data[0];
   $object_data_array['title'] = $data[1];
   $i = 0;

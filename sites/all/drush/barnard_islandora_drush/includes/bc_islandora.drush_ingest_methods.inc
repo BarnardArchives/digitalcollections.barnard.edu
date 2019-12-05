@@ -21,7 +21,7 @@ function _bc_islandora_drush_ingest_rgBC1358_audio($md_file, $options) {
 
   // setup.
   $object_path = dirname($md_file);
-  $namespace = 'BC13-58';
+  $namespace = 'bcrw';
   $parent_collection = 'BCRW:BarnardCenterForResearchOnWomen';
 
   $original_setting = variable_get('islandora_audio_defer_derivatives_on_ingest');
@@ -64,10 +64,10 @@ function _bc_islandora_drush_ingest_rgBC1358_audio($md_file, $options) {
 //      $object_row['transcript'] = $current_transcript;
 //      $object_row['transcript_mime'] = 'application/xml';
 //    } else {
-    $object_row['transcript'] = file_exists($current_text) ? $current_text : '';
+    $object_row['uncorrected_transcript'] = file_exists($current_text) ? $current_text : '';
     $object_row['transcript_mime'] = 'text/plain';
 //    }
-    $object_row['transcript_label'] = "${object_row['id']}_transcript.txt";
+    $object_row['transcript_label'] = "${object_row['id']}_UNCORRECTED_TRANSCRIPT";
 
     $object_row['xml'] = _bc_islandora_rg1358_audio_mods($object_row, 'book');
     file_exists($current_thumb) ? $object_row['thumbnail'] =  $current_thumb : NULL;
@@ -75,9 +75,10 @@ function _bc_islandora_drush_ingest_rgBC1358_audio($md_file, $options) {
 //    drush_log(print_r($object_row['xml']), 'notice');
 
     $pid = create_complete_object($namespace, $object_row, $parent_collection, $current_file);
+    drush_log(dt("Object completed: @object to PID: @pid", ['@object' => $object_row['id'], '@md_file' => $md_file]), 'notice');
   }
 
-  variable_set('islandora_audio_defer_derivatives_on_ingest', $original_setting);
+//  variable_set('islandora_audio_defer_derivatives_on_ingest', $original_setting);
 }
 
 

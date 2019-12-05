@@ -120,6 +120,8 @@ LOCATION_LOCATION_LOCATION;
 //    $access_condition_xml = '
 //  <accessCondition type="useAndReproduction">Contact the Archives at archives@barnard.edu for more information on access and use.</accessCondition>';
 
+    // We need to decode this since it's being passed in as XML already. I know.
+    $mods_data['access_condition'] = htmlspecialchars_decode($mods_data['access_condition']);
     $access_condition_xml = <<<ACL
   {$mods_data['access_condition']}
 ACL;

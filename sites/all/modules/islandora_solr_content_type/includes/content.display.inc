@@ -75,10 +75,20 @@ function islandora_solr_content_type_node_view($node, $view_mode = 'full') {
     // See hook_islandora_solr_query().
     $solr_result_output = islandora_solr();
   }
+  elseif (empty($_GET['cq']) && count(preg_grep('/mods_originInfo_dateCreated_sort:\[.+\]/', $_GET['f']))) {
+    $_islandora_solr_content_type['user_search'] = FALSE;
+    // See hook_islandora_solr_query().
+    $solr_result_output = islandora_solr();
+  }
   else {
     $_islandora_solr_content_type['user_search'] = TRUE;
     // See hook_islandora_solr_query().
     $solr_result_output = islandora_solr($_GET['cq']);
+
+    if ($_islandora_solr_content_type['featured_topic_hide']) {
+      $node->content['isct_featured_content_area']['#access'] = false;
+    }
+
   }
 
   $node->content['islandora_display_switch'] = array(

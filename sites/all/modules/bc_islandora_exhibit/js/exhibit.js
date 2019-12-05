@@ -102,6 +102,8 @@
       });
     },
     attach: function (context, settings) {
+      if (!$('#ex-themes').length) { return }
+
       var self = this;
       self.set_firsts();
       $('.ex-images').each(function () {

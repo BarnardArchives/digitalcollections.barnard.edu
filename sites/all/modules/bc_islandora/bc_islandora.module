@@ -93,7 +93,7 @@ function bc_islandora_config($form, &$form_state) {
   return system_settings_form($form);
 }
 
-/**
+  /**
  * Implements hook_menu().
  */
 function bc_islandora_menu() {
@@ -122,8 +122,39 @@ function bc_islandora_menu() {
     'access callback' => 'islandora_object_access',
     'access arguments' => [ISLANDORA_VIEW_OBJECTS, 2],
   ];
+  $items['islandora/object/%islandora_object/uc_transcript_edit_form/%islandora_datastream'] = array(
+    'title' => 'Uncorrected Transcript Edit form',
+    'description' => 'Edit transcript',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array(
+      'bc_islandora_oralhistories_uncorrected_transcript_edit_form',
+      2,
+      4,
+    ),
+    'file' => 'forms.inc',
+    // This access arg is okay but not ideal. Should be islaodra access callback
+    // and REPLACE_DATASTREAM
+    'access arguments' => array('administer bc_islandora'),
+    'file path' => drupal_get_path('module', 'bc_islandora') . '/includes',
+    'type' => MENU_CALLBACK,
+    'load arguments' => array(2),
+  );
 
   return $items;
+}
+
+/**
+ * Implements hook_islandora_edit_datastream_registry().
+ */
+function bc_islandora_islandora_edit_datastream_registry(AbstractObject $object, AbstractDatastream $datastream) {
+  if (strtoupper($datastream->id) == 'UNCORRECTED_TRANSCRIPT') {
+    return array(
+      array(
+        'name' => t('Islandora Oralhistories Edit Uncorrected Transcript'),
+        'url' => "islandora/object/{$object->id}/uc_transcript_edit_form/{$datastream->id}",
+      ),
+    );
+  }
 }
 
 /**
