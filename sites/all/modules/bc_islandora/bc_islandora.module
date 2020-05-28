@@ -132,7 +132,7 @@ function bc_islandora_menu() {
       4,
     ),
     'file' => 'forms.inc',
-    // This access arg is okay but not ideal. Should be islaodra access callback
+    // This access arg is okay but not ideal. Should be Islandora access callback
     // and REPLACE_DATASTREAM
     'access arguments' => array('administer bc_islandora'),
     'file path' => drupal_get_path('module', 'bc_islandora') . '/includes',

@@ -381,13 +381,26 @@ function _barnard_islandora_breadcrumbify(array $breadcrumb, $sep_char = ' » ')
 function _barnard_islandora_dl_links($obj, $datastreams = ['PDF', 'JPG']) {
   module_load_include('inc', 'islandora', 'includes/datastream');
   $urls = [];
+  $oral_history = in_array('islandora:oralhistoriesCModel', $obj->models);
+
   foreach ($datastreams as $ds) {
     if (isset($obj[$ds])) {
-      $ds_label = $obj[$ds]->label;
       $dl_url = islandora_datastream_get_url($obj[$ds], 'download');
+      $ds_label = $obj[$ds]->label;
+      if ($oral_history) {
+        switch ($obj[$ds]->id) {
+          case 'TRANSCRIPT':
+            $ds_label = 'Timestamped Transcript (VTT file; view using text editor)';
+            break;
+          case 'UNCORRECTED_TRANSCRIPT':
+            $dl_url = "islandora/object/{$obj->id}/download_transcript";
+            $ds_label = 'Uncorrected Transcript (contains errors)';
+            break;
+        }
+      }
       $urls[] = l($ds_label, $dl_url);
     }
-    elseif ($ds == 'TRANSCRIPT') {
+    elseif (!$oral_history && $ds == 'TRANSCRIPT') {
       $ts_path = "islandora/object/{$obj->id}/download_transcript";
       // We set alias = TRUE here to avoid generating an aliased URL.
       // @see https://api.drupal.org/api/drupal/includes%21common.inc/function/url/7.x
