@@ -27,7 +27,7 @@ function theme_lightbox2_image($variables) {
   $image_style = $variables['image_style'];
   $node_id = $variables['node_id'];
   $field_name = $variables['field_name'];
-  $caption = $variables['caption'];
+  $caption = isset($variables['caption']) ? $variables['caption'] : 'hidden';
 
   if (!$variables["lightbox_style"]) {
     $path['path'] = file_create_url($item['uri']);
@@ -84,13 +84,19 @@ function theme_lightbox2_image($variables) {
             );
         $entity = entity_load('file', array($item['fid']));
         $entity = $entity[$item['fid']];
-        $rel.=drupal_render(field_view_field('file', $entity, $caption, $caption_display));
+        $renderable_field = field_view_field('file', $entity, $caption, $caption_display);
+        $rel .= drupal_render($renderable_field);
         break;
   }
 
   // Download Link
   if (user_access('download original image')) {
-    $rel .= '<p><a href="' . file_create_url($item['uri']) . '">' . variable_get('lightbox2_download_link_text', 'Download Original') . '</a></p>';
+    $url_download = file_create_url($item['uri']);
+    $download_original_text = t(variable_get('lightbox2_download_link_text', 'Download Original'));
+    $options_download = array();
+    $options_download['attributes']['title'] = $download_original_text;
+    $options_download['attributes']['download'] = '';
+    $rel .= '<p>' . l($download_original_text, $url_download, $options_download) . '</p>';
   }
   
   // Title End
@@ -280,11 +286,11 @@ function theme_lightbox2_image($variables) {
     if (!empty($target)) {
       $attributes['target'] = $target;
     }
-    $node_link_text = variable_get('lightbox2_node_link_text', 'View Image Details');
+    $node_link_text = t(variable_get('lightbox2_node_link_text', 'View Image Details'));
     if (!$on_image_node && !empty($node_link_text)) {
       $node_links[] = l($node_link_text, 'node/'. $item['nid'], array('attributes' => $attributes));
     }
-    $download_link_text = check_plain(variable_get('lightbox2_download_link_text', 'Download Original'));
+    $download_link_text = check_plain(t(variable_get('lightbox2_download_link_text', 'Download Original')));
     if (!empty($download_link_text) && user_access('download original image')) {
       $node_links[] = l($download_link_text, file_create_url($item['filepath']), array('attributes' => array('target' => '_blank', 'id' => 'lightbox2-download-link-text')));
     }
@@ -344,7 +350,7 @@ function theme_lightbox2_image($variables) {
   }
   elseif ($view_preset == 'link') {
     // Not actually an image, just a text link.
-    $image = variable_get('lightbox2_view_image_text', 'View image');
+    $image = t(variable_get('lightbox2_view_image_text', 'View image'));
   }
   else {
      $image = theme('imagecache', array( 'style_name' => $view_preset, 'path' => $item['filepath'], 'alt' => $image_tag_alt, 'title' => $image_tag_title, 'attributes' => $attributes ) );
