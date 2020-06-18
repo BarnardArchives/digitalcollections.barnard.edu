@@ -708,11 +708,11 @@ function lightbox2_add_files() {
     'force_show_nav' => variable_get('lightbox2_force_show_nav', FALSE),
     'show_caption' => variable_get('lightbox2_show_caption', TRUE),
     'loop_items' => variable_get('lightbox2_loop_items', FALSE),
-    'node_link_text' => check_plain(variable_get('lightbox2_node_link_text', 'View Image Details')),
+    'node_link_text' => check_plain(t(variable_get('lightbox2_node_link_text', 'View Image Details'))),
     'node_link_target' => variable_get('lightbox2_node_link_target', FALSE),
-    'image_count' => check_plain(variable_get('lightbox2_image_count_str', 'Image !current of !total')),
-    'video_count' => check_plain(variable_get('lightbox2_video_count_str', 'Video !current of !total')),
-    'page_count' => check_plain(variable_get('lightbox2_page_count_str', 'Page !current of !total')),
+    'image_count' => check_plain(t(variable_get('lightbox2_image_count_str', 'Image !current of !total'))),
+    'video_count' => check_plain(t(variable_get('lightbox2_video_count_str', 'Video !current of !total'))),
+    'page_count' => check_plain(t(variable_get('lightbox2_page_count_str', 'Page !current of !total'))),
     'lite_press_x_close' => t('press !x to close', array('!x' => '<a href="#" onclick="hideLightbox(); return FALSE;"><kbd>x</kbd></a>')),
     'download_link_text' => '',
     'enable_login' => $enable_login,
@@ -749,6 +749,7 @@ function lightbox2_add_files() {
     'iframe_border' => (int)variable_get('lightbox2_frame_border', 1),
     // Video settings.
     'enable_video' => $enable_video,
+    'useragent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
   );
   if ($enable_video) {
     $js_settings['flvPlayer'] = url(check_plain(trim(variable_get('lightbox2_flv_player_path', 'flvplayer.swf'), '/')));
@@ -757,7 +758,7 @@ function lightbox2_add_files() {
 
   // Only supply these if the user has the correct permissions.
   if (user_access('download original image') && user_access('view original images')) {
-    $js_settings['download_link_text'] = check_plain(variable_get('lightbox2_download_link_text', 'Download Original'));
+    $js_settings['download_link_text'] = check_plain(t(variable_get('lightbox2_download_link_text', 'Download Original')));
   }
 
   drupal_add_js(array('lightbox2' => $js_settings), array( 'type' => 'setting' ) );
@@ -874,6 +875,7 @@ function lightbox2_field_formatter_settings_form($field, $instance, $view_mode, 
 
   return $form;
 }
+
 /**
  * Implements hook_field_formatter_settings_summary().
  */
@@ -887,18 +889,25 @@ function lightbox2_field_formatter_settings_summary($field, $instance, $view_mod
 
   $summary = '';
 
-  if(isset($settings['caption']) && isset($settings['type']) && isset($settings['image_style']) && isset($settings['lightbox_style'])) {
-    $summary .= '<strong>'.t('Caption field') . '</strong>: ' . $fields[$settings['caption']] . '<br/>';
-    $summary .= '<strong>'.t('Display') . '</strong>: ' ;
+  if (!isset($image_styles[$settings['image_style']])) {
+    $image_styles[$settings['image_style']] = 0;
+  }
+  if (!isset($image_styles[$settings['lightbox_style']])) {
+    $image_styles[$settings['lightbox_style']] = 0;
+  }
+
+  if (isset($settings['caption']) && isset($settings['type']) && isset($settings['image_style']) && isset($settings['lightbox_style'])) {
+    $summary .= '<strong>' . t('Caption field') . '</strong>: ' . $fields[$settings['caption']] . '<br/>';
+    $summary .= '<strong>' . t('Display') . '</strong>: ';
     $summary .= $types[$settings['type']];
     $summary .= ': ';
     $summary .= $image_styles[$settings['image_style']];
     $summary .= ' => ';
     $summary .= $image_styles[$settings['lightbox_style']];
-  } else {
+  }
+  else {
     $summary = 'Title - Lightbox: original => original';
   }
-
 
   return $summary;
 }
@@ -1647,6 +1656,10 @@ function lightbox2_views_api() {
 }
 
 function lightbox2_filter_xss() {
+  if (empty($_POST['string'])) {
+     drupal_json_output();
+     return;
+  }
   $allowed_tags = trim(variable_get('lightbox2_filter_xss_allowed_tags', 'p, br, a, em, strong, cite, code, ul, ol, li, dl, dt, dd, '));
   $allowed_tags = (empty($allowed_tags) ? array() : preg_split('/[,\s]+/', $allowed_tags));
   if (!empty($_POST['allowed_tags']) && $_POST['allowed_tags'] != 'undefined') {

@@ -1,5 +1,4 @@
 <?php
-// $Id: lightbox2.admin.inc,v 1.1.2.38 2010/09/24 08:41:02 snpower Exp $
 
 /**
  * @file
@@ -19,14 +18,10 @@ function lightbox2_settings_page($op = NULL) {
  */
 function lightbox2_general_settings_form() {
 
-  // Add the javascript which disables / enables form elements.
+  // Add the javascript which disables/enables form elements.
   drupal_add_js(drupal_get_path('module', 'lightbox2') . '/js/lightbox2.js', 'module');
 
-  // Enable translation of default strings for potx.
-  $default_strings = array(t('View Image Details'), t('Image !current of !total'), t('Page !current of !total'), t('Video !current of !total'), t('Download Original'));
-
   // Define Lightbox2 layout fieldset.
-  /* --------------------------------- */
   $form['layout_fieldset'] = array(
     '#type' => 'fieldset',
     '#title' => t('Layout settings'),
@@ -35,7 +30,6 @@ function lightbox2_general_settings_form() {
   );
 
   // Define Lightbox2 Lite fieldset.
-  /* ------------------------------- */
   $use_lite = variable_get('lightbox2_lite', FALSE);
   $form['layout_fieldset']['lightbox2_lite_options'] = array(
     '#type' => 'fieldset',
@@ -45,7 +39,7 @@ function lightbox2_general_settings_form() {
   );
 
   // Add checkbox for Lightbox2 Lite.
-  $form['layout_fieldset']['lightbox2_lite_options']['lightbox2_lite']  = array(
+  $form['layout_fieldset']['lightbox2_lite_options']['lightbox2_lite'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use lightbox2 lite'),
     '#description' => t('Checking this box will enable Lightbox2 Lite and will disable all of the automatic image URL re-formatting features.  It also disables all grouping features.'),
@@ -69,7 +63,7 @@ function lightbox2_general_settings_form() {
     '#default_value' => variable_get('lightbox2_force_show_nav', FALSE),
   );
 
-  // Show caption
+  // Show caption.
   $form['layout_fieldset']['lightbox2_show_caption'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show image caption'),
@@ -77,7 +71,7 @@ function lightbox2_general_settings_form() {
     '#default_value' => variable_get('lightbox2_show_caption', TRUE),
   );
 
-  // Add checkbox for "looping through images'.
+  // Add checkbox for 'looping through images'.
   $form['layout_fieldset']['lightbox2_loop_items'] = array(
     '#type' => 'checkbox',
     '#title' => t('Continuous galleries'),
@@ -95,7 +89,6 @@ function lightbox2_general_settings_form() {
   );
 
   // Define Lightbox2 text settings.
-  /* ------------------------------- */
   $form['lightbox2_text_settings'] = array(
     '#type' => 'fieldset',
     '#title' => t('Text settings'),
@@ -153,7 +146,6 @@ function lightbox2_general_settings_form() {
 
 
   // Define Lightbox2 zoom fieldset.
-  /* -------------------------------- */
   $form['zoom_fieldset'] = array(
     '#type' => 'fieldset',
     '#title' => t('Image resize settings'),
@@ -178,7 +170,6 @@ function lightbox2_general_settings_form() {
   );
 
   // Define Lightbox2 modal form fieldset.
-  /* -------------------------------------- */
   $form['modal_form_fieldset'] = array(
     '#type' => 'fieldset',
     '#title' => t('Modal form settings'),
@@ -203,7 +194,6 @@ function lightbox2_general_settings_form() {
   );
 
   // Define Lightbox2 video fieldset.
-  /* -------------------------------- */
   $form['video_fieldset'] = array(
     '#type' => 'fieldset',
     '#title' => t('Video settings'),
@@ -236,7 +226,6 @@ function lightbox2_general_settings_form() {
   );
 
   // Define Lightbox2 page specific settings fieldset.
-  /* ------------------------------------------------ */
   $form['lightbox2_page_init'] = array(
     '#type' => 'fieldset',
     '#title' => t('Page specific lightbox2 settings'),
@@ -264,7 +253,6 @@ function lightbox2_general_settings_form() {
   );
 
   // Define grouping settings fieldset.
-  /* ------------------------------------ */
   $form['group_options'] = array(
     '#type' => 'fieldset',
     '#title' => t('Group display settings'),
@@ -273,11 +261,11 @@ function lightbox2_general_settings_form() {
   );
 
   $group_options = array(
-    0 => t('No grouping'),
-    1 => t('Group by field name'),
-    2 => t('Group by node id'),
-    3 => t('Group by field name and node id'),
-    4 => t('Group all nodes and fields'),
+    t('No grouping'),
+    t('Group by field name'),
+    t('Group by node id'),
+    t('Group by field name and node id'),
+    t('Group all nodes and fields'),
   );
 
   $form['group_options']['lightbox2_image_group_node_id'] = array(
@@ -290,7 +278,6 @@ function lightbox2_general_settings_form() {
 
 
   // Define advanced settings fieldset.
-  /* ---------------------------------- */
   $form['advanced_options'] = array(
     '#type' => 'fieldset',
     '#title' => t('Advanced settings'),
@@ -317,7 +304,6 @@ function lightbox2_general_settings_form() {
   );
 
   // Define keyboard shortcuts fieldset.
-  /* ---------------------------------- */
   $form['advanced_options']['keyboard_shortcuts'] = array(
     '#type' => 'fieldset',
     '#title' => t('Keyboard shortcuts'),
@@ -329,43 +315,39 @@ function lightbox2_general_settings_form() {
   $form['advanced_options']['keyboard_shortcuts']['lightbox2_keys_close'] = array(
     '#type' => 'textfield',
     '#title' => t('Close keys'),
-    '#description' => t("A list of keys (or key codes) that a user may use to close the lightbox. Values should be separated by a space. Defaults to 'c x 27' (c, x, or esc)."),
+    '#description' => t('A list of keys (or key codes) that a user may use to close the lightbox. Values should be separated by a space. Defaults to "c x 27" (c, x, or esc).'),
     '#default_value' => variable_get('lightbox2_keys_close', 'c x 27'),
   );
 
   $form['advanced_options']['keyboard_shortcuts']['lightbox2_keys_previous'] = array(
     '#type' => 'textfield',
     '#title' => t('Previous keys'),
-    '#description' => t("A list of keys (or key codes) that a user may use to navigate to the previous item in the lightbox. Values should be separated by a space. Defaults to 'p 37' (p or left arrow)."),
+    '#description' => t('A list of keys (or key codes) that a user may use to navigate to the previous item in the lightbox. Values should be separated by a space. Defaults to "p 37" (p or left arrow).'),
     '#default_value' => variable_get('lightbox2_keys_previous', 'p 37'),
   );
 
   $form['advanced_options']['keyboard_shortcuts']['lightbox2_keys_next'] = array(
     '#type' => 'textfield',
     '#title' => t('Next keys'),
-    '#description' => t("A list of keys (or key codes) that a user may use to navigate to the next item in the lightbox. Values should be separated by a space. Defaults to 'n 39' (n or right arrow)."),
+    '#description' => t('A list of keys (or key codes) that a user may use to navigate to the next item in the lightbox. Values should be separated by a space. Defaults to "n 39" (n or right arrow).'),
     '#default_value' => variable_get('lightbox2_keys_next', 'n 39'),
   );
 
   $form['advanced_options']['keyboard_shortcuts']['lightbox2_keys_zoom'] = array(
     '#type' => 'textfield',
     '#title' => t('Zoom keys'),
-    '#description' => t("A list of keys (or key codes) that a user may use to zoom in / out of images in the lightbox. Values should be separated by a space. Defaults to 'z'."),
+    '#description' => t('A list of keys (or key codes) that a user may use to zoom in / out of images in the lightbox. Values should be separated by a space. Defaults to "z".'),
     '#default_value' => variable_get('lightbox2_keys_zoom', 'z'),
   );
 
   $form['advanced_options']['keyboard_shortcuts']['lightbox2_keys_play_pause'] = array(
     '#type' => 'textfield',
     '#title' => t('Pause / play keys'),
-    '#description' => t("A list of keys (or key codes) that a user may use to pause / play the lightbox. Values should be separated by a space. Defaults to '32' (spacebar)."),
+    '#description' => t('A list of keys (or key codes) that a user may use to pause / play the lightbox. Values should be separated by a space. Defaults to "32" (spacebar).'),
     '#default_value' => variable_get('lightbox2_keys_play_pause', '32'),
   );
 
-
-
-
   // Define border settings fieldset.
-  /* ---------------------------------- */
   $form['advanced_options']['skin_settings'] = array(
     '#type' => 'fieldset',
     '#title' => t('Skin settings'),
@@ -411,21 +393,19 @@ function lightbox2_general_settings_form() {
     '#default_value' => variable_get('lightbox2_top_position', ''),
   );
 
-
-
   // Define overlay settings fieldset.
-  /* ---------------------------------- */
   $form['advanced_options']['overlay_settings'] = array(
     '#type' => 'fieldset',
     '#title' => t('Overlay settings'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
+
   // Add checkbox for overlay opacity.
   for ($i = 0; $i < 10; $i++) {
-    $opacity_options["0.$i"] = "0.$i";
+    $opacity_options['0.' . $i] = '0.' . $i;
   }
-  $opacity_options["1.0"] = "1.0";
+  $opacity_options['1.0'] = '1.0';
   $form['advanced_options']['overlay_settings']['lightbox2_overlay_opacity'] = array(
     '#type' => 'select',
     '#title' => t('Overlay opacity'),
@@ -444,19 +424,19 @@ function lightbox2_general_settings_form() {
     '#default_value' => variable_get('lightbox2_overlay_color', '000'),
   );
 
-
   // Define animation settings fieldset.
-  /* ----------------------------------- */
   $form['advanced_options']['animation_settings'] = array(
     '#type' => 'fieldset',
     '#title' => t('Animation settings'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
+
   // Set animation help text.
   $form['advanced_options']['animation_settings']['animation_options_help'] = array(
-    '#value' => '<p>' . t("These options aren't available when using Lightbox2 Lite.") . '</p>',
+    '#value' => '<p>' . t('These options aren\'t available when using Lightbox2 Lite.') . '</p>',
   );
+
   $resize_sequence_options = array(
     t('Simultaneous'),
     t('Width then height'),
@@ -469,6 +449,7 @@ function lightbox2_general_settings_form() {
     '#description' => t('The sequence to use for the resizing animation.'),
     '#default_value' => variable_get('lightbox2_resize_sequence', 0),
   );
+
   $form['advanced_options']['animation_settings']['lightbox2_resize_speed'] = array(
     '#type' => 'textfield',
     '#title' => t('Resize duration'),
@@ -477,6 +458,7 @@ function lightbox2_general_settings_form() {
     '#description' => t('The duration (in seconds) of the resizing animation.  Enter a value between 0 and 10.'),
     '#default_value' => variable_get('lightbox2_resize_speed', 0.4),
   );
+
   $form['advanced_options']['animation_settings']['lightbox2_fadein_speed'] = array(
     '#type' => 'textfield',
     '#title' => t('Appearance duration'),
@@ -485,7 +467,6 @@ function lightbox2_general_settings_form() {
     '#description' => t('The duration (in seconds) of the lightbox appearance animation.  Enter a positive number less than 10.'),
     '#default_value' => variable_get('lightbox2_fadein_speed', 0.4),
   );
-
 
   $form['advanced_options']['animation_settings']['lightbox2_slidedown_speed'] = array(
     '#type' => 'textfield',
@@ -522,7 +503,7 @@ function lightbox2_general_settings_form_validate($form, &$form_state) {
         $flv_player_path = drupal_substr($flv_player_path, drupal_strlen(base_path()));
       }
       if (!file_exists($flv_player_path)) {
-        form_set_error('lightbox2_flv_player_path', t("FLV player path doesn't exist."));
+        form_set_error('lightbox2_flv_player_path', t('FLV player path doesn\'t exist.'));
       }
     }
 
@@ -583,7 +564,6 @@ function lightbox2_slideshow_settings_form() {
     '#value' => variable_get('lightbox2_lite', FALSE),
   );
 
-
   // Add text box for slideshow interval.
   $form['lightbox2_slideshow_interval'] = array(
     '#type' => 'textfield',
@@ -593,7 +573,7 @@ function lightbox2_slideshow_settings_form() {
     '#size' => 20,
   );
 
-   // Add checkbox for slideshow automatic start.
+  // Add checkbox for slideshow automatic start.
   $form['lightbox2_slideshow_automatic_start'] = array(
     '#type' => 'checkbox',
     '#title' => t('Automatically start slideshow'),
@@ -609,7 +589,7 @@ function lightbox2_slideshow_settings_form() {
     '#default_value' => variable_get('lightbox2_slideshow_automatic_exit', TRUE),
   );
 
-  // Add checkbox for showing hte play / pause button.
+  // Add checkbox for showing hte play/pause button.
   $form['lightbox2_slideshow_show_play_pause'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show play / pause button'),
@@ -617,7 +597,7 @@ function lightbox2_slideshow_settings_form() {
     '#default_value' => variable_get('lightbox2_slideshow_show_play_pause', TRUE),
   );
 
-  // Add checkbox for "pausing on next click".
+  // Add checkbox for 'pausing on next click'.
   $form['lightbox2_slideshow_pause_on_next_click'] = array(
     '#type' => 'checkbox',
     '#title' => t('Pause slideshow on "Next Image" click'),
@@ -625,7 +605,7 @@ function lightbox2_slideshow_settings_form() {
     '#default_value' => variable_get('lightbox2_slideshow_pause_on_next_click', FALSE),
   );
 
-  // Add checkbox for "pausing on prev click".
+  // Add checkbox for 'pausing on prev click'.
   $form['lightbox2_slideshow_pause_on_previous_click'] = array(
     '#type' => 'checkbox',
     '#title' => t('Pause slideshow on "Previous Image" click'),
@@ -633,7 +613,7 @@ function lightbox2_slideshow_settings_form() {
     '#default_value' => variable_get('lightbox2_slideshow_pause_on_previous_click', TRUE),
   );
 
-  // Add checkbox for "looping through slides'.
+  // Add checkbox for 'looping through slides'.
   $form['lightbox2_loop_slides'] = array(
     '#type' => 'checkbox',
     '#title' => t('Continuous loop'),
@@ -668,7 +648,6 @@ function lightbox2_iframe_settings_form() {
     '#type' => 'hidden',
     '#value' => variable_get('lightbox2_lite', FALSE),
   );
-
 
   // Add text box for iframe width.
   $form['lightbox2_default_frame_width'] = array(
@@ -719,7 +698,7 @@ function lightbox2_iframe_settings_form_validate($form, &$form_state) {
  */
 function lightbox2_auto_image_handling_settings_form() {
 
-  // Add the javascript which disables / enables form elements.
+  // Add the javascript which disables/enables form elements.
   drupal_add_js(drupal_get_path('module', 'lightbox2') . '/js/lightbox2.js', 'module');
 
   // Set up a hidden variable.
@@ -729,12 +708,12 @@ function lightbox2_auto_image_handling_settings_form() {
   );
 
   $automatic_options = array(
-    0 => t('Disabled'),
-    1 => t('Lightbox'),
-    2 => t('Lightbox grouped'),
-    3 => t('Slideshow'),
-    4 => t('HTML content'),
-    5 => t('HTML content grouped'),
+    t('Disabled'),
+    t('Lightbox'),
+    t('Lightbox grouped'),
+    t('Slideshow'),
+    t('HTML content'),
+    t('HTML content grouped'),
   );
 
   // Set image node options help text.
@@ -743,7 +722,6 @@ function lightbox2_auto_image_handling_settings_form() {
   );
 
   // Define handler settings fieldset.
-  /* --------------------------------- */
   $form['handler_options'] = array(
     '#type' => 'fieldset',
     '#title' => t('Automatic handlers'),
@@ -752,7 +730,6 @@ function lightbox2_auto_image_handling_settings_form() {
   );
 
   // Define image nodes settings fieldset.
-  /* ------------------------------------- */
   $form['handler_options']['image_node_options'] = array(
     '#type' => 'fieldset',
     '#title' => t('Image node settings'),
@@ -761,7 +738,7 @@ function lightbox2_auto_image_handling_settings_form() {
   );
 
   // Add checkbox for image nodes.
-  $form['handler_options']['image_node_options']['lightbox2_image_node']  = array(
+  $form['handler_options']['image_node_options']['lightbox2_image_node'] = array(
     '#type' => 'select',
     '#title' => t('Automatic handler for image nodes'),
     '#options' => $automatic_options,
@@ -769,38 +746,8 @@ function lightbox2_auto_image_handling_settings_form() {
     '#default_value' => variable_get('lightbox2_image_node', 0),
   );
 
-  /*
-  // Add drop-down for list of available image sizes.
-  if (module_exists('image')) {
-    $sizes = image_get_sizes();
-    foreach ($sizes as $size_key => $size) {
-      if ($size_key == 'original' or $size_key == '_original')  {
-        $size_key = 'original';
-      }
-      $size_options[$size_key] = $size['label'];
-    }
-    $form['handler_options']['image_node_options']['lightbox2_display_image_size'] = array(
-      '#type' => 'select',
-      '#title' => t('Lightbox image display size'),
-      '#options' => $size_options,
-      '#default_value' => variable_get('lightbox2_display_image_size', 'original'),
-      '#description' => t('Select which image size will be loaded in the lightbox.  This only applies to images uploaded with the Image module.'),
-    );
-
-    $form['handler_options']['image_node_options']['lightbox2_trigger_image_size'] = array(
-      '#type' => 'select',
-      '#multiple' => TRUE,
-      '#title' => t('Image trigger size'),
-      '#options' => $size_options,
-      '#default_value' => variable_get('lightbox2_trigger_image_size', array('thumbnail')),
-      '#description' => t('Select which image size, when clicked on, will automatically trigger the lightbox.  This only applies to images uploaded with the Image module.'),
-    );
-
-  }
-  */
-
   // Add checkbox for disabling lightbox for gallery lists.
-  $form['handler_options']['image_node_options']['lightbox2_disable_nested_galleries']  = array(
+  $form['handler_options']['image_node_options']['lightbox2_disable_nested_galleries'] = array(
     '#type' => 'checkbox',
     '#title' => t('Disable lightbox for gallery lists'),
     '#description' => t('Checking this box will disable the lightbox for images in gallery lists.  This means it is possible to open a gallery by clicking on the teaser image, but the lightbox will still appear when viewing images within the gallery.  This only applies to image galleries created with the "image gallery" module.'),
@@ -808,13 +755,13 @@ function lightbox2_auto_image_handling_settings_form() {
   );
 
   // Define flickr fieldset.
-  /* ----------------------- */
   $form['handler_options']['flickr_options'] = array(
     '#type' => 'fieldset',
     '#title' => t('Flickr images'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
+
   // Add checkbox for flickr image support.
   $form['handler_options']['flickr_options']['lightbox2_flickr'] = array(
     '#type' => 'select',
@@ -825,13 +772,13 @@ function lightbox2_auto_image_handling_settings_form() {
   );
 
   // Define gallery2 fieldset.
-  /* ------------------------- */
   $form['handler_options']['gallery2_options'] = array(
     '#type' => 'fieldset',
     '#title' => t('Gallery2 images'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
+
   // Add checkbox for gallery2 block image support.
   $form['handler_options']['gallery2_options']['lightbox2_gallery2_blocks'] = array(
     '#type' => 'select',
@@ -842,13 +789,13 @@ function lightbox2_auto_image_handling_settings_form() {
   );
 
   // Define inline fieldset.
-  /* ----------------------- */
   $form['handler_options']['inline_options'] = array(
     '#type' => 'fieldset',
     '#title' => t('Inline module images'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
+
   // Add checkbox for inline image support.
   $form['handler_options']['inline_options']['lightbox2_inline'] = array(
     '#type' => 'select',
@@ -859,13 +806,13 @@ function lightbox2_auto_image_handling_settings_form() {
   );
 
   // Define image assist fieldset.
-  /* ----------------------------- */
   $form['handler_options']['img_assist_options'] = array(
     '#type' => 'fieldset',
     '#title' => t('Image Assist images'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
+
   // Add checkbox for image assist custom size images.
   $form['handler_options']['img_assist_options']['lightbox2_image_assist_custom'] = array(
     '#type' => 'select',
@@ -876,7 +823,6 @@ function lightbox2_auto_image_handling_settings_form() {
   );
 
   // Define custom fieldset.
-  /* ----------------------- */
   $form['handler_options']['custom_options'] = array(
     '#type' => 'fieldset',
     '#title' => t('Custom class images'),
@@ -891,6 +837,7 @@ function lightbox2_auto_image_handling_settings_form() {
     '#description' => t('Choose how URLs for custom class images will be automatically handled.'),
     '#default_value' => variable_get('lightbox2_custom_class_handler', 0),
   );
+
   // Add text box for custom trigger classes.
   $form['handler_options']['custom_options']['lightbox2_custom_trigger_classes'] = array(
     '#type' => 'textarea',
@@ -900,9 +847,8 @@ function lightbox2_auto_image_handling_settings_form() {
   );
 
   // Add checkbox for disabling lightbox for acidfree gallery lists.
-  if (module_exists("acidfree")) {
+  if (module_exists('acidfree')) {
     // Define acidfree settings fieldset.
-    /* ---------------------------------- */
     $form['handler_options']['lightbox2_acidfree_options'] = array(
       '#type' => 'fieldset',
       '#title' => t('Acidfree settings'),
@@ -915,8 +861,9 @@ function lightbox2_auto_image_handling_settings_form() {
       '#description' => t('Checking this box will disable the lightbox for images in gallery lists.  This means it is possible to open a gallery by clicking on the teaser image, but the lightbox will still appear when viewing images within the gallery.  This only applies to image galleries created with the "acidfree" module.'),
       '#default_value' => variable_get('lightbox2_disable_nested_acidfree_galleries', TRUE),
     );
+
     // Add checkbox for enabling lightbox for acidfree videos.
-    if (module_exists("video")) {
+    if (module_exists('video')) {
       $form['handler_options']['lightbox2_acidfree_options']['lightbox2_enable_acidfree_videos'] = array(
         '#type' => 'checkbox',
         '#title' => t('Enable lightbox for Acidfree videos'),
@@ -934,10 +881,10 @@ function lightbox2_auto_image_handling_settings_form() {
  *
  * @param $hex
  *   The hex color string to validate.
+ *
  * @return
  *   TRUE if $hex is a valid hex color value.
  */
 function _lightbox2_validate_hex_color($hex) {
   return preg_match('!^[a-f0-9]{3}([a-f0-9]{3})?$!i', $hex);
 }
-

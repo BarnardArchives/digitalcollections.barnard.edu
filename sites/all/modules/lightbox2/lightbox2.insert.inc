@@ -58,7 +58,7 @@ function template_preprocess_lightbox2_insert_image(&$vars) {
   $vars['linkurl'] = insert_create_url($linkpath);
 
   $vars['download_link'] = '';
-  $download_link_text = check_plain(variable_get('lightbox2_download_link_text', 'Download Original'));
+  $download_link_text = check_plain(t(variable_get('lightbox2_download_link_text', 'Download Original')));
   if (!empty($download_link_text) && user_access('download original image')) {
     $vars['download_link'] = '<br /><br />' . l($download_link_text, $vars['linkurl'], array('attributes' => array('target' => '_blank', 'id' => 'lightbox2-download-link-text')));
   }

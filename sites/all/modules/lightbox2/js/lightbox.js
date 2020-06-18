@@ -191,7 +191,7 @@ Lightbox = {
     if (Lightbox.alternative_layout) {
       $('#bottomNavZoom, #bottomNavZoomOut').css({'bottom': Lightbox.borderSize + 'px', 'right': Lightbox.borderSize + 'px'});
     }
-    else if (Lightbox.rtl == 1 && $.browser.msie) {
+    else if (Lightbox.rtl == 1 && Drupal.settings.lightbox2.useragent.search('MSIE') !== -1) {
       $('#bottomNavZoom, #bottomNavZoomOut').css({'left': '0px'});
     }
 
@@ -517,7 +517,7 @@ Lightbox = {
         $('#frameContainer').html('<iframe id="lightboxFrame" style="display: none;" src="'+src+'"></iframe>');
 
         // Enable swf support in Gecko browsers.
-        if ($.browser.mozilla && src.indexOf('.swf') != -1) {
+        if (Drupal.settings.lightbox2.useragent.search('Mozilla') !== -1 && src.indexOf('.swf') != -1) {
           setTimeout(function () {
             document.getElementById("lightboxFrame").src = Lightbox.imageArray[Lightbox.activeImage][0];
           }, 1000);
@@ -605,7 +605,7 @@ Lightbox = {
     // If new and old image are same size and no scaling transition is necessary
     // do a quick pause to prevent image flicker.
     if ((hDiff === 0) && (wDiff === 0)) {
-      if ($.browser.msie) {
+      if (Drupal.settings.lightbox2.useragent.search('MSIE') !== -1) {
         Lightbox.pause(250);
       }
       else {
@@ -629,7 +629,7 @@ Lightbox = {
       Lightbox.updateDetails();
       if (Lightbox.isLightframe) {
         $('#frameContainer').show();
-        if ($.browser.safari || Lightbox.fadeInSpeed === 0) {
+        if (Drupal.settings.lightbox2.useragent.search('Safari') !== -1 || Lightbox.fadeInSpeed === 0) {
           $('#lightboxFrame').css({'zIndex': '10500'}).show();
         }
         else {
@@ -660,7 +660,7 @@ Lightbox = {
     // Handle display of image content.
     else {
       $('#imageContainer').show();
-      if ($.browser.safari || Lightbox.fadeInSpeed === 0) {
+      if (Drupal.settings.lightbox2.useragent.search('Safari') !== -1 || Lightbox.fadeInSpeed === 0) {
         $('#lightboxImage').css({'zIndex': '10500'}).show();
       }
       else {
@@ -705,7 +705,7 @@ Lightbox = {
 
     // Gecko browsers (e.g. Firefox, SeaMonkey, etc) don't handle pdfs as
     // expected.
-    if ($.browser.mozilla) {
+    if (Drupal.settings.lightbox2.useragent.search('Mozilla') !== -1) {
       if (Lightbox.imageArray[Lightbox.activeImage][0].indexOf(".pdf") != -1) {
         setTimeout(function () {
           document.getElementById("lightboxFrame").src = Lightbox.imageArray[Lightbox.activeImage][0];
@@ -1022,6 +1022,10 @@ Lightbox = {
     else {
       pageHeight = yScroll;
     }
+    //Put the max height value in the Pageheight variable.
+    var db = document.body;
+    var dde = document.documentElement;
+    pageHeight = Math.max(db.scrollHeight, dde.scrollHeight, db.offsetHeight, dde.offsetHeight, db.clientHeight, dde.clientHeight, windowHeight, yScroll);
     // For small pages with total width less than width of the viewport.
     if (xScroll < windowWidth) {
       pageWidth = xScroll;
@@ -1072,8 +1076,9 @@ Lightbox = {
         parts["flashvars"] = parts["style"].match(/flashvars:\s?(.*?);/)[1];
       }
     }
-    if ($(link).attr('rel').match(/\[.*\]\[(.*)\]/)) {
-      parts["title"] = $(link).attr('rel').match(/\[.*\]\[(.*)\]/)[1];
+    if ($(link).attr('rel').match(/\[.*\]\[([\s\S]*)\]/)) {
+      var title = $(link).attr('rel').match(/\[.*\]\[([\s\S]*)\]/)[1];
+      parts["title"] = title.replace(/\n/g, '<br />');
     }
     return parts;
   },
@@ -1162,8 +1167,10 @@ Lightbox = {
 
   filterXSS: function(str, allowed_tags) {
     var output = "";
+    var prefix = Drupal.settings.pathPrefix;
+    if (!prefix) prefix = '';
     $.ajax({
-      url: Drupal.settings.basePath + '?q=system/lightbox2/filter-xss',
+      url: Drupal.settings.basePath + prefix + '?q=system/lightbox2/filter-xss',
       data: {
         'string' : str,
         'allowed_tags' : allowed_tags
